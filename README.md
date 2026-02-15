@@ -10,6 +10,12 @@ Here is a structured README designed for a GitHub repository.
 
 This project is a lightweight, web-based digital signage solution designed for bars and venues. It allows for continuous YouTube playback while periodically sliding in a promotional sidebar (Picture-in-Picture style) to display drink specials, upcoming parties, and QR codes.
 
+## 🌐 Live Demo
+
+**Public URL:** [https://spataray.github.io/The-Bar-Signage/](https://spataray.github.io/The-Bar-Signage/)
+
+The application is automatically deployed to GitHub Pages whenever changes are pushed to the main branch.
+
 ## ✨ Key Features
 
 * **Seamless Transitions:** Uses CSS Grid to resize the video without reloading or buffering.
@@ -39,12 +45,16 @@ To update your ads remotely:
 
 ### 3. Installation
 
+**Option A: Use the Live Version**
+
+Simply navigate to [https://spataray.github.io/The-Bar-Signage/](https://spataray.github.io/The-Bar-Signage/) in your browser. This is the easiest way to get started.
+
+**Option B: Local Development**
+
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/bar-tv-controller.git
-
+git clone https://github.com/spataray/The-Bar-Signage.git
 ```
-
 
 2. Open `index.html` in your text editor.
 3. Replace the `videoId` with your desired YouTube content.
