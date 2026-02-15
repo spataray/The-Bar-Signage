@@ -1,9 +1,5 @@
-Based on the recent architectural changes we've made to include **Firebase** and your specific **Google Sheet** configuration, the previous README needs an update to be accurate.
-
-Since you are now using the system as a real-time remote control for **T.A. Station** in Honolulu, the documentation should reflect how the "Remote" and the "Display" work together.
-
----
-
+Your site is live at https://spataray.github.io/The-Bar-Signage/
+Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
 ## Updated README.md
 
 ### 📺 T.A. Station - Digital Signage System
