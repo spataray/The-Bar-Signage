@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T.A. Station - Remote Control</title>
+    <title>T.A. Station - Staff Remote</title>
     <style>
         :root {
             --bar-gold: #ffcc00;
@@ -24,7 +24,7 @@
         }
 
         h1 { color: var(--bar-gold); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .subtitle { margin-bottom: 20px; opacity: 0.7; font-size: 0.9rem; }
+        .subtitle { margin-bottom: 20px; opacity: 0.7; font-size: 0.8rem; }
 
         .card {
             background: #2a2a2a;
@@ -63,12 +63,14 @@
             transition: transform 0.1s;
         }
 
-        .btn:active { transform: scale(0.98); }
+        .btn:active { transform: scale(0.96); }
+        .btn-cast { background-color: #007bff; color: white; }
         .btn-lock { background-color: var(--bar-red); color: white; }
         .btn-unlock { background-color: #555; color: white; }
         .btn-ad { background-color: var(--bar-gold); color: black; }
-        .btn-cast { background-color: #007bff; color: white; }
-        .btn-sheet { background-color: var(--bar-green); color: white; text-decoration: none; display: block; text-align: center; }
+        .btn-party { background: linear-gradient(45deg, #ff00ff, #00f2ff); color: white; }
+        .btn-refresh { background-color: #6c757d; color: white; }
+        .btn-sheet { background-color: var(--bar-green); color: white; text-decoration: none; display: block; text-align: center; line-height: 1.4; }
 
         .lang-toggle {
             background: none;
@@ -82,52 +84,64 @@
 
         .instr { font-size: 0.9rem; line-height: 1.5; color: #ccc; display: none; }
         .active { display: block; }
-        #status-msg { margin-top: 10px; font-weight: bold; color: var(--bar-gold); min-height: 20px; }
+        #status-msg { margin-top: 10px; font-weight: bold; color: var(--bar-gold); min-height: 22px; text-align: center; }
     </style>
 </head>
 <body>
 
     <h1>T.A. STATION</h1>
-    <div class="subtitle">Honolulu Staff Remote Control</div>
+    <div class="subtitle">Honolulu, HI • 2026 Admin Remote</div>
 
     <div class="card">
-        <h3 style="margin-top:0; color:var(--bar-gold);">📺 VIDEO CAST</h3>
+        <h3 style="margin-top:0; color:var(--bar-gold);">📺 VIDEO CONTROL</h3>
         <input type="text" id="video-input" placeholder="Paste YouTube link here...">
         <button class="btn btn-cast" onclick="castNow()">⚡ Play Now</button>
         <button class="btn btn-unlock" onclick="addToQueue()">➕ Add to Queue</button>
         <button class="btn" style="background:#444; color:white;" onclick="clearQueue()">🗑️ Clear Queue</button>
-        <div id="status-msg">Status: Connecting...</div>
+        <div id="status-msg">Connecting...</div>
     </div>
 
     <div class="card">
         <h3 style="margin-top:0; color:var(--bar-gold);">🎤 KARAOKE & ADS</h3>
-        <button class="btn btn-lock" onclick="setLock(true)">🔒 Lock Karaoke (No Ads)</button>
+        <button class="btn btn-lock" onclick="setLock(true)">🔒 Lock Karaoke (Hide Ads)</button>
         <button class="btn btn-unlock" onclick="setLock(false)">🔓 Unlock Auto-Ads</button>
         <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">🖼️ Show Flyer Now</button>
     </div>
 
     <div class="card">
-        <a href="https://docs.google.com/spreadsheets/d/1_qVnTw1Cwb2Ziwta_N0p-V4_ptD6-ZypDvCIrnryNF/edit" class="btn btn-sheet" target="_blank">🟢 Open Google Sheets</a>
+        <h3 style="margin-top:0; color:var(--bar-gold);">🛠️ SYSTEM TOOLS</h3>
+        <button class="btn btn-party" onclick="setPartyMode(true)">✨ Party Mode: ON</button>
+        <button class="btn btn-unlock" onclick="setPartyMode(false)">Party Mode: OFF</button>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+        <button class="btn btn-refresh" onclick="remoteRefresh()">🔄 Refresh TV Browser</button>
+    </div>
+
+    <div class="card">
+        <a href="https://docs.google.com/spreadsheets/d/1_qVnTw1Cwb2Ziwta_N0p-V4_ptD6-ZypDvCIrnryNF/edit" class="btn btn-sheet" target="_blank">
+            🟢 EDIT MENU & TICKER<br><small>(Google Sheets)</small>
+        </a>
     </div>
 
     <div class="card">
         <button class="lang-toggle" onclick="toggleLang()">TH / EN</button>
         <div id="en-instr" class="instr active">
-            <strong>How to Cast:</strong>
-            <ol>
-                <li>Copy a video link from the YouTube app.</li>
-                <li>Paste it into the box above.</li>
-                <li>Tap <b>Play Now</b> to switch the TV immediately.</li>
-            </ol>
+            <strong>Controls:</strong>
+            <ul>
+                <li><b>Play Now:</b> Changes TV video instantly.</li>
+                <li><b>Lock:</b> Use when customers are singing.</li>
+                <li><b>Party Mode:</b> Flashing neon theme.</li>
+                <li><b>Refresh:</b> Fixes the TV if it freezes.</li>
+            </ul>
         </div>
         <div id="th-instr" class="instr">
-            <strong>วิธีเล่นวิดีโอ:</strong>
-            <ol>
-                <li>คัดลอกลิงก์วิดีโอจากแอป YouTube</li>
-                <li>วางลิงก์ลงในช่องด้านบน</li>
-                <li>กด <b>Play Now</b> เพื่อเปลี่ยนวิดีโอบนทีวีทันที</li>
-            </ol>
+            <strong>วิธีใช้งาน:</strong>
+            <ul>
+                <li><b>Play Now:</b> เปลี่ยนวิดีโอบนทีวีทันที</li>
+                <li><b>Lock:</b> ใช้เมื่อลูกค้ากำลังร้องเพลง</li>
+                <li><b>Party Mode:</b> เปลี่ยนธีมเป็นไฟนีออน</li>
+                <li><b>Refresh:</b> รีเฟรชหน้าจอทีวีหากค้าง</li>
+            </ul>
         </div>
     </div>
 
@@ -135,37 +149,32 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-    //  FIREBASE CONFIGURATION
-const firebaseConfig = {
-    apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // Copy the long string from your screenshot here
-    authDomain: "ta-station-remote.firebaseapp.com",
-    databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
-    projectId: "ta-station-remote",
-    storageBucket: "ta-station-remote.firebasestorage.app",
-    messagingSenderId: "805160829750",
-    appId: "1:805160829750:web:9a2a9e1cbf639562aba997",
-    measurementId: "G-WV7S73Y54L"
-};
+        // Use your specific Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", 
+            authDomain: "ta-station-remote.firebaseapp.com",
+            databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
+            projectId: "ta-station-remote",
+            storageBucket: "ta-station-remote.firebasestorage.app",
+            messagingSenderId: "805160829750",
+            appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Helper to extract ID
         function extractId(url) {
             const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
             const match = url.match(regex);
             return match ? match[1] : url.trim();
         }
 
-        // --- REMOTE FUNCTIONS ---
         function castNow() {
             const id = extractId(document.getElementById('video-input').value);
             if(id && id.length === 11) {
                 db.ref('settings/currentVideoId').set(id);
                 document.getElementById('video-input').value = "";
                 updateStatus("Casting Video... ⚡");
-            } else {
-                alert("Invalid YouTube Link");
             }
         }
 
@@ -187,9 +196,21 @@ const firebaseConfig = {
             db.ref('settings/karaokeLock').set(status);
         }
 
+        function setPartyMode(status) {
+            db.ref('settings/partyMode').set(status);
+            updateStatus(status ? "Party Mode ON! ✨" : "Party Mode OFF");
+        }
+
         function triggerAd() {
             db.ref('settings/forceAd').set(Date.now());
-            updateStatus("Showing Flyer! 🖼️");
+            updateStatus("Showing Flyer Now! 🖼️");
+        }
+
+        function remoteRefresh() {
+            if(confirm("Refresh TV browser? Music will stop briefly.")) {
+                db.ref('settings/remoteRefresh').set(Date.now());
+                updateStatus("TV Refreshing... 🔄");
+            }
         }
 
         function updateStatus(msg) {
@@ -202,30 +223,10 @@ const firebaseConfig = {
             document.getElementById('th-instr').classList.toggle('active');
         }
 
-        // Sync Lock Status
-        db.ref('settings/karaokeLock').on('value', (snapshot) => {
-            const status = snapshot.val();
+        db.ref('settings/karaokeLock').on('value', (snap) => {
+            const status = snap.val();
             document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
         });
-        <button class="btn" style="background-color: #6c757d; color: white;" onclick="remoteRefresh()">🔄 Refresh TV Browser</button>
-    function remoteRefresh() {
-        if (confirm("Are you sure you want to refresh the TV? The music will stop for a few seconds.")) {
-            db.ref('settings/remoteRefresh').set(Date.now());
-            updateStatus("Refreshing TV... 🔄");
-        }
-    }
-<div class="card" style="border: 2px solid #ff00ff;">
-    <h3 style="color:#ff00ff; margin-top:0;">✨ PARTY MODE</h3>
-    <button class="btn" style="background: linear-gradient(45deg, #ff00ff, #00f2ff); color: white;" 
-            onclick="setPartyMode(true)">ON</button>
-    <button class="btn btn-unlock" onclick="setPartyMode(false)">OFF</button>
-</div>
-
-<script>
-    function setPartyMode(status) {
-        db.ref('settings/partyMode').set(status);
-        updateStatus(status ? "Party Mode: ON! 🕺" : "Party Mode: OFF");
-    }
-</script>
+    </script>
 </body>
 </html>
