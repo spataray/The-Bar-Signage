@@ -42,24 +42,15 @@
     const URL_TICKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1639387472&single=true&output=csv";
 
     // 2. FIREBASE CONFIGURATION
-    // *** PASTE YOUR CONFIG FROM FIREBASE CONSOLE HERE ***
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
-  authDomain: "ta-station-remote.firebaseapp.com",
-  databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
-  projectId: "ta-station-remote",
-  storageBucket: "ta-station-remote.firebasestorage.app",
-  messagingSenderId: "805160829750",
-  appId: "1:805160829750:web:9a2a9e1cbf639562aba997",
-  measurementId: "G-WV7S73Y54L"
+    apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // Copy the long string from your screenshot here
+    authDomain: "ta-station-remote.firebaseapp.com",
+    databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
+    projectId: "ta-station-remote",
+    storageBucket: "ta-station-remote.firebasestorage.app",
+    messagingSenderId: "805160829750",
+    appId: "1:805160829750:web:9a2a9e1cbf639562aba997",
+    measurementId: "G-WV7S73Y54L"
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
