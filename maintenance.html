@@ -207,6 +207,14 @@ const firebaseConfig = {
             const status = snapshot.val();
             document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
         });
+        <button class="btn" style="background-color: #6c757d; color: white;" onclick="remoteRefresh()">🔄 Refresh TV Browser</button>
+    function remoteRefresh() {
+        if (confirm("Are you sure you want to refresh the TV? The music will stop for a few seconds.")) {
+            db.ref('settings/remoteRefresh').set(Date.now());
+            updateStatus("Refreshing TV... 🔄");
+        }
+    }
+</script>
     </script>
 </body>
 </html>
