@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>T.A. Station - Maintenance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #222; color: white; text-align: center; }
+        .card { background: #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #444; }
+        button { width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-karaoke { background: #ff4444; color: white; }
+        .btn-ad { background: #44ff44; color: black; }
+        .lang-toggle { background: #007bff; color: white; width: auto; padding: 5px 15px; }
+        .instructions { text-align: left; font-size: 0.9rem; line-height: 1.4; display: none; }
+        .visible { display: block; }
+    </style>
+</head>
+<body>
+    <h1>T.A. Station Control</h1>
+    
+    <div class="card">
+        <button class="lang-toggle" onclick="toggleLang()">Translate to Thai / แปลเป็นภาษาไทย</button>
+        
+        <div id="en-instr" class="instructions visible">
+            <h3>How to Update:</h3>
+            <ol>
+                <li>Open the <b>Google Sheets</b> app on your phone.</li>
+                <li>Edit "Party Name" or "Price".</li>
+                <li>To change the flyer, paste a new <b>GIF URL</b> in cell A3.</li>
+                <li>The TV updates automatically every minute.</li>
+            </ol>
+        </div>
+
+        <div id="th-instr" class="instructions">
+            <h3>วิธีอัปเดต:</h3>
+            <ol>
+                <li>เปิดแอป <b>Google Sheets</b> ในมือถือของคุณ</li>
+                <li>แก้ไข "ชื่อปาร์ตี้" หรือ "ราคาเครื่องดื่ม"</li>
+                <li>หากต้องการเปลี่ยนรูป ให้วาง <b>URL ของไฟล์ GIF</b> ในช่อง A3</li>
+                <li>หน้าจอทีวีจะอัปเดตโดยอัตโนมัติทุกๆ 1 นาที</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Live Remote Controls</h3>
+        <p><i>Note: Real-time sync requires a backend like Firebase. For now, use these for testing.</i></p>
+        <button class="btn-karaoke">🔒 LOCK KARAOKE (No Ads)</button>
+        <button class="btn-ad">📺 SHOW AD NOW</button>
+    </div>
+
+    <script>
+        function toggleLang() {
+            document.getElementById('en-instr').classList.toggle('visible');
+            document.getElementById('th-instr').classList.toggle('visible');
+        }
+    </script>
+</body>
+</html>
