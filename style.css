@@ -123,3 +123,26 @@ iframe {
     display: none;
     box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
 }
+/* Party Mode - Neon Pulse Effect */
+body.party-mode {
+    background-color: #050505;
+}
+
+body.party-mode :root {
+    --bar-gold: #00f2ff; /* Neon Blue */
+}
+
+body.party-mode #ad-sidebar {
+    border-left: 5px solid #ff00ff; /* Neon Pink */
+    box-shadow: -10px 0 20px rgba(255, 0, 255, 0.3);
+}
+
+body.party-mode #ticker-container {
+    border-top: 2px solid #00f2ff;
+    animation: neon-flicker 1.5s infinite alternate;
+}
+
+@keyframes neon-flicker {
+    0% { box-shadow: 0 0 5px #00f2ff; }
+    100% { box-shadow: 0 0 20px #ff00ff; }
+}
