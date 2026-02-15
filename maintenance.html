@@ -214,7 +214,18 @@ const firebaseConfig = {
             updateStatus("Refreshing TV... 🔄");
         }
     }
+<div class="card" style="border: 2px solid #ff00ff;">
+    <h3 style="color:#ff00ff; margin-top:0;">✨ PARTY MODE</h3>
+    <button class="btn" style="background: linear-gradient(45deg, #ff00ff, #00f2ff); color: white;" 
+            onclick="setPartyMode(true)">ON</button>
+    <button class="btn btn-unlock" onclick="setPartyMode(false)">OFF</button>
+</div>
+
+<script>
+    function setPartyMode(status) {
+        db.ref('settings/partyMode').set(status);
+        updateStatus(status ? "Party Mode: ON! 🕺" : "Party Mode: OFF");
+    }
 </script>
-    </script>
 </body>
 </html>
