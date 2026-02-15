@@ -148,7 +148,23 @@ const analytics = getAnalytics(app);
     // Initial load
     syncContent();
     setInterval(syncContent, 60000); // Re-sync sheets every minute
+// Add this listener inside your index.html script
+db.ref('settings/currentVideoId').on('value', (snapshot) => {
+    const videoId = snapshot.val();
+    if (videoId && player && typeof player.loadVideoById === 'function') {
+        player.loadVideoById(videoId); // TV switches video immediately
+    }
+});
 
+// Listener for the Queue
+db.ref('settings/videoQueue').on('value', (snapshot) => {
+    const queue = snapshot.val() || [];
+    if (queue.length > 0 && player.getPlayerState() === YT.PlayerState.ENDED) {
+        const nextId = queue.shift();
+        db.ref('settings/currentVideoId').set(nextId);
+        db.ref('settings/videoQueue').set(queue);
+    }
+});
 </script>
 </body>
 </html>
