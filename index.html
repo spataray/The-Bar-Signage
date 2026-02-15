@@ -19,16 +19,12 @@
         <h1 id="ad-title" style="color:var(--bar-gold); text-align:center; text-transform:uppercase;"></h1>
         <img id="ad-flyer" src="" alt="Flyer">
         <p id="ad-desc" style="text-align:center; font-size: 1.2rem;"></p>
-        
-        <div class="menu-section" id="menu-content">
-            </div>
+        <div class="menu-section" id="menu-content"></div>
     </aside>
 </div>
 
 <div id="ticker-container">
-    <div class="ticker-wrap">
-        <div id="ticker-text">Welcome to T.A. Station Honolulu!</div>
-    </div>
+    <div class="ticker-wrap"><div id="ticker-text">Welcome to T.A. Station Honolulu!</div></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -36,12 +32,12 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-    // 1. DATA SOURCES (Your CSV Export Links)
+    // 1. DATA SOURCES
     const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
     const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
     const URL_TICKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1639387472&single=true&output=csv";
 
-    // 2. FIREBASE CONFIGURATION
+       // 2. FIREBASE CONFIGURATION
 const firebaseConfig = {
     apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // Copy the long string from your screenshot here
     authDomain: "ta-station-remote.firebaseapp.com",
@@ -52,24 +48,24 @@ const firebaseConfig = {
     appId: "1:805160829750:web:9a2a9e1cbf639562aba997",
     measurementId: "G-WV7S73Y54L"
 };
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+    // Initialize Firebase using the v8 syntax to match the scripts above
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let player;
-    let isLocked = false;
+    // Define player variable globally so the API can find it
+    var player;
+    var isLocked = false;
 
     // 3. YOUTUBE API SETUP
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            videoId: 'dQw4w9WgXcQ', // Replace with your default bar music video
+            videoId: 'dQw4w9WgXcQ', 
             playerVars: { 
                 'autoplay': 1, 
                 'controls': 1, 
                 'rel': 0,
-                'mute': 0 
+                'mute': 0,
+                'enablejsapi': 1 
             }
         });
     }
@@ -77,12 +73,11 @@ const analytics = getAnalytics(app);
     // 4. CONTENT SYNC (Google Sheets)
     async function syncContent() {
         try {
-            // Fetch and Parse Ads
             const adRes = await fetch(URL_ADS);
             const adText = await adRes.text();
             const adRows = adText.split('\n').map(r => r.split(','));
             document.getElementById('ad-title').innerText = adRows[0][0] || "T.A. Station";
-            document.getElementById('ad-desc').innerText = adRows[1][0] || "Honolulu, Hawaii";
+            document.getElementById('ad-desc').innerText = adRows[1][0] || "";
             
             const flyerUrl = adRows[2] ? adRows[2][0].trim() : "";
             if(flyerUrl.startsWith('http')) {
@@ -90,7 +85,6 @@ const analytics = getAnalytics(app);
                 document.getElementById('ad-flyer').style.display = 'block';
             }
 
-            // Fetch and Parse Menu
             const menuRes = await fetch(URL_MENU);
             const menuText = await menuRes.text();
             const menuRows = menuText.split('\n').map(r => r.split(','));
@@ -102,69 +96,37 @@ const analytics = getAnalytics(app);
             });
             document.getElementById('menu-content').innerHTML = menuHtml;
 
-            // Fetch and Parse Ticker
             const tickRes = await fetch(URL_TICKER);
             const tickText = await tickRes.text();
             const tickRows = tickText.split('\n');
             document.getElementById('ticker-text').innerText = tickRows.join(' • ');
 
-        } catch (e) {
-            console.error("Content Sync Failed:", e);
-        }
+        } catch (e) { console.error("Sync Failed", e); }
     }
 
-    // 5. REMOTE CONTROL LISTENERS (Firebase)
+    // 5. REMOTE CONTROL LISTENERS
     db.ref('settings/karaokeLock').on('value', (snapshot) => {
         isLocked = snapshot.val();
-        const indicator = document.getElementById('status-indicator');
-        const container = document.getElementById('app-container');
-        
-        if (isLocked) {
-            indicator.style.display = 'block';
-            container.classList.remove('ad-active');
-        } else {
-            indicator.style.display = 'none';
-        }
+        document.getElementById('status-indicator').style.display = isLocked ? 'block' : 'none';
+        if (isLocked) document.getElementById('app-container').classList.remove('ad-active');
+    });
+
+    db.ref('settings/currentVideoId').on('value', (snapshot) => {
+        const vid = snapshot.val();
+        if (vid && player && player.loadVideoById) player.loadVideoById(vid);
     });
 
     db.ref('settings/forceAd').on('value', (snapshot) => {
-        // Every time this value changes in Firebase, trigger the ad
         if (!isLocked) {
-            const container = document.getElementById('app-container');
-            container.classList.add('ad-active');
-            setTimeout(() => container.classList.remove('ad-active'), 25000);
+            document.getElementById('app-container').classList.add('ad-active');
+            setTimeout(() => document.getElementById('app-container').classList.remove('ad-active'), 25000);
         }
     });
 
-    // 6. AUTOMATED AD TIMER
-    setInterval(() => {
-        if (!isLocked) {
-            const container = document.getElementById('app-container');
-            container.classList.add('ad-active');
-            setTimeout(() => container.classList.remove('ad-active'), 20000); // Ad duration
-        }
-    }, 180000); // Run every 3 minutes
-
     // Initial load
     syncContent();
-    setInterval(syncContent, 60000); // Re-sync sheets every minute
-// Add this listener inside your index.html script
-db.ref('settings/currentVideoId').on('value', (snapshot) => {
-    const videoId = snapshot.val();
-    if (videoId && player && typeof player.loadVideoById === 'function') {
-        player.loadVideoById(videoId); // TV switches video immediately
-    }
-});
+    setInterval(syncContent, 60000); 
 
-// Listener for the Queue
-db.ref('settings/videoQueue').on('value', (snapshot) => {
-    const queue = snapshot.val() || [];
-    if (queue.length > 0 && player.getPlayerState() === YT.PlayerState.ENDED) {
-        const nextId = queue.shift();
-        db.ref('settings/currentVideoId').set(nextId);
-        db.ref('settings/videoQueue').set(queue);
-    }
-});
 </script>
 </body>
 </html>
