@@ -150,9 +150,15 @@
         }
     }, 180000);
 
-    // Initial load and recurring sync
-    syncContent();
-    setInterval(syncContent, 60000); 
+// Sync Ticker
+const tickRes = await fetch(URL_TICKER);
+const tickText = await tickRes.text();
+// This splits the CSV rows and joins them with a bullet point separator
+const tickRows = tickText.split('\n')
+    .map(row => row.trim())
+    .filter(row => row.length > 0 && row !== "Message"); // Skips empty rows and headers
+
+document.getElementById('ticker-text').innerText = tickRows.join('   •   ');
 
 </script>
 </body>
