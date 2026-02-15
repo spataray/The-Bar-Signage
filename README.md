@@ -16,6 +16,8 @@ This project is a lightweight, web-based digital signage solution designed for b
 
 The application is automatically deployed to GitHub Pages whenever changes are pushed to the main branch.
 
+> **Note:** If this is your first time setting up the repository, you'll need to enable GitHub Pages in the repository settings. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+
 ## ✨ Key Features
 
 * **Seamless Transitions:** Uses CSS Grid to resize the video without reloading or buffering.
