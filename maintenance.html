@@ -2,58 +2,175 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>T.A. Station - Maintenance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.A. Station - Remote Control</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #222; color: white; text-align: center; }
-        .card { background: #333; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #444; }
-        button { width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-karaoke { background: #ff4444; color: white; }
-        .btn-ad { background: #44ff44; color: black; }
-        .lang-toggle { background: #007bff; color: white; width: auto; padding: 5px 15px; }
-        .instructions { text-align: left; font-size: 0.9rem; line-height: 1.4; display: none; }
-        .visible { display: block; }
+        :root {
+            --bar-gold: #ffcc00;
+            --bar-red: #ff4444;
+            --bar-green: #28a745;
+            --dark-bg: #1a1a1a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: var(--bar-gold); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .subtitle { margin-bottom: 30px; opacity: 0.7; font-size: 0.9rem; }
+
+        .card {
+            background: #2a2a2a;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #333;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-lock { background-color: var(--bar-red); color: white; }
+        .btn-unlock { background-color: #555; color: white; }
+        .btn-ad { background-color: var(--bar-gold); color: black; }
+        .btn-sheet { 
+            background-color: var(--bar-green); 
+            color: white; 
+            text-decoration: none; 
+            display: block; 
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .lang-toggle {
+            background: none;
+            border: 1px solid var(--bar-gold);
+            color: var(--bar-gold);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+
+        .instr { font-size: 0.9rem; line-height: 1.5; color: #ccc; display: none; }
+        .active { display: block; }
+        
+        #status-msg { margin-top: 10px; font-weight: bold; color: var(--bar-gold); height: 20px; }
     </style>
 </head>
 <body>
-    <h1>T.A. Station Control</h1>
-    
+
+    <h1>T.A. STATION</h1>
+    <div class="subtitle">Honolulu, Hawaii - Staff Remote</div>
+
     <div class="card">
-        <button class="lang-toggle" onclick="toggleLang()">Translate to Thai / แปลเป็นภาษาไทย</button>
+        <div id="status-msg">Status: Connecting...</div>
         
-        <div id="en-instr" class="instructions visible">
-            <h3>How to Update:</h3>
-            <ol>
-                <li>Open the <b>Google Sheets</b> app on your phone.</li>
-                <li>Edit "Party Name" or "Price".</li>
-                <li>To change the flyer, paste a new <b>GIF URL</b> in cell A3.</li>
-                <li>The TV updates automatically every minute.</li>
-            </ol>
-        </div>
-
-        <div id="th-instr" class="instructions">
-            <h3>วิธีอัปเดต:</h3>
-            <ol>
-                <li>เปิดแอป <b>Google Sheets</b> ในมือถือของคุณ</li>
-                <li>แก้ไข "ชื่อปาร์ตี้" หรือ "ราคาเครื่องดื่ม"</li>
-                <li>หากต้องการเปลี่ยนรูป ให้วาง <b>URL ของไฟล์ GIF</b> ในช่อง A3</li>
-                <li>หน้าจอทีวีจะอัปเดตโดยอัตโนมัติทุกๆ 1 นาที</li>
-            </ol>
-        </div>
+        <button class="btn btn-lock" onclick="setLock(true)">🔒 Lock Karaoke (No Ads)</button>
+        <button class="btn btn-unlock" onclick="setLock(false)">🔓 Unlock Auto-Ads</button>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+        <button class="btn btn-ad" onclick="triggerAd()">📺 Show Ad Now</button>
     </div>
 
     <div class="card">
-        <h3>Live Remote Controls</h3>
-        <p><i>Note: Real-time sync requires a backend like Firebase. For now, use these for testing.</i></p>
-        <button class="btn-karaoke">🔒 LOCK KARAOKE (No Ads)</button>
-        <button class="btn-ad">📺 SHOW AD NOW</button>
+        <p style="margin-top:0">Update Menu & Flyers:</p>
+        <a href="https://docs.google.com/spreadsheets/d/1_qVnTw1Cwb2Ziwta_N0p-V4_ptD6-ZypDvCIrnryNF/edit" class="btn btn-sheet" target="_blank">🟢 Open Google Sheets</a>
     </div>
+
+    <div class="card">
+        <button class="lang-toggle" onclick="toggleLang()">TH / EN</button>
+        
+        <div id="en-instr" class="instr active">
+            <strong>How to use:</strong>
+            <ul>
+                <li><strong>Lock:</strong> Stop ads while someone is singing.</li>
+                <li><strong>Unlock:</strong> Resume auto-ads every 3 mins.</li>
+                <li><strong>Show Ad:</strong> Force the flyer to appear now.</li>
+                <li><strong>Sheets:</strong> Change prices or GIFs in the app.</li>
+            </ul>
+        </div>
+
+        <div id="th-instr" class="instr">
+            <strong>วิธีใช้งาน:</strong>
+            <ul>
+                <li><strong>Lock:</strong> หยุดโฆษณาขณะลูกค้าร้องเพลง</li>
+                <li><strong>Unlock:</strong> เริ่มเล่นโฆษณาอัตโนมัติทุก 3 นาที</li>
+                <li><strong>Show Ad:</strong> บังคับให้ใบปลิวแสดงผลทันที</li>
+                <li><strong>Sheets:</strong> แก้ไขราคาหรือรูปภาพในแอป</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-        function toggleLang() {
-            document.getElementById('en-instr').classList.toggle('visible');
-            document.getElementById('th-instr').classList.toggle('visible');
+// 1. FIREBASE CONFIGURATION
+const firebaseConfig = {
+    apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // Copy the long string from your screenshot here
+    authDomain: "ta-station-remote.firebaseapp.com",
+    databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
+    projectId: "ta-station-remote",
+    storageBucket: "ta-station-remote.firebasestorage.app",
+    messagingSenderId: "805160829750",
+    appId: "1:805160829750:web:9a2a9e1cbf639562aba997",
+    measurementId: "G-WV7S73Y54L"
+};
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2. REMOTE FUNCTIONS
+        function setLock(status) {
+            db.ref('settings/karaokeLock').set(status)
+                .then(() => {
+                    document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
+                });
         }
+
+        function triggerAd() {
+            // Write a timestamp to force the 'value' change listener on the TV
+            db.ref('settings/forceAd').set(Date.now())
+                .then(() => {
+                    document.getElementById('status-msg').innerText = "Status: Ad Triggered! 📺";
+                    setTimeout(() => { document.getElementById('status-msg').innerText = ""; }, 3000);
+                });
+        }
+
+        // 3. UI FUNCTIONS
+        function toggleLang() {
+            document.getElementById('en-instr').classList.toggle('active');
+            document.getElementById('th-instr').classList.toggle('active');
+        }
+
+        // Listen for status changes from other devices
+        db.ref('settings/karaokeLock').on('value', (snapshot) => {
+            const status = snapshot.val();
+            document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
+        });
     </script>
 </body>
 </html>
