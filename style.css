@@ -99,7 +99,7 @@ iframe {
     display: inline-block;
     font-size: 1.3rem;
     color: var(--bar-gold);
-    padding-left: 100%;
+    padding-left: 100%; /* Starts the text off-screen to the right */
     animation: marquee 25s linear infinite;
 }
 
