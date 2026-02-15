@@ -41,7 +41,7 @@ To update your ads remotely:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/bar-tv-controller.git
+git clone https://github.com/spataray/The-Bar-Signage.git
 
 ```
 
