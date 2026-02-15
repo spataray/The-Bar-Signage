@@ -210,6 +210,16 @@
             const status = snapshot.val();
             document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
         });
+        // Listener for the Remote Refresh signal
+db.ref('settings/remoteRefresh').on('value', (snapshot) => {
+    const refreshSignal = snapshot.val();
+    if (refreshSignal) {
+        // Reset the signal immediately so it doesn't loop
+        db.ref('settings/remoteRefresh').set(null);
+        // Reload the browser page
+        location.reload();
+    }
+});
     </script>
 </body>
 </html>
