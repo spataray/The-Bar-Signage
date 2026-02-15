@@ -24,7 +24,7 @@
         }
 
         h1 { color: var(--bar-gold); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .subtitle { margin-bottom: 30px; opacity: 0.7; font-size: 0.9rem; }
+        .subtitle { margin-bottom: 20px; opacity: 0.7; font-size: 0.9rem; }
 
         .card {
             background: #2a2a2a;
@@ -38,32 +38,37 @@
             border: 1px solid #333;
         }
 
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #000;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
         .btn {
             width: 100%;
-            padding: 18px;
-            font-size: 1.1rem;
+            padding: 15px;
+            font-size: 1rem;
             font-weight: bold;
             border: none;
             border-radius: 10px;
-            margin: 10px 0;
+            margin: 5px 0;
             cursor: pointer;
             text-transform: uppercase;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: transform 0.1s;
         }
 
         .btn:active { transform: scale(0.98); }
-
         .btn-lock { background-color: var(--bar-red); color: white; }
         .btn-unlock { background-color: #555; color: white; }
         .btn-ad { background-color: var(--bar-gold); color: black; }
-        .btn-sheet { 
-            background-color: var(--bar-green); 
-            color: white; 
-            text-decoration: none; 
-            display: block; 
-            text-align: center;
-            box-sizing: border-box;
-        }
+        .btn-cast { background-color: #007bff; color: white; }
+        .btn-sheet { background-color: var(--bar-green); color: white; text-decoration: none; display: block; text-align: center; }
 
         .lang-toggle {
             background: none;
@@ -77,50 +82,52 @@
 
         .instr { font-size: 0.9rem; line-height: 1.5; color: #ccc; display: none; }
         .active { display: block; }
-        
-        #status-msg { margin-top: 10px; font-weight: bold; color: var(--bar-gold); height: 20px; }
+        #status-msg { margin-top: 10px; font-weight: bold; color: var(--bar-gold); min-height: 20px; }
     </style>
 </head>
 <body>
 
     <h1>T.A. STATION</h1>
-    <div class="subtitle">Honolulu, Hawaii - Staff Remote</div>
+    <div class="subtitle">Honolulu Staff Remote Control</div>
 
     <div class="card">
+        <h3 style="margin-top:0; color:var(--bar-gold);">📺 VIDEO CAST</h3>
+        <input type="text" id="video-input" placeholder="Paste YouTube link here...">
+        <button class="btn btn-cast" onclick="castNow()">⚡ Play Now</button>
+        <button class="btn btn-unlock" onclick="addToQueue()">➕ Add to Queue</button>
+        <button class="btn" style="background:#444; color:white;" onclick="clearQueue()">🗑️ Clear Queue</button>
         <div id="status-msg">Status: Connecting...</div>
-        
-        <button class="btn btn-lock" onclick="setLock(true)">🔒 Lock Karaoke (No Ads)</button>
-        <button class="btn btn-unlock" onclick="setLock(false)">🔓 Unlock Auto-Ads</button>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-        <button class="btn btn-ad" onclick="triggerAd()">📺 Show Ad Now</button>
     </div>
 
     <div class="card">
-        <p style="margin-top:0">Update Menu & Flyers:</p>
+        <h3 style="margin-top:0; color:var(--bar-gold);">🎤 KARAOKE & ADS</h3>
+        <button class="btn btn-lock" onclick="setLock(true)">🔒 Lock Karaoke (No Ads)</button>
+        <button class="btn btn-unlock" onclick="setLock(false)">🔓 Unlock Auto-Ads</button>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+        <button class="btn btn-ad" onclick="triggerAd()">🖼️ Show Flyer Now</button>
+    </div>
+
+    <div class="card">
         <a href="https://docs.google.com/spreadsheets/d/1_qVnTw1Cwb2Ziwta_N0p-V4_ptD6-ZypDvCIrnryNF/edit" class="btn btn-sheet" target="_blank">🟢 Open Google Sheets</a>
     </div>
 
     <div class="card">
         <button class="lang-toggle" onclick="toggleLang()">TH / EN</button>
-        
         <div id="en-instr" class="instr active">
-            <strong>How to use:</strong>
-            <ul>
-                <li><strong>Lock:</strong> Stop ads while someone is singing.</li>
-                <li><strong>Unlock:</strong> Resume auto-ads every 3 mins.</li>
-                <li><strong>Show Ad:</strong> Force the flyer to appear now.</li>
-                <li><strong>Sheets:</strong> Change prices or GIFs in the app.</li>
-            </ul>
+            <strong>How to Cast:</strong>
+            <ol>
+                <li>Copy a video link from the YouTube app.</li>
+                <li>Paste it into the box above.</li>
+                <li>Tap <b>Play Now</b> to switch the TV immediately.</li>
+            </ol>
         </div>
-
         <div id="th-instr" class="instr">
-            <strong>วิธีใช้งาน:</strong>
-            <ul>
-                <li><strong>Lock:</strong> หยุดโฆษณาขณะลูกค้าร้องเพลง</li>
-                <li><strong>Unlock:</strong> เริ่มเล่นโฆษณาอัตโนมัติทุก 3 นาที</li>
-                <li><strong>Show Ad:</strong> บังคับให้ใบปลิวแสดงผลทันที</li>
-                <li><strong>Sheets:</strong> แก้ไขราคาหรือรูปภาพในแอป</li>
-            </ul>
+            <strong>วิธีเล่นวิดีโอ:</strong>
+            <ol>
+                <li>คัดลอกลิงก์วิดีโอจากแอป YouTube</li>
+                <li>วางลิงก์ลงในช่องด้านบน</li>
+                <li>กด <b>Play Now</b> เพื่อเปลี่ยนวิดีโอบนทีวีทันที</li>
+            </ol>
         </div>
     </div>
 
@@ -128,7 +135,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
-// 1. FIREBASE CONFIGURATION
+    //  FIREBASE CONFIGURATION
 const firebaseConfig = {
     apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // Copy the long string from your screenshot here
     authDomain: "ta-station-remote.firebaseapp.com",
@@ -143,30 +150,59 @@ const firebaseConfig = {
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 2. REMOTE FUNCTIONS
+        // Helper to extract ID
+        function extractId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : url.trim();
+        }
+
+        // --- REMOTE FUNCTIONS ---
+        function castNow() {
+            const id = extractId(document.getElementById('video-input').value);
+            if(id && id.length === 11) {
+                db.ref('settings/currentVideoId').set(id);
+                document.getElementById('video-input').value = "";
+                updateStatus("Casting Video... ⚡");
+            } else {
+                alert("Invalid YouTube Link");
+            }
+        }
+
+        function addToQueue() {
+            const id = extractId(document.getElementById('video-input').value);
+            if(id && id.length === 11) {
+                db.ref('settings/videoQueue').transaction((current) => (current || []).concat(id));
+                document.getElementById('video-input').value = "";
+                updateStatus("Added to Queue! ➕");
+            }
+        }
+
+        function clearQueue() {
+            db.ref('settings/videoQueue').set([]);
+            updateStatus("Queue Cleared 🗑️");
+        }
+
         function setLock(status) {
-            db.ref('settings/karaokeLock').set(status)
-                .then(() => {
-                    document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
-                });
+            db.ref('settings/karaokeLock').set(status);
         }
 
         function triggerAd() {
-            // Write a timestamp to force the 'value' change listener on the TV
-            db.ref('settings/forceAd').set(Date.now())
-                .then(() => {
-                    document.getElementById('status-msg').innerText = "Status: Ad Triggered! 📺";
-                    setTimeout(() => { document.getElementById('status-msg').innerText = ""; }, 3000);
-                });
+            db.ref('settings/forceAd').set(Date.now());
+            updateStatus("Showing Flyer! 🖼️");
         }
 
-        // 3. UI FUNCTIONS
+        function updateStatus(msg) {
+            document.getElementById('status-msg').innerText = "Status: " + msg;
+            setTimeout(() => { document.getElementById('status-msg').innerText = ""; }, 3000);
+        }
+
         function toggleLang() {
             document.getElementById('en-instr').classList.toggle('active');
             document.getElementById('th-instr').classList.toggle('active');
         }
 
-        // Listen for status changes from other devices
+        // Sync Lock Status
         db.ref('settings/karaokeLock').on('value', (snapshot) => {
             const status = snapshot.val();
             document.getElementById('status-msg').innerText = status ? "Status: Locked 🔒" : "Status: Active 🔓";
