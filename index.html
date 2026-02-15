@@ -220,6 +220,15 @@ db.ref('settings/remoteRefresh').on('value', (snapshot) => {
         location.reload();
     }
 });
+    // Listener for Party Mode toggle
+db.ref('settings/partyMode').on('value', (snapshot) => {
+    const isParty = snapshot.val();
+    if (isParty) {
+        document.body.classList.add('party-mode');
+    } else {
+        document.body.classList.remove('party-mode');
+    }
+});    
     </script>
 </body>
 </html>
