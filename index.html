@@ -36,6 +36,7 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
+    var player;
     // 1. DATA SOURCES (Google Sheets CSV Exports)
     const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
     const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
@@ -55,7 +56,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    var player;
+    
     var isLocked = false;
 
     // 3. YOUTUBE PLAYER SETUP
