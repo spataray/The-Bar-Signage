@@ -1,50 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T.A. Station - TV Display</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div id="status-indicator">KARAOKE MODE ACTIVE</div>
-
-<div id="app-container">
-    <div id="video-section">
-        <div id="player"></div>
-    </div>
-
-    <aside id="ad-sidebar">
-        <h1 id="ad-title" style="color:var(--bar-gold); text-align:center; text-transform:uppercase;"></h1>
-        <img id="ad-flyer" src="" alt="Flyer">
-        <p id="ad-desc" style="text-align:center; font-size: 1.2rem;"></p>
-        
-        <div class="menu-section" id="menu-content">
-            </div>
-    </aside>
-</div>
-
-<div id="ticker-container">
-    <div class="ticker-wrap">
-        <div id="ticker-text">Welcome to T.A. Station Honolulu!</div>
-    </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
-    var player;
-    // 1. DATA SOURCES (Google Sheets CSV Exports)
+    // 1. DATA SOURCES
     const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
     const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
     const URL_TICKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1639387472&single=true&output=csv";
 
-    // 2. FIREBASE CONFIGURATION (Using your specific App IDs)
+    // 2. FIREBASE CONFIG
     const firebaseConfig = {
-        apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // Ensure this matches your Firebase Console
+        apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // <--- MAKE SURE YOUR ACTUAL KEY IS HERE
         authDomain: "ta-station-remote.firebaseapp.com",
         databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
         projectId: "ta-station-remote",
@@ -56,23 +18,18 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    
+    var player;
     var isLocked = false;
 
-    // 3. YOUTUBE PLAYER SETUP
+    // 3. YOUTUBE SETUP
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            videoId: 'dQw4w9WgXcQ', // Default video
-            playerVars: { 
-                'autoplay': 1, 
-                'controls': 1, 
-                'rel': 0,
-                'enablejsapi': 1 
-            }
+            videoId: 'dQw4w9WgXcQ', 
+            playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0, 'enablejsapi': 1 }
         });
     }
 
-    // 4. GOOGLE SHEETS SYNC
+    // 4. THE FIX: ASYNC CONTENT SYNC
     async function syncContent() {
         try {
             // Sync Ads
@@ -83,7 +40,6 @@
             document.getElementById('ad-desc').innerText = adRows[1][0] || "";
             if(adRows[2] && adRows[2][0].includes('http')) {
                 document.getElementById('ad-flyer').src = adRows[2][0].trim();
-                document.getElementById('ad-flyer').style.display = 'block';
             }
 
             // Sync Menu
@@ -98,36 +54,28 @@
             });
             document.getElementById('menu-content').innerHTML = menuHtml;
 
-            // Sync Ticker
+            // Sync Ticker (Fixed for one-at-a-time scrolling)
             const tickRes = await fetch(URL_TICKER);
             const tickText = await tickRes.text();
-            document.getElementById('ticker-text').innerText = tickText.split('\n').join(' • ');
+            const tickRows = tickText.split('\n').map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
+            document.getElementById('ticker-text').innerText = tickRows.join('   •   ');
 
-        } catch (e) { console.error("Sync Error:", e); }
+        } catch (e) {
+            console.error("Content Sync Failed:", e);
+        }
     }
 
-    // 5. FIREBASE REAL-TIME LISTENERS
-    
-    // Karaoke Lock
-    db.ref('settings/karaokeLock').on('value', (snap) => {
-        isLocked = snap.val();
-        document.getElementById('status-indicator').style.display = isLocked ? 'block' : 'none';
-        if(isLocked) document.getElementById('app-container').classList.remove('ad-active');
-    });
-
-    // Remote Video Casting
+    // 5. LISTENERS
     db.ref('settings/currentVideoId').on('value', (snap) => {
         const vid = snap.val();
         if (vid && player && player.loadVideoById) player.loadVideoById(vid);
     });
 
-    // Party Mode Toggle
     db.ref('settings/partyMode').on('value', (snap) => {
         if (snap.val()) document.body.classList.add('party-mode');
         else document.body.classList.remove('party-mode');
     });
 
-    // Remote Refresh Signal
     db.ref('settings/remoteRefresh').on('value', (snap) => {
         if (snap.val()) {
             db.ref('settings/remoteRefresh').set(null);
@@ -135,32 +83,8 @@
         }
     });
 
-    // Manual Ad Trigger
-    db.ref('settings/forceAd').on('value', (snap) => {
-        if (!isLocked) {
-            document.getElementById('app-container').classList.add('ad-active');
-            setTimeout(() => document.getElementById('app-container').classList.remove('ad-active'), 25000);
-        }
-    });
-
-    // Automated Ad Rotation (Every 3 minutes)
-    setInterval(() => {
-        if (!isLocked) {
-            document.getElementById('app-container').classList.add('ad-active');
-            setTimeout(() => document.getElementById('app-container').classList.remove('ad-active'), 20000);
-        }
-    }, 180000);
-
-// Sync Ticker
-const tickRes = await fetch(URL_TICKER);
-const tickText = await tickRes.text();
-// This splits the CSV rows and joins them with a bullet point separator
-const tickRows = tickText.split('\n')
-    .map(row => row.trim())
-    .filter(row => row.length > 0 && row !== "Message"); // Skips empty rows and headers
-
-document.getElementById('ticker-text').innerText = tickRows.join('   •   ');
+    // Start the sync
+    syncContent();
+    setInterval(syncContent, 60000); // Update from Sheets every minute
 
 </script>
-</body>
-</html>
