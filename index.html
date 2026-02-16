@@ -1,90 +1,127 @@
-<script>
-    // 1. DATA SOURCES
-    const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
-    const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
-    const URL_TICKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1639387472&single=true&output=csv";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.A. Station - Digital Signage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    // 2. FIREBASE CONFIG
-    const firebaseConfig = {
-        apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc", // <--- MAKE SURE YOUR ACTUAL KEY IS HERE
-        authDomain: "ta-station-remote.firebaseapp.com",
-        databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
-        projectId: "ta-station-remote",
-        storageBucket: "ta-station-remote.firebasestorage.app",
-        messagingSenderId: "805160829750",
-        appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
-    };
+    <div id="status-indicator">KARAOKE LOCKED</div>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    <div id="app-container">
+        <div id="video-section">
+            <div id="player"></div>
+        </div>
 
-    var player;
-    var isLocked = false;
+        <div id="ad-sidebar">
+            <h2 id="ad-title">T.A. Station</h2>
+            <p id="ad-desc"></p>
+            <img id="ad-flyer" alt="Event Flyer">
+            <div class="menu-section" id="menu-content"></div>
+        </div>
+    </div>
 
-    // 3. YOUTUBE SETUP
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            videoId: 'dQw4w9WgXcQ', 
-            playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0, 'enablejsapi': 1 }
-        });
-    }
+    <div id="ticker-container">
+        <div class="ticker-wrap">
+            <span id="ticker-text"></span>
+        </div>
+    </div>
 
-    // 4. THE FIX: ASYNC CONTENT SYNC
-    async function syncContent() {
-        try {
-            // Sync Ads
-            const adRes = await fetch(URL_ADS);
-            const adText = await adRes.text();
-            const adRows = adText.split('\n').map(r => r.split(','));
-            document.getElementById('ad-title').innerText = adRows[0][0] || "T.A. Station";
-            document.getElementById('ad-desc').innerText = adRows[1][0] || "";
-            if(adRows[2] && adRows[2][0].includes('http')) {
-                document.getElementById('ad-flyer').src = adRows[2][0].trim();
-            }
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 
-            // Sync Menu
-            const menuRes = await fetch(URL_MENU);
-            const menuText = await menuRes.text();
-            const menuRows = menuText.split('\n').map(r => r.split(','));
-            let menuHtml = "<h3>DRINKS & PUPUS</h3>";
-            menuRows.forEach(row => {
-                if(row[0] && row[0] !== "Item Name") {
-                    menuHtml += `<div class="menu-item"><span>${row[0]}</span><span>${row[1] || ''}</span></div>`;
-                }
+    <script>
+        // 1. DATA SOURCES
+        const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
+        const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
+        const URL_TICKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1639387472&single=true&output=csv";
+
+        // 2. FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
+            authDomain: "ta-station-remote.firebaseapp.com",
+            databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
+            projectId: "ta-station-remote",
+            storageBucket: "ta-station-remote.firebasestorage.app",
+            messagingSenderId: "805160829750",
+            appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        var player;
+        var isLocked = false;
+
+        // 3. YOUTUBE SETUP
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: 'dQw4w9WgXcQ',
+                playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0, 'enablejsapi': 1 }
             });
-            document.getElementById('menu-content').innerHTML = menuHtml;
-
-            // Sync Ticker (Fixed for one-at-a-time scrolling)
-            const tickRes = await fetch(URL_TICKER);
-            const tickText = await tickRes.text();
-            const tickRows = tickText.split('\n').map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
-            document.getElementById('ticker-text').innerText = tickRows.join('   •   ');
-
-        } catch (e) {
-            console.error("Content Sync Failed:", e);
         }
-    }
 
-    // 5. LISTENERS
-    db.ref('settings/currentVideoId').on('value', (snap) => {
-        const vid = snap.val();
-        if (vid && player && player.loadVideoById) player.loadVideoById(vid);
-    });
+        // 4. ASYNC CONTENT SYNC
+        async function syncContent() {
+            try {
+                // Sync Ads
+                const adRes = await fetch(URL_ADS);
+                const adText = await adRes.text();
+                const adRows = adText.split('\n').map(r => r.split(','));
+                document.getElementById('ad-title').innerText = adRows[0][0] || "T.A. Station";
+                document.getElementById('ad-desc').innerText = adRows[1][0] || "";
+                if(adRows[2] && adRows[2][0].includes('http')) {
+                    document.getElementById('ad-flyer').src = adRows[2][0].trim();
+                }
 
-    db.ref('settings/partyMode').on('value', (snap) => {
-        if (snap.val()) document.body.classList.add('party-mode');
-        else document.body.classList.remove('party-mode');
-    });
+                // Sync Menu
+                const menuRes = await fetch(URL_MENU);
+                const menuText = await menuRes.text();
+                const menuRows = menuText.split('\n').map(r => r.split(','));
+                let menuHtml = "<h3>DRINKS & PUPUS</h3>";
+                menuRows.forEach(row => {
+                    if(row[0] && row[0] !== "Item Name") {
+                        menuHtml += `<div class="menu-item"><span>${row[0]}</span><span>${row[1] || ''}</span></div>`;
+                    }
+                });
+                document.getElementById('menu-content').innerHTML = menuHtml;
 
-    db.ref('settings/remoteRefresh').on('value', (snap) => {
-        if (snap.val()) {
-            db.ref('settings/remoteRefresh').set(null);
-            location.reload();
+                // Sync Ticker
+                const tickRes = await fetch(URL_TICKER);
+                const tickText = await tickRes.text();
+                const tickRows = tickText.split('\n').map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
+                document.getElementById('ticker-text').innerText = tickRows.join('   •   ');
+
+            } catch (e) {
+                console.error("Content Sync Failed:", e);
+            }
         }
-    });
 
-    // Start the sync
-    syncContent();
-    setInterval(syncContent, 60000); // Update from Sheets every minute
+        // 5. FIREBASE LISTENERS
+        db.ref('settings/currentVideoId').on('value', (snap) => {
+            const vid = snap.val();
+            if (vid && player && player.loadVideoById) player.loadVideoById(vid);
+        });
 
-</script>
+        db.ref('settings/partyMode').on('value', (snap) => {
+            if (snap.val()) document.body.classList.add('party-mode');
+            else document.body.classList.remove('party-mode');
+        });
+
+        db.ref('settings/remoteRefresh').on('value', (snap) => {
+            if (snap.val()) {
+                db.ref('settings/remoteRefresh').set(null);
+                location.reload();
+            }
+        });
+
+        // Start the sync
+        syncContent();
+        setInterval(syncContent, 60000);
+    </script>
+
+</body>
+</html>
