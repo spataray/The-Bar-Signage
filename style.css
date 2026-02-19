@@ -44,36 +44,79 @@ iframe {
 
 /* Sidebar Ads & Menu */
 #ad-sidebar {
-    background: var(--dark-bg);
-    border-left: 5px solid var(--bar-gold);
+    position: relative;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 25px;
     box-sizing: border-box;
     overflow-y: auto;
+    background: url('images/TAStation-1.JPG') center/cover no-repeat;
+    border-left: none;
 }
 
-#ad-flyer { 
-    width: 100%; 
-    border-radius: 10px; 
-    margin: 15px 0; 
-    display: none; 
-    box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+#ad-sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.85) 40%,
+        rgba(0, 0, 0, 0.95) 100%
+    );
+    z-index: 0;
 }
 
-.menu-section h3 { 
-    color: var(--bar-gold); 
-    border-bottom: 2px solid var(--bar-gold); 
-    margin-top: 25px; 
+#ad-sidebar > * {
+    position: relative;
+    z-index: 1;
+}
+
+#ad-sidebar h2 {
+    font-size: 1.6rem;
     text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(255, 204, 0, 0.6);
+    color: var(--bar-gold);
+    margin-top: 0;
 }
 
-.menu-item { 
-    display: flex; 
-    justify-content: space-between; 
-    margin: 8px 0; 
-    font-size: 1.1rem; 
+#ad-sidebar p {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+#ad-flyer {
+    width: 100%;
+    border-radius: 12px;
+    margin: 15px 0;
+    display: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 204, 0, 0.15);
+}
+
+.menu-section h3 {
+    color: var(--bar-gold);
+    border-bottom: 2px solid var(--bar-gold);
+    margin-top: 25px;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    padding-bottom: 8px;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 1.1rem;
     letter-spacing: 1px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 204, 0, 0.1);
+}
+
+.menu-item:last-child {
+    border-bottom: none;
 }
 
 /* Social Ticker */
@@ -133,8 +176,16 @@ body.party-mode :root {
 }
 
 body.party-mode #ad-sidebar {
-    border-left: 5px solid #ff00ff; /* Neon Pink */
-    box-shadow: -10px 0 20px rgba(255, 0, 255, 0.3);
+    box-shadow: -10px 0 30px rgba(255, 0, 255, 0.4);
+}
+
+body.party-mode #ad-sidebar::before {
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 0, 20, 0.75) 0%,
+        rgba(10, 0, 20, 0.9) 40%,
+        rgba(10, 0, 20, 0.97) 100%
+    );
 }
 
 body.party-mode #ticker-container {

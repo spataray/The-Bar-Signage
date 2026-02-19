@@ -94,22 +94,21 @@
         /* Now Playing */
         #np-container {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 15px;
         }
         #np-thumb {
-            width: 80px;
-            height: 60px;
+            width: 100%;
+            aspect-ratio: 16/9;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 10px;
             background: #111;
-            flex-shrink: 0;
         }
-        #np-info { flex: 1; min-width: 0; }
+        #np-info { min-width: 0; }
         #np-title {
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
