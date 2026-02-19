@@ -189,6 +189,36 @@
             }
         });
 
+        // Karaoke Lock — hides ads when customers are singing
+        db.ref('settings/karaokeLock').on('value', function(snap) {
+            isLocked = !!snap.val();
+            var indicator = document.getElementById('status-indicator');
+            if (isLocked) {
+                indicator.style.display = 'block';
+                hideAd();
+            } else {
+                indicator.style.display = 'none';
+            }
+        });
+
+        // Force Ad — show flyer immediately for 25 seconds
+        db.ref('settings/forceAd').on('value', function(snap) {
+            if (snap.val() && !isLocked) {
+                showAd();
+            }
+        });
+
+        function showAd() {
+            document.getElementById('app-container').classList.add('ad-active');
+            document.getElementById('ad-flyer').style.display = 'block';
+            clearTimeout(window._adTimer);
+            window._adTimer = setTimeout(hideAd, 25000);
+        }
+
+        function hideAd() {
+            document.getElementById('app-container').classList.remove('ad-active');
+        }
+
         // 6. START SYNC
         syncContent();
         setInterval(syncContent, 60000);
