@@ -529,9 +529,14 @@
                 var data = await res.json();
 
                 if (data.error) {
-                    errorEl.textContent = data.error.code === 403
-                        ? 'YouTube API not enabled. Enable "YouTube Data API v3" in Google Cloud Console for your Firebase project.'
-                        : 'Search error: ' + data.error.message;
+                    if (data.error.code === 403) {
+                        var msg = data.error.message || '';
+                        errorEl.textContent = msg.indexOf('referer') !== -1 || msg.indexOf('referrer') !== -1
+                            ? 'API key blocked. Add "spataray.github.io/*" to your API key\'s allowed HTTP referrers in Google Cloud Console > APIs & Services > Credentials.'
+                            : 'YouTube API not enabled. Enable "YouTube Data API v3" in Google Cloud Console for your Firebase project.';
+                    } else {
+                        errorEl.textContent = 'Search error: ' + data.error.message;
+                    }
                     errorEl.style.display = 'block';
                     resultsEl.innerHTML = '';
                     return;
