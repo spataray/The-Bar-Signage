@@ -54,13 +54,60 @@
         const db = firebase.database();
 
         var player;
+        var playerReady = false;
+        var pendingVideoId = null;
         var isLocked = false;
 
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                videoId: 'dQw4w9WgXcQ',
-                playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0, 'enablejsapi': 1 }
+                playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1 },
+                events: {
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady() {
+            playerReady = true;
+            if (pendingVideoId) {
+                player.loadVideoById(pendingVideoId);
+                pendingVideoId = null;
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                reportNowPlaying();
+            }
+            if (event.data === YT.PlayerState.ENDED) {
+                playNext();
+            }
+            db.ref('settings/playerState').set(event.data);
+        }
+
+        function reportNowPlaying() {
+            if (!player || !player.getVideoData) return;
+            var data = player.getVideoData();
+            if (data.video_id) {
+                db.ref('settings/nowPlaying').set({
+                    videoId: data.video_id,
+                    title: data.title || '',
+                    author: data.author || ''
+                });
+            }
+        }
+
+        function playNext() {
+            db.ref('settings/queue').once('value', function(snap) {
+                var queue = snap.val() || [];
+                if (queue.length > 0) {
+                    var next = queue[0];
+                    var remaining = queue.slice(1);
+                    db.ref('settings/queue').set(remaining);
+                    player.loadVideoById(next.id);
+                }
             });
         }
 
@@ -101,24 +148,41 @@
         }
 
         // 5. FIREBASE LISTENERS
-        db.ref('settings/currentVideoId').on('value', (snap) => {
-            const vid = snap.val();
-            if (vid && player && player.loadVideoById) player.loadVideoById(vid);
+        db.ref('settings/currentVideoId').on('value', function(snap) {
+            var vid = snap.val();
+            if (!vid) return;
+            if (playerReady) {
+                player.loadVideoById(vid);
+            } else {
+                pendingVideoId = vid;
+            }
         });
 
-        db.ref('settings/partyMode').on('value', (snap) => {
+        db.ref('settings/playerCommand').on('value', function(snap) {
+            var cmd = snap.val();
+            if (!cmd || !player) return;
+            switch (cmd.action) {
+                case 'pause': player.pauseVideo(); break;
+                case 'play': player.playVideo(); break;
+                case 'next': playNext(); break;
+                case 'volume': player.setVolume(cmd.value); break;
+            }
+            db.ref('settings/playerCommand').set(null);
+        });
+
+        db.ref('settings/partyMode').on('value', function(snap) {
             if (snap.val()) document.body.classList.add('party-mode');
             else document.body.classList.remove('party-mode');
         });
 
-        db.ref('settings/remoteRefresh').on('value', (snap) => {
+        db.ref('settings/remoteRefresh').on('value', function(snap) {
             if (snap.val()) {
                 db.ref('settings/remoteRefresh').set(null);
                 location.reload();
             }
         });
 
-        // Start the sync
+        // 6. START SYNC
         syncContent();
         setInterval(syncContent, 60000);
     </script>
