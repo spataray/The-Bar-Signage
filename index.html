@@ -13,6 +13,13 @@
     <div id="app-container">
         <div id="video-section">
             <div id="player"></div>
+            <div id="idle-screen">
+                <img id="idle-photo" src="images/TAStation-1.JPG" alt="">
+                <div id="idle-overlay">
+                    <div id="idle-logo">T.A. STATION</div>
+                    <div id="idle-tagline">Honolulu, HI</div>
+                </div>
+            </div>
         </div>
 
         <div id="ad-sidebar">
@@ -57,6 +64,16 @@
         var playerReady = false;
         var pendingVideoId = null;
         var isLocked = false;
+
+        // Idle slideshow
+        var idlePhotos = [
+            'images/TAStation-1.JPG',
+            'images/TAStation-5.JPG',
+            'images/TAStation-10.JPG',
+            'images/TAStation-15.JPG'
+        ];
+        var idleIndex = 0;
+        var idleTimer = null;
 
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
@@ -114,8 +131,37 @@
                     var remaining = queue.slice(1);
                     db.ref('settings/queue').set(remaining);
                     player.loadVideoById(next.id);
+                } else {
+                    startIdle();
                 }
             });
+        }
+
+        function startIdle() {
+            var screen = document.getElementById('idle-screen');
+            screen.classList.add('active');
+            showAd();
+            db.ref('settings/nowPlaying').set(null);
+            idleIndex = 0;
+            cycleIdlePhoto();
+            idleTimer = setInterval(cycleIdlePhoto, 8000);
+        }
+
+        function stopIdle() {
+            var screen = document.getElementById('idle-screen');
+            screen.classList.remove('active');
+            clearInterval(idleTimer);
+            idleTimer = null;
+        }
+
+        function cycleIdlePhoto() {
+            var photo = document.getElementById('idle-photo');
+            photo.classList.add('fading');
+            setTimeout(function() {
+                idleIndex = (idleIndex + 1) % idlePhotos.length;
+                photo.src = idlePhotos[idleIndex];
+                photo.classList.remove('fading');
+            }, 1500);
         }
 
         // 4. ASYNC CONTENT SYNC
@@ -158,6 +204,7 @@
         db.ref('settings/currentVideoId').on('value', function(snap) {
             var vid = snap.val();
             if (!vid) return;
+            stopIdle();
             if (playerReady) {
                 player.loadVideoById(vid);
             } else {
@@ -172,6 +219,7 @@
                 case 'pause': player.pauseVideo(); break;
                 case 'play': player.playVideo(); break;
                 case 'next': playNext(); break;
+                case 'prev': player.seekTo(0); player.playVideo(); break;
                 case 'volume': player.setVolume(cmd.value); break;
             }
             db.ref('settings/playerCommand').set(null);
@@ -217,9 +265,17 @@
 
         function hideAd() {
             document.getElementById('app-container').classList.remove('ad-active');
+            document.getElementById('ad-flyer').style.display = 'none';
         }
 
-        // 6. START SYNC
+        // 6. AUTO-AD ROTATION — show ads every 3 minutes for 25 seconds
+        setInterval(function() {
+            if (!isLocked) {
+                showAd();
+            }
+        }, 180000);
+
+        // 7. START SYNC
         syncContent();
         setInterval(syncContent, 60000);
     </script>

@@ -1,51 +1,66 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
 Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
-## Updated README.md
 
-### 📺 T.A. Station - Digital Signage System
+### T.A. Station - Digital Signage System
 
-This system is a custom-built digital signage solution for T.A. Station. It allows a bar TV to play YouTube videos while periodically displaying ads, flyers, and menus controlled via a smartphone.
+A digital signage system for T.A. Station (Honolulu, HI). Plays YouTube music/videos on a bar TV with ads, menus, and a scrolling ticker — all controlled from a staff phone.
 
-### 🛠 Project Files
+### Project Files
 
 * **`index.html`**: The main TV display. Open this on the TV browser.
-* **`style.css`**: The visual branding and layout for the bar.
-* **`maintenance.html`**: The remote control for staff to use on their phones.
+* **`style.css`**: Visual branding, layout, idle slideshow, and party mode styles.
+* **`maintenance.html`**: Staff remote control (iPad/phone).
+* **`images/`**: Bar photos used in the ad sidebar and idle slideshow.
 
 ---
 
-### 📱 How to Manage Content
+### Music & Video Control
 
-All text and images are managed via your [Google Sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pubhtml):
+Open `maintenance.html` on your iPad or phone:
 
-* **Ads Tab**: Update the Party Name, Description, and link to the **Flyer GIF**.
-* **Menu Tab**: Add new drink or food items and their prices.
-* **Ticker Tab**: Update the scrolling social media messages at the bottom of the screen.
-
----
-
-### 🔒 Remote Control Instructions
-
-Open `maintenance.html` on your phone to access these live commands:
-
-1. **Karaoke Lock**: Tap **"Lock Karaoke"** to stop ads immediately. This is essential for when customers are singing so the lyrics aren't blocked.
-2. **Unlock**: Resumes the automatic ad rotation (every 3 minutes).
-3. **Show Ad Now**: Forces the current flyer and menu to pop up immediately for 25 seconds.
+* **Search**: Search YouTube directly from the remote. Tap play or add to queue.
+* **Queue**: Songs play automatically one after another. View, reorder, or remove upcoming songs.
+* **Playlists**: Paste a YouTube playlist URL to load all songs into the queue.
+* **Paste URL**: Switch to the "Paste URL" tab to play or queue a specific video link.
+* **Playback**: Play/pause, skip, previous, and volume controls sync to the TV in real time.
+* **Idle Screen**: When the queue is empty, the TV shows a photo slideshow with the bar logo.
 
 ---
 
-### 🇹🇭 คำแนะนำสำหรับพนักงาน (Thai Instructions)
+### Ads & Karaoke
 
-* **การอัปเดตข้อมูล**: แก้ไขราคาหรือชื่อปาร์ตี้ผ่านแอป Google Sheets ในมือถือ.
-* **การล็อคคาราโอเกะ**: กดปุ่ม **"Lock Karaoke"** ในหน้า `maintenance.html` เมื่อมีคนเริ่มร้องเพลง เพื่อไม่ให้โฆษณาขึ้นมาบังหน้าจอ.
-* **การแสดงโฆษณา**: กดปุ่ม **"Show Ad Now"** เพื่อแสดงใบปลิวทันที.
+* **Auto-Ads**: Ads (flyer + menu) slide in every 3 minutes for 25 seconds.
+* **Show Flyer Now**: Forces the ad sidebar to appear immediately.
+* **Karaoke Lock**: Hides all ads while customers are singing. Shows a red "KARAOKE LOCKED" indicator.
+* **Unlock**: Resumes automatic ad rotation.
+* **Party Mode**: Switches to a neon pink/blue theme with flickering effects.
 
 ---
 
-### 🚀 Technical Setup
+### Content Management
 
-* **Hosting**: Hosted via GitHub Pages at `spataray.github.io/The-Bar-Signage/`.
-* **Real-time Sync**: Uses **Firebase Realtime Database** to sync the phone and TV instantly.
-* **Images**: All flyers must be **direct links** ending in `.gif`, `.png`, or `.jpg`.
+Ads, menu, and ticker are managed via [Google Sheets](https://docs.google.com/spreadsheets/d/1SCT9dV1cGovk2o3Dd7y1fE3CUY2CR58GQvxgKLITeU4/edit):
 
-Would you like me to help you format a specific "Drink Specials" table for your Google Sheets Menu tab?
+* **Ads Tab**: Party name, description, and flyer image URL.
+* **Menu Tab**: Drink/food items and prices.
+* **Ticker Tab**: Scrolling messages at the bottom of the screen.
+
+Content syncs automatically every 60 seconds.
+
+---
+
+### Setup
+
+* **Hosting**: GitHub Pages at `spataray.github.io/The-Bar-Signage/`.
+* **Real-time Sync**: Firebase Realtime Database syncs remote and TV instantly.
+* **YouTube Search**: Requires **YouTube Data API v3** enabled in [Google Cloud Console](https://console.cloud.google.com/apis/library/youtube.googleapis.com) on the same project as Firebase. The API key is shared.
+
+---
+
+### Staff Instructions (Thai)
+
+* **ค้นหาเพลง**: ค้นหาจากหน้า remote แล้วกดเล่นหรือเพิ่มในคิว
+* **คิวเพลง**: เพลงจะเล่นต่อเนื่องอัตโนมัติ
+* **การล็อคคาราโอเกะ**: กดปุ่ม "Lock Karaoke" เมื่อมีคนเริ่มร้องเพลง เพื่อไม่ให้โฆษณาขึ้นมาบังหน้าจอ
+* **การแสดงโฆษณา**: กดปุ่ม "Show Flyer Now" เพื่อแสดงใบปลิวทันที
+* **Party Mode**: เปลี่ยนธีมเป็นไฟนีออน
