@@ -64,7 +64,8 @@
                 playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1 },
                 events: {
                     onReady: onPlayerReady,
-                    onStateChange: onPlayerStateChange
+                    onStateChange: onPlayerStateChange,
+                    onError: onPlayerError
                 }
             });
         }
@@ -75,6 +76,12 @@
                 player.loadVideoById(pendingVideoId);
                 pendingVideoId = null;
             }
+        }
+
+        function onPlayerError(event) {
+            // 101/150 = embedding disabled, 100 = not found
+            console.warn('Player error:', event.data, '— skipping to next');
+            playNext();
         }
 
         function onPlayerStateChange(event) {

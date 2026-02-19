@@ -524,7 +524,7 @@
 
             try {
                 var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
-                    encodeURIComponent(query) + '&type=video&maxResults=15&key=' + YT_API_KEY;
+                    encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
                 var res = await fetch(url);
                 var data = await res.json();
 
