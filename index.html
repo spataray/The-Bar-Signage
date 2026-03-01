@@ -64,6 +64,7 @@
         var playerReady = false;
         var pendingVideoId = null;
         var isLocked = false;
+        var adCycleShowMenu = false;
 
         // Idle slideshow
         var idlePhotos = [
@@ -74,6 +75,11 @@
         ];
         var idleIndex = 0;
         var idleTimer = null;
+
+        // Ticker state
+        var tickerMessages = [];
+        var tickerIndex = 0;
+        var tickerTimer = null;
 
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
@@ -140,7 +146,7 @@
         function startIdle() {
             var screen = document.getElementById('idle-screen');
             screen.classList.add('active');
-            showAd();
+            showAd(true);
             db.ref('settings/nowPlaying').set(null);
             idleIndex = 0;
             cycleIdlePhoto();
@@ -162,6 +168,23 @@
                 photo.src = idlePhotos[idleIndex];
                 photo.classList.remove('fading');
             }, 1500);
+        }
+
+        function showTickerMessage() {
+            var el = document.getElementById('ticker-text');
+            if (tickerMessages.length === 0) return;
+            // Fade out
+            el.classList.remove('ticker-visible');
+            el.classList.add('ticker-hidden');
+            setTimeout(function() {
+                // Swap text and fade in
+                el.innerText = tickerMessages[tickerIndex];
+                tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+                el.classList.remove('ticker-hidden');
+                el.classList.add('ticker-visible');
+            }, 800);
+            // Schedule next cycle: 800ms fade-out + 4500ms hold + 800ms next fade-out
+            tickerTimer = setTimeout(showTickerMessage, 6100);
         }
 
         // 4. ASYNC CONTENT SYNC
@@ -193,7 +216,10 @@
                 const tickRes = await fetch(URL_TICKER);
                 const tickText = await tickRes.text();
                 const tickRows = tickText.split('\n').map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
-                document.getElementById('ticker-text').innerText = tickRows.join('   •   ');
+                tickerMessages = tickRows;
+                if (!tickerTimer && tickerMessages.length > 0) {
+                    showTickerMessage();
+                }
 
             } catch (e) {
                 console.error("Content Sync Failed:", e);
@@ -252,20 +278,32 @@
         // Force Ad — show flyer immediately for 25 seconds
         db.ref('settings/forceAd').on('value', function(snap) {
             if (snap.val() && !isLocked) {
-                showAd();
+                showAd(true);
             }
         });
 
-        function showAd() {
+        function showAd(forceFlyer) {
+            var sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.add('ad-active');
-            document.getElementById('ad-flyer').style.display = 'block';
+            if (forceFlyer || !adCycleShowMenu) {
+                sidebar.classList.add('show-flyer');
+                sidebar.classList.remove('show-menu');
+            } else {
+                sidebar.classList.add('show-menu');
+                sidebar.classList.remove('show-flyer');
+            }
+            if (!forceFlyer) {
+                adCycleShowMenu = !adCycleShowMenu;
+            }
             clearTimeout(window._adTimer);
             window._adTimer = setTimeout(hideAd, 25000);
         }
 
         function hideAd() {
+            var sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.remove('ad-active');
-            document.getElementById('ad-flyer').style.display = 'none';
+            sidebar.classList.remove('show-flyer');
+            sidebar.classList.remove('show-menu');
         }
 
         // 6. AUTO-AD ROTATION — show ads every 3 minutes for 25 seconds

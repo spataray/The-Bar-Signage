@@ -87,11 +87,24 @@ iframe {
     line-height: 1.5;
 }
 
+/* Sidebar content hidden by default — revealed by .show-flyer / .show-menu */
+#ad-sidebar #ad-title,
+#ad-sidebar #ad-desc,
+#ad-sidebar #ad-flyer { display: none; }
+#ad-sidebar .menu-section { display: none; }
+
+/* Flyer screen */
+#ad-sidebar.show-flyer #ad-title,
+#ad-sidebar.show-flyer #ad-desc,
+#ad-sidebar.show-flyer #ad-flyer { display: block; }
+
+/* Menu screen */
+#ad-sidebar.show-menu .menu-section { display: block; }
+
 #ad-flyer {
     width: 100%;
     border-radius: 12px;
     margin: 15px 0;
-    display: none;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 204, 0, 0.15);
 }
 
@@ -180,12 +193,14 @@ iframe {
     height: 45px;
     display: flex;
     align-items: center;
+    justify-content: center;
     z-index: 100;
 }
 
-.ticker-wrap { 
-    width: 100%; 
-    overflow: hidden; 
+.ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
 }
 
 #ticker-text {
@@ -193,14 +208,12 @@ iframe {
     display: inline-block;
     font-size: 1.3rem;
     color: var(--bar-gold);
-    padding-left: 100%; /* Starts the text off-screen to the right */
-    animation: marquee 25s linear infinite;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
 }
 
-@keyframes marquee {
-    0%   { transform: translate(0, 0); }
-    100% { transform: translate(-100%, 0); }
-}
+#ticker-text.ticker-visible { opacity: 1; }
+#ticker-text.ticker-hidden { opacity: 0; }
 
 /* Status Indicators */
 #status-indicator {
