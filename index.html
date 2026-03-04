@@ -291,7 +291,7 @@
         function showTickerMessage() {
             var el = document.getElementById('ticker-text');
             if (tickerMessages.length === 0) return;
-            // Fade out
+            // Fade out current message
             el.classList.remove('ticker-visible');
             el.classList.add('ticker-hidden');
             setTimeout(function() {
@@ -300,9 +300,14 @@
                 tickerIndex = (tickerIndex + 1) % tickerMessages.length;
                 el.classList.remove('ticker-hidden');
                 el.classList.add('ticker-visible');
+                // Fade out after 15 seconds
+                setTimeout(function() {
+                    el.classList.remove('ticker-visible');
+                    el.classList.add('ticker-hidden');
+                }, 15000);
             }, 800);
-            // Schedule next cycle: 800ms fade-out + 4500ms hold + 800ms next fade-out
-            tickerTimer = setTimeout(showTickerMessage, 6100);
+            // Show next message after 60 seconds
+            tickerTimer = setTimeout(showTickerMessage, 60000);
         }
 
         // Converts Google Drive share links to a directly embeddable image URL
