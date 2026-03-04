@@ -202,29 +202,34 @@
             if (!screen.classList.contains('active')) return;
             var overlay = document.getElementById('idle-overlay');
 
-            // Wait for layout to settle before reading dimensions
-            requestAnimationFrame(function() {
-                var screenW = screen.offsetWidth || window.innerWidth * 0.7;
+            // Give browser 150ms to render idle screen before reading layout
+            overlayTimer = setTimeout(function() {
+                if (!document.getElementById('idle-screen').classList.contains('active')) return;
+
+                var screenW = screen.offsetWidth || Math.round(window.innerWidth * 0.7);
                 var screenH = screen.offsetHeight || window.innerHeight;
-                var overlayW = overlay.offsetWidth || 300;
-                var overlayH = overlay.offsetHeight || 120;
+                var overlayW = overlay.offsetWidth || 350;
+                var overlayH = overlay.offsetHeight || 130;
 
                 var maxX = Math.max(screenW - overlayW - 40, 20);
                 var maxY = Math.max(screenH - overlayH - 80, 20);
 
-                // Move while invisible
+                // Position while invisible
                 overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
                 overlay.style.top  = (Math.floor(Math.random() * maxY) + 20) + 'px';
 
-                // Fade in on the next frame so transition fires
-                requestAnimationFrame(function() {
-                    overlay.style.opacity = '1';
-                    overlayTimer = setTimeout(function() {
-                        overlay.style.opacity = '0';
-                        overlayTimer = setTimeout(animateOverlay, 1400);
-                    }, 5000);
-                });
-            });
+                // Force reflow so position is committed before opacity transition starts
+                overlay.getBoundingClientRect();
+
+                // Fade in
+                overlay.style.opacity = '1';
+
+                // Hold 5s, fade out, then repeat
+                overlayTimer = setTimeout(function() {
+                    overlay.style.opacity = '0';
+                    overlayTimer = setTimeout(animateOverlay, 1400);
+                }, 5000);
+            }, 150);
         }
 
         function cycleIdlePhoto() {

@@ -159,6 +159,7 @@ iframe {
 
 #idle-overlay {
     position: absolute;
+    width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
