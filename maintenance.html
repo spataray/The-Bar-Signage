@@ -414,6 +414,8 @@
         <button class="btn btn-party" onclick="setPartyMode(true)">&#10024; Party Mode: ON</button>
         <button class="btn btn-unlock" onclick="setPartyMode(false)">Party Mode: OFF</button>
         <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+        <button class="btn" style="background:#6f42c1; color:white;" onclick="startSlideshow()">&#128247; Start Slideshow</button>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
         <button class="btn btn-refresh" onclick="remoteRefresh()">&#128260; Refresh TV Browser</button>
     </div>
 
@@ -749,6 +751,11 @@
         function triggerAd() {
             db.ref('settings/forceAd').set(Date.now());
             showStatus('Showing flyer now');
+        }
+
+        function startSlideshow() {
+            db.ref('settings/playerCommand').set({ action: 'slideshow', ts: Date.now() });
+            showStatus('Slideshow started');
         }
 
         function remoteRefresh() {

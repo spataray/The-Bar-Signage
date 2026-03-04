@@ -276,6 +276,7 @@
                 case 'next': playNext(); break;
                 case 'prev': player.seekTo(0); player.playVideo(); break;
                 case 'volume': player.setVolume(cmd.value); break;
+                case 'slideshow': player.stopVideo(); startIdle(); break;
             }
             db.ref('settings/playerCommand').set(null);
         });
