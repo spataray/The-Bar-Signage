@@ -15,6 +15,7 @@
             <div id="player"></div>
             <div id="idle-screen">
                 <img id="idle-photo" src="images/TAStation-1.JPG" alt="">
+                <video id="idle-video" muted playsinline preload="auto"></video>
                 <div id="idle-overlay">
                     <div id="idle-logo">T.A. STATION</div>
                     <div id="idle-tagline">Honolulu, HI</div>
@@ -239,23 +240,26 @@
         }
 
         function startIdle() {
-            clearInterval(idleTimer);
+            clearTimeout(idleTimer);
             idleTimer = null;
             var screen = document.getElementById('idle-screen');
             screen.classList.add('active');
             showAd(true);
             db.ref('settings/nowPlaying').set(null);
             shuffleIdlePhotos();
-            cycleIdlePhoto();
-            idleTimer = setInterval(cycleIdlePhoto, 8000);
+            showIdleItem();
             animateOverlay();
         }
 
         function stopIdle() {
             var screen = document.getElementById('idle-screen');
             screen.classList.remove('active');
-            clearInterval(idleTimer);
+            clearTimeout(idleTimer);
             idleTimer = null;
+            var vid = document.getElementById('idle-video');
+            vid.onended = null;
+            vid.pause();
+            vid.src = '';
             clearTimeout(overlayTimer);
             overlayTimer = null;
             document.getElementById('idle-overlay').style.opacity = '0';
@@ -296,14 +300,48 @@
             }, 150);
         }
 
-        function cycleIdlePhoto() {
+        function showIdleItem() {
+            var src = idleShuffled[idleIndex];
+            var isVideo = /\.mp4$/i.test(src);
             var photo = document.getElementById('idle-photo');
+            var vid = document.getElementById('idle-video');
+
+            if (isVideo) {
+                photo.style.display = 'none';
+                photo.classList.remove('fading');
+                vid.style.display = 'block';
+                vid.classList.remove('fading');
+                vid.src = src;
+                vid.load();
+                vid.play();
+                vid.onended = function() {
+                    clearTimeout(idleTimer);
+                    advanceIdleItem();
+                };
+                idleTimer = setTimeout(advanceIdleItem, 120000); // 2 min max fallback
+            } else {
+                vid.style.display = 'none';
+                vid.classList.remove('fading');
+                vid.onended = null;
+                vid.pause();
+                photo.style.display = 'block';
+                photo.classList.remove('fading');
+                photo.src = src;
+                idleTimer = setTimeout(advanceIdleItem, 8000);
+            }
+        }
+
+        function advanceIdleItem() {
+            clearTimeout(idleTimer);
+            idleTimer = null;
+            var photo = document.getElementById('idle-photo');
+            var vid = document.getElementById('idle-video');
             photo.classList.add('fading');
+            vid.classList.add('fading');
             setTimeout(function() {
                 idleIndex++;
                 if (idleIndex >= idleShuffled.length) shuffleIdlePhotos();
-                photo.src = idleShuffled[idleIndex];
-                photo.classList.remove('fading');
+                showIdleItem();
             }, 1500);
         }
 
