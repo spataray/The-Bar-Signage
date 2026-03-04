@@ -139,23 +139,22 @@
         ];
 
         function buildTickerMessages(sheetMessages) {
-            // Shuffle fun facts and weave them in every 3 sheet messages
+            // Shuffle fun facts
             var facts = funFacts.slice();
             for (var i = facts.length - 1; i > 0; i--) {
                 var j = Math.floor(Math.random() * (i + 1));
                 var t = facts[i]; facts[i] = facts[j]; facts[j] = t;
             }
             if (sheetMessages.length === 0) return facts;
+            // Alternate: fact, sheet message, fact, sheet message...
             var mixed = [];
             var fi = 0;
-            for (var si = 0; si < sheetMessages.length; si++) {
-                mixed.push(sheetMessages[si]);
-                if ((si + 1) % 3 === 0 && fi < facts.length) {
-                    mixed.push(facts[fi++]);
-                }
+            var si = 0;
+            // Start with a fun fact so one appears immediately
+            while (fi < facts.length || si < sheetMessages.length) {
+                if (fi < facts.length) mixed.push(facts[fi++]);
+                if (si < sheetMessages.length) mixed.push(sheetMessages[si++]);
             }
-            // Append any remaining facts
-            while (fi < facts.length) mixed.push(facts[fi++]);
             return mixed;
         }
 
