@@ -172,6 +172,8 @@
         }
 
         function startIdle() {
+            clearInterval(idleTimer);
+            idleTimer = null;
             var screen = document.getElementById('idle-screen');
             screen.classList.add('active');
             showAd(true);
