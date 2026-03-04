@@ -96,6 +96,7 @@
         var idleShuffled = [];
         var idleIndex = 0;
         var idleTimer = null;
+        var overlayTimer = null;
 
         function shuffleIdlePhotos() {
             idleShuffled = idlePhotos.slice();
@@ -183,6 +184,7 @@
             shuffleIdlePhotos();
             cycleIdlePhoto();
             idleTimer = setInterval(cycleIdlePhoto, 8000);
+            animateOverlay();
         }
 
         function stopIdle() {
@@ -190,6 +192,24 @@
             screen.classList.remove('active');
             clearInterval(idleTimer);
             idleTimer = null;
+            clearTimeout(overlayTimer);
+            overlayTimer = null;
+            document.getElementById('idle-overlay').style.opacity = '0';
+        }
+
+        function animateOverlay() {
+            var screen = document.getElementById('idle-screen');
+            if (!screen.classList.contains('active')) return;
+            var overlay = document.getElementById('idle-overlay');
+            var maxX = Math.max(screen.offsetWidth - overlay.offsetWidth - 40, 0);
+            var maxY = Math.max(screen.offsetHeight - overlay.offsetHeight - 80, 0);
+            overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
+            overlay.style.top  = (Math.floor(Math.random() * maxY) + 20) + 'px';
+            overlay.style.opacity = '1';
+            overlayTimer = setTimeout(function() {
+                overlay.style.opacity = '0';
+                overlayTimer = setTimeout(animateOverlay, 1400);
+            }, 5000);
         }
 
         function cycleIdlePhoto() {

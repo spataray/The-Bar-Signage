@@ -159,12 +159,14 @@ iframe {
 
 #idle-overlay {
     position: absolute;
-    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     text-align: center;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    pointer-events: none;
+    padding: 20px;
 }
 
 #idle-logo {
@@ -190,7 +192,7 @@ iframe {
     width: 100%;
     background: rgba(0, 0, 0, 0.85);
     border-top: 2px solid var(--bar-gold);
-    height: 45px;
+    height: 60px;
     display: flex;
     align-items: center;
     z-index: 100;
@@ -206,19 +208,19 @@ iframe {
 }
 
 #clock-display {
-    font-size: 1.3rem;
+    font-size: 1.9rem;
     font-weight: 900;
     color: var(--bar-gold);
     letter-spacing: 2px;
     white-space: nowrap;
-    min-width: 105px;
+    min-width: 130px;
     text-align: right;
 }
 
 #weather-display {
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     white-space: nowrap;
-    min-width: 100px;
+    min-width: 120px;
     opacity: 0.9;
 }
 
