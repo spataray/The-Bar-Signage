@@ -201,15 +201,30 @@
             var screen = document.getElementById('idle-screen');
             if (!screen.classList.contains('active')) return;
             var overlay = document.getElementById('idle-overlay');
-            var maxX = Math.max(screen.offsetWidth - overlay.offsetWidth - 40, 0);
-            var maxY = Math.max(screen.offsetHeight - overlay.offsetHeight - 80, 0);
-            overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
-            overlay.style.top  = (Math.floor(Math.random() * maxY) + 20) + 'px';
-            overlay.style.opacity = '1';
-            overlayTimer = setTimeout(function() {
-                overlay.style.opacity = '0';
-                overlayTimer = setTimeout(animateOverlay, 1400);
-            }, 5000);
+
+            // Wait for layout to settle before reading dimensions
+            requestAnimationFrame(function() {
+                var screenW = screen.offsetWidth || window.innerWidth * 0.7;
+                var screenH = screen.offsetHeight || window.innerHeight;
+                var overlayW = overlay.offsetWidth || 300;
+                var overlayH = overlay.offsetHeight || 120;
+
+                var maxX = Math.max(screenW - overlayW - 40, 20);
+                var maxY = Math.max(screenH - overlayH - 80, 20);
+
+                // Move while invisible
+                overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
+                overlay.style.top  = (Math.floor(Math.random() * maxY) + 20) + 'px';
+
+                // Fade in on the next frame so transition fires
+                requestAnimationFrame(function() {
+                    overlay.style.opacity = '1';
+                    overlayTimer = setTimeout(function() {
+                        overlay.style.opacity = '0';
+                        overlayTimer = setTimeout(animateOverlay, 1400);
+                    }, 5000);
+                });
+            });
         }
 
         function cycleIdlePhoto() {
