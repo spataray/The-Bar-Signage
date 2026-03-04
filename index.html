@@ -69,12 +69,40 @@
         // Idle slideshow
         var idlePhotos = [
             'images/TAStation-1.JPG',
+            'images/TAStation-2.JPG',
+            'images/TAStation-3.JPG',
+            'images/TAStation-4.JPG',
             'images/TAStation-5.JPG',
+            'images/TAStation-6.JPG',
+            'images/TAStation-7.JPG',
+            'images/TAStation-8.JPG',
+            'images/TAStation-9.JPG',
             'images/TAStation-10.JPG',
-            'images/TAStation-15.JPG'
+            'images/TAStation-11.JPG',
+            'images/TAStation-12.JPG',
+            'images/TAStation-13.JPG',
+            'images/TAStation-14.JPG',
+            'images/TAStation-15.JPG',
+            'images/TAStation-16.JPG',
+            'images/TAStation-17.JPG',
+            'images/TAStation-18.JPG',
+            'images/TAStation-19.JPG',
+            'images/TAStation-20.JPG',
+            'images/TAStation-21.JPG',
+            'images/TAStation-22.JPG'
         ];
+        var idleShuffled = [];
         var idleIndex = 0;
         var idleTimer = null;
+
+        function shuffleIdlePhotos() {
+            idleShuffled = idlePhotos.slice();
+            for (var i = idleShuffled.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = idleShuffled[i]; idleShuffled[i] = idleShuffled[j]; idleShuffled[j] = tmp;
+            }
+            idleIndex = 0;
+        }
 
         // Ticker state
         var tickerMessages = [];
@@ -148,7 +176,7 @@
             screen.classList.add('active');
             showAd(true);
             db.ref('settings/nowPlaying').set(null);
-            idleIndex = 0;
+            shuffleIdlePhotos();
             cycleIdlePhoto();
             idleTimer = setInterval(cycleIdlePhoto, 8000);
         }
@@ -164,8 +192,9 @@
             var photo = document.getElementById('idle-photo');
             photo.classList.add('fading');
             setTimeout(function() {
-                idleIndex = (idleIndex + 1) % idlePhotos.length;
-                photo.src = idlePhotos[idleIndex];
+                idleIndex++;
+                if (idleIndex >= idleShuffled.length) shuffleIdlePhotos();
+                photo.src = idleShuffled[idleIndex];
                 photo.classList.remove('fading');
             }, 1500);
         }
