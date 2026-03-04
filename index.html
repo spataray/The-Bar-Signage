@@ -400,6 +400,9 @@
                 case 'prev': player.seekTo(0); player.playVideo(); break;
                 case 'volume': player.setVolume(cmd.value); break;
                 case 'slideshow': player.stopVideo(); startIdle(); break;
+                case 'previewLastCall': previewLastCall(); break;
+                case 'previewClosed': previewClosed(); break;
+                case 'resetLastCall': resetLastCall(); break;
             }
             db.ref('settings/playerCommand').set(null);
         });
@@ -506,6 +509,35 @@
         }
         syncWeather();
         setInterval(syncWeather, 600000); // every 10 minutes
+
+        function previewLastCall() {
+            var screen = document.getElementById('lastcall-screen');
+            document.getElementById('phase-lastcall').classList.add('active');
+            document.getElementById('phase-closed').classList.remove('active');
+            document.getElementById('lc-countdown').textContent = '15:00';
+            screen.classList.add('active');
+            lcLastCallActive = true;
+            lcClosedActive = false;
+        }
+
+        function previewClosed() {
+            var screen = document.getElementById('lastcall-screen');
+            var msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
+            document.getElementById('lc-goodbye').textContent = msg;
+            document.getElementById('phase-lastcall').classList.remove('active');
+            document.getElementById('phase-closed').classList.add('active');
+            screen.classList.add('active');
+            lcClosedActive = true;
+            lcLastCallActive = false;
+            if (player && playerReady) player.stopVideo();
+            stopIdle();
+        }
+
+        function resetLastCall() {
+            document.getElementById('lastcall-screen').classList.remove('active');
+            lcLastCallActive = false;
+            lcClosedActive = false;
+        }
 
         // 10. LAST CALL / CLOSED SEQUENCE
         var goodbyeMessages = [
