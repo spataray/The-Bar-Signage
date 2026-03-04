@@ -193,14 +193,33 @@ iframe {
     height: 45px;
     display: flex;
     align-items: center;
-    justify-content: center;
     z-index: 100;
+    padding: 0 15px;
+    box-sizing: border-box;
 }
 
 .ticker-wrap {
-    width: 100%;
+    flex: 1;
     overflow: hidden;
     text-align: center;
+    padding: 0 10px;
+}
+
+#clock-display {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--bar-gold);
+    letter-spacing: 2px;
+    white-space: nowrap;
+    min-width: 105px;
+    text-align: right;
+}
+
+#weather-display {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    min-width: 100px;
+    opacity: 0.9;
 }
 
 #ticker-text {
