@@ -30,6 +30,24 @@
         </div>
     </div>
 
+    <!-- Last Call / Closed Overlay -->
+    <div id="lastcall-screen">
+        <div id="lastcall-inner">
+            <div id="phase-lastcall" class="lc-phase">
+                <div class="lc-bell">🔔</div>
+                <div class="lc-title">LAST CALL</div>
+                <div class="lc-countdown" id="lc-countdown">15:00</div>
+                <div class="lc-sub">Bar closes at 2:00 AM &bull; Get your last orders in!</div>
+            </div>
+            <div id="phase-closed" class="lc-phase">
+                <div class="lc-title">MAHALO!</div>
+                <div class="lc-closed-sub">We Are Now Closed</div>
+                <div class="lc-goodbye" id="lc-goodbye"></div>
+                <div class="lc-sub">T.A. Station &bull; Honolulu, HI 🌺</div>
+            </div>
+        </div>
+    </div>
+
     <div id="ticker-container">
         <div id="weather-display"></div>
         <div class="ticker-wrap">
@@ -488,6 +506,75 @@
         }
         syncWeather();
         setInterval(syncWeather, 600000); // every 10 minutes
+
+        // 10. LAST CALL / CLOSED SEQUENCE
+        var goodbyeMessages = [
+            "Thank you for an amazing night! Drive safe and aloha! 🤙",
+            "Khob khun mak kha! You were wonderful guests — come back soon! 🇹🇭",
+            "Mahalo for making tonight unforgettable! Safe travels home! 🌺",
+            "You were the best guests ever! Aloha until next time! 🌴",
+            "Sawadee kha! Thank you for spending your night with us! 🙏",
+            "Thanks for partying with us tonight! See you next time! 🎉",
+            "Aloha! You were amazing tonight — sleep well! 🌙",
+            "Mahalo nui loa! We'll miss you already — come back soon! 💛",
+            "What a night! Thank you for being here — safe ride home! 🚗",
+            "Khob khun! Tonight was wonderful, thanks to each and every one of you! 🇹🇭🌺"
+        ];
+
+        var lcLastCallActive = false;
+        var lcClosedActive = false;
+
+        function checkLastCallTime() {
+            var now = new Date();
+            var hawaii = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
+            var h = hawaii.getHours();
+            var m = hawaii.getMinutes();
+            var s = hawaii.getSeconds();
+            var totalSec = h * 3600 + m * 60 + s;
+
+            var LAST_CALL = 1 * 3600 + 45 * 60; // 1:45 AM
+            var CLOSING   = 2 * 3600;            // 2:00 AM
+            var RESET     = 3 * 3600;            // 3:00 AM
+
+            var screen = document.getElementById('lastcall-screen');
+
+            if (totalSec >= LAST_CALL && totalSec < CLOSING) {
+                // ── Last Call phase ──
+                if (!lcLastCallActive) {
+                    lcLastCallActive = true;
+                    lcClosedActive = false;
+                    document.getElementById('phase-lastcall').classList.add('active');
+                    document.getElementById('phase-closed').classList.remove('active');
+                    screen.classList.add('active');
+                }
+                var remaining = CLOSING - totalSec;
+                var mins = Math.floor(remaining / 60);
+                var secs = remaining % 60;
+                document.getElementById('lc-countdown').textContent =
+                    mins + ':' + (secs < 10 ? '0' : '') + secs;
+
+            } else if (totalSec >= CLOSING && totalSec < RESET) {
+                // ── Closed phase ──
+                if (!lcClosedActive) {
+                    lcClosedActive = true;
+                    lcLastCallActive = false;
+                    var msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
+                    document.getElementById('lc-goodbye').textContent = msg;
+                    document.getElementById('phase-lastcall').classList.remove('active');
+                    document.getElementById('phase-closed').classList.add('active');
+                    screen.classList.add('active');
+                    if (player && playerReady) player.stopVideo();
+                    stopIdle();
+                }
+
+            } else if (lcLastCallActive || lcClosedActive) {
+                // ── 3 AM reset ──
+                location.reload();
+            }
+        }
+
+        setInterval(checkLastCallTime, 1000);
+        checkLastCallTime();
     </script>
 
 </body>

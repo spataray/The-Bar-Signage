@@ -283,3 +283,82 @@ body.party-mode #ticker-container {
     0% { box-shadow: 0 0 5px #00f2ff; }
     100% { box-shadow: 0 0 20px #ff00ff; }
 }
+
+/* Last Call / Closed Overlay */
+#lastcall-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0, 0, 0, 0.96);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#lastcall-screen.active {
+    display: flex;
+}
+
+#lastcall-inner {
+    padding: 40px;
+}
+
+.lc-phase { display: none; }
+.lc-phase.active { display: block; }
+
+.lc-bell {
+    font-size: 5rem;
+    animation: bell-shake 1s ease-in-out infinite;
+}
+
+@keyframes bell-shake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-15deg); }
+    40% { transform: rotate(15deg); }
+    60% { transform: rotate(-10deg); }
+    80% { transform: rotate(10deg); }
+}
+
+.lc-title {
+    font-size: 7rem;
+    font-weight: 900;
+    color: var(--bar-gold);
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    text-shadow: 0 0 60px rgba(255, 204, 0, 0.6), 0 0 120px rgba(255, 204, 0, 0.3);
+    margin: 10px 0;
+}
+
+.lc-countdown {
+    font-size: 9rem;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 6px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 40px rgba(255, 100, 100, 0.8);
+    margin: 20px 0;
+}
+
+.lc-closed-sub {
+    font-size: 3rem;
+    color: #ccc;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin: 10px 0 30px;
+}
+
+.lc-goodbye {
+    font-size: 2rem;
+    color: var(--bar-gold);
+    max-width: 800px;
+    margin: 20px auto;
+    line-height: 1.5;
+}
+
+.lc-sub {
+    font-size: 1.4rem;
+    opacity: 0.5;
+    letter-spacing: 3px;
+    margin-top: 30px;
+}
