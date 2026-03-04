@@ -112,6 +112,51 @@
         var tickerIndex = 0;
         var tickerTimer = null;
 
+        // Fun facts mixed into the ticker
+        var funFacts = [
+            "🇹🇭 Fun Fact: Thailand is the only Southeast Asian country never colonized by a European power!",
+            "🇹🇭 Fun Fact: The full official name of Bangkok is 169 characters long — the longest city name in the world!",
+            "🇹🇭 Fun Fact: In Thailand it's illegal to leave your house without underwear on. You've been warned. 🩲",
+            "🇹🇭 Fun Fact: Thailand has over 40,000 Buddhist temples — that's more 7-Elevens than anywhere else too!",
+            "🇹🇭 Fun Fact: The world's smallest mammal, the bumblebee bat, lives in Thailand. It weighs less than a penny!",
+            "🇹🇭 Fun Fact: Muay Thai dates back over 2,000 years. So yes, those kicks are ancient. 🥊",
+            "🇹🇭 Fun Fact: In Thailand, pointing your feet at someone is considered very rude. Keep those toes to yourself!",
+            "🇹🇭 Fun Fact: Thailand is the world's largest exporter of rice. Basically, they invented dinner.",
+            "🇹🇭 Fun Fact: Thailand has 3 seasons — Hot, Very Hot, and Extremely Hot. Pack accordingly. ☀️",
+            "🇹🇭 Fun Fact: Thailand's national animal is the elephant 🐘 — and they have a holiday just for them!",
+            "🌺 Fun Fact: Hawaii is the only US state that grows coffee commercially. Kona coffee > everything.",
+            "🌺 Fun Fact: Hawaii moves 4 inches closer to Japan every year. Slow and steady wins the race!",
+            "🌺 Fun Fact: The Hawaiian alphabet has only 13 letters. Spelling bees are way easier there. 🐝",
+            "🌺 Fun Fact: Hawaii is the only US state with a royal palace — Iolani Palace in Honolulu!",
+            "🌺 Fun Fact: Hawaiians eat more Spam per capita than any other state. SPAM musubi forever! 🍱",
+            "🌺 Fun Fact: Hawaii is the only US state located entirely in the tropics. Lucky us! 🌴",
+            "🌺 Fun Fact: There are zero native land snakes in Hawaii. Sleep easy tonight. 😴",
+            "🌺 Fun Fact: Hawaii was the 50th and last state admitted to the US — in 1959. Better late than never!",
+            "🌺 Fun Fact: The word 'Aloha' means hello, goodbye, love, and peace. Most efficient word ever.",
+            "🌺 Fun Fact: Hawaii has more endangered species per square mile than anywhere else on Earth. 🐢"
+        ];
+
+        function buildTickerMessages(sheetMessages) {
+            // Shuffle fun facts and weave them in every 3 sheet messages
+            var facts = funFacts.slice();
+            for (var i = facts.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = facts[i]; facts[i] = facts[j]; facts[j] = t;
+            }
+            if (sheetMessages.length === 0) return facts;
+            var mixed = [];
+            var fi = 0;
+            for (var si = 0; si < sheetMessages.length; si++) {
+                mixed.push(sheetMessages[si]);
+                if ((si + 1) % 3 === 0 && fi < facts.length) {
+                    mixed.push(facts[fi++]);
+                }
+            }
+            // Append any remaining facts
+            while (fi < facts.length) mixed.push(facts[fi++]);
+            return mixed;
+        }
+
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
@@ -299,7 +344,7 @@
                 const tickRes = await fetch(URL_TICKER);
                 const tickText = await tickRes.text();
                 const tickRows = tickText.split('\n').map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
-                tickerMessages = tickRows;
+                tickerMessages = buildTickerMessages(tickRows);
                 if (!tickerTimer && tickerMessages.length > 0) {
                     showTickerMessage();
                 }
