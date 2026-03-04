@@ -510,33 +510,43 @@
         syncWeather();
         setInterval(syncWeather, 600000); // every 10 minutes
 
+        function showLastCallScreen() {
+            if (player && playerReady) player.stopVideo();
+            document.getElementById('player').style.visibility = 'hidden';
+            startIdle();
+        }
+
+        function hideLastCallScreen() {
+            document.getElementById('lastcall-screen').classList.remove('active');
+            document.getElementById('player').style.visibility = 'visible';
+            stopIdle();
+            lcLastCallActive = false;
+            lcClosedActive = false;
+        }
+
         function previewLastCall() {
-            var screen = document.getElementById('lastcall-screen');
+            showLastCallScreen();
             document.getElementById('phase-lastcall').classList.add('active');
             document.getElementById('phase-closed').classList.remove('active');
             document.getElementById('lc-countdown').textContent = '15:00';
-            screen.classList.add('active');
+            document.getElementById('lastcall-screen').classList.add('active');
             lcLastCallActive = true;
             lcClosedActive = false;
         }
 
         function previewClosed() {
-            var screen = document.getElementById('lastcall-screen');
+            showLastCallScreen();
             var msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
             document.getElementById('lc-goodbye').textContent = msg;
             document.getElementById('phase-lastcall').classList.remove('active');
             document.getElementById('phase-closed').classList.add('active');
-            screen.classList.add('active');
+            document.getElementById('lastcall-screen').classList.add('active');
             lcClosedActive = true;
             lcLastCallActive = false;
-            if (player && playerReady) player.stopVideo();
-            stopIdle();
         }
 
         function resetLastCall() {
-            document.getElementById('lastcall-screen').classList.remove('active');
-            lcLastCallActive = false;
-            lcClosedActive = false;
+            hideLastCallScreen();
         }
 
         // 10. LAST CALL / CLOSED SEQUENCE
@@ -575,6 +585,7 @@
                 if (!lcLastCallActive) {
                     lcLastCallActive = true;
                     lcClosedActive = false;
+                    showLastCallScreen();
                     document.getElementById('phase-lastcall').classList.add('active');
                     document.getElementById('phase-closed').classList.remove('active');
                     screen.classList.add('active');
@@ -590,13 +601,12 @@
                 if (!lcClosedActive) {
                     lcClosedActive = true;
                     lcLastCallActive = false;
+                    showLastCallScreen();
                     var msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
                     document.getElementById('lc-goodbye').textContent = msg;
                     document.getElementById('phase-lastcall').classList.remove('active');
                     document.getElementById('phase-closed').classList.add('active');
                     screen.classList.add('active');
-                    if (player && playerReady) player.stopVideo();
-                    stopIdle();
                 }
 
             } else if (lcLastCallActive || lcClosedActive) {

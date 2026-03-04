@@ -290,7 +290,7 @@ body.party-mode #ticker-container {
     position: fixed;
     inset: 0;
     z-index: 500;
-    background: rgba(0, 0, 0, 0.96);
+    background: rgba(0, 0, 0, 0.78);
     align-items: center;
     justify-content: center;
     text-align: center;
