@@ -87,6 +87,11 @@
         var isLocked = false;
         var adCycleShowMenu = false;
 
+        // Auto music mode — YouTube Music radio playlists
+        var AUTO_PLAYLISTS = ['RDAMVMDy_eP-mqWow', 'RDAMVM77pb0WXAz-Q'];
+        var autoPlaylistIndex = 0;
+        var autoMode = false;
+
         // Idle slideshow
         var idlePhotos = [
             'images/TAStation-1.JPG',
@@ -225,6 +230,12 @@
             }
         }
 
+        function startAutoPlaylist() {
+            stopIdle();
+            player.loadPlaylist({ list: AUTO_PLAYLISTS[autoPlaylistIndex], listType: 'playlist' });
+            if (autoPlaylistIndex < AUTO_PLAYLISTS.length - 1) autoPlaylistIndex++;
+        }
+
         function playNext() {
             db.ref('settings/queue').once('value', function(snap) {
                 var queue = snap.val() || [];
@@ -233,6 +244,8 @@
                     var remaining = queue.slice(1);
                     db.ref('settings/queue').set(remaining);
                     player.loadVideoById(next.id);
+                } else if (autoMode) {
+                    startAutoPlaylist();
                 } else {
                     startIdle();
                 }
@@ -443,6 +456,14 @@
                 case 'resetLastCall': resetLastCall(); break;
             }
             db.ref('settings/playerCommand').set(null);
+        });
+
+        db.ref('settings/autoMode').on('value', function(snap) {
+            autoMode = !!snap.val();
+            if (autoMode) {
+                autoPlaylistIndex = 0;
+                playNext();
+            }
         });
 
         db.ref('settings/partyMode').on('value', function(snap) {

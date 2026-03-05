@@ -74,6 +74,7 @@
         .btn-unlock { background-color: #555; color: white; }
         .btn-ad { background-color: var(--bar-gold); color: black; }
         .btn-party { background: linear-gradient(45deg, #ff00ff, #00f2ff); color: white; }
+        .btn-auto { background: linear-gradient(45deg, #1db954, #1565c0); color: white; }
         .btn-refresh { background-color: #6c757d; color: white; }
         .btn-sheet { background-color: var(--bar-green); color: white; text-decoration: none; display: block; text-align: center; line-height: 1.4; }
 
@@ -439,6 +440,9 @@
     <!-- SYSTEM TOOLS -->
     <div class="card">
         <h3>&#128736;&#65039; SYSTEM TOOLS</h3>
+        <button class="btn btn-auto" onclick="setAutoMode(true)">&#127925; Auto Music: ON</button>
+        <button class="btn btn-unlock" onclick="setAutoMode(false)">Auto Music: OFF</button>
+        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
         <button class="btn btn-party" onclick="setPartyMode(true)">&#10024; Party Mode: ON</button>
         <button class="btn btn-unlock" onclick="setPartyMode(false)">Party Mode: OFF</button>
         <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
@@ -775,6 +779,11 @@
         // ── Existing Controls ──
         function setLock(status) {
             db.ref('settings/karaokeLock').set(status);
+        }
+
+        function setAutoMode(status) {
+            db.ref('settings/autoMode').set(status);
+            showStatus(status ? 'Auto Music ON' : 'Auto Music OFF');
         }
 
         function setPartyMode(status) {
