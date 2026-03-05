@@ -78,6 +78,45 @@
         .btn-refresh { background-color: #6c757d; color: white; }
         .btn-sheet { background-color: var(--bar-green); color: white; text-decoration: none; display: block; text-align: center; line-height: 1.4; }
 
+        /* Toggle switches */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px solid #333;
+        }
+        .toggle-row:last-of-type { border-bottom: none; }
+        .toggle-label { font-size: 0.95rem; font-weight: 600; }
+        .toggle-desc { font-size: 0.75rem; opacity: 0.5; margin-top: 2px; }
+        .toggle-switch { position: relative; width: 52px; height: 28px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: #444;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 3px;
+            top: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: var(--bar-gold); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(24px); }
+
+        /* Compact button grid */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-sm { padding: 12px 8px; font-size: 0.8rem; }
+
         .lang-toggle {
             background: none;
             border: 1px solid var(--bar-gold);
@@ -370,7 +409,7 @@
 <body>
 
     <h1>T.A. STATION</h1>
-    <div class="subtitle">Honolulu, HI &bull; Staff Remote <span style="opacity:0.35; font-size:0.75em;">v56</span></div>
+    <div class="subtitle">Honolulu, HI &bull; Staff Remote <span style="opacity:0.35; font-size:0.75em;">v57</span></div>
 
     <!-- NOW PLAYING -->
     <div class="card" id="now-playing-card">
@@ -427,32 +466,62 @@
         <button class="btn" style="background:#444; color:white; margin-top:10px;" onclick="clearQueue()">&#128465;&#65039; Clear Queue</button>
     </div>
 
-    <!-- KARAOKE & ADS -->
+    <!-- QUICK CONTROLS -->
     <div class="card">
-        <h3>&#127908; KARAOKE & ADS</h3>
-        <button class="btn btn-lock" onclick="setLock(true)">&#128274; Lock Karaoke (Hide Ads)</button>
-        <button class="btn btn-unlock" onclick="setLock(false)">&#128275; Unlock Auto-Ads</button>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+        <h3>&#127918; QUICK CONTROLS</h3>
+
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#127925; Auto Music</div>
+                <div class="toggle-desc">YouTube radio when queue is empty</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-auto" onchange="setAutoMode(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#127908; Karaoke Lock</div>
+                <div class="toggle-desc">Hides ads while customers sing</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-karaoke" onchange="setLock(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#10024; Party Mode</div>
+                <div class="toggle-desc">Flashing neon theme on TV</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-party" onchange="setPartyMode(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
         <div id="status-msg"></div>
     </div>
 
     <!-- SYSTEM TOOLS -->
     <div class="card">
-        <h3>&#128736;&#65039; SYSTEM TOOLS</h3>
-        <button class="btn btn-auto" onclick="setAutoMode(true)">&#127925; Auto Music: ON</button>
-        <button class="btn btn-unlock" onclick="setAutoMode(false)">Auto Music: OFF</button>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-        <button class="btn btn-party" onclick="setPartyMode(true)">&#10024; Party Mode: ON</button>
-        <button class="btn btn-unlock" onclick="setPartyMode(false)">Party Mode: OFF</button>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-        <button class="btn" style="background:#6f42c1; color:white;" onclick="startSlideshow()">&#128247; Start Slideshow</button>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-        <button class="btn" style="background:#c8860a; color:white;" onclick="sendCommand('previewLastCall')">&#128276; Preview Last Call Screen</button>
-        <button class="btn" style="background:#222; color:#aaa; border:1px solid #555;" onclick="sendCommand('previewClosed')">&#127981; Preview Closed Screen</button>
-        <button class="btn" style="background:#1a3a1a; color:#6fcf6f;" onclick="sendCommand('resetLastCall')">&#10004; Reset Last Call Screen</button>
-        <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-        <button class="btn btn-refresh" onclick="remoteRefresh()">&#128260; Refresh TV Browser</button>
+        <h3>&#128736;&#65039; SYSTEM</h3>
+        <div class="btn-grid">
+            <button class="btn btn-sm" style="background:#6f42c1; color:white;" onclick="startSlideshow()">&#128247; Slideshow</button>
+            <button class="btn btn-sm btn-refresh" onclick="remoteRefresh()">&#128260; Refresh TV</button>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+        <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Last Call</div>
+        <div class="btn-grid">
+            <button class="btn btn-sm" style="background:#c8860a; color:white;" onclick="sendCommand('previewLastCall')">&#128276; Preview</button>
+            <button class="btn btn-sm" style="background:#222; color:#aaa; border:1px solid #555;" onclick="sendCommand('previewClosed')">&#127981; Closed</button>
+        </div>
+        <button class="btn" style="background:#1a3a1a; color:#6fcf6f; margin-top:8px;" onclick="sendCommand('resetLastCall')">&#10004; Reset Last Call</button>
     </div>
 
     <!-- GOOGLE SHEETS -->
@@ -468,21 +537,29 @@
         <div id="en-instr" class="instr active">
             <strong>Controls:</strong>
             <ul>
-                <li><b>Search:</b> Find songs and tap play or add to queue.</li>
-                <li><b>Queue:</b> Songs play automatically one after another.</li>
-                <li><b>Lock:</b> Use when customers are singing.</li>
-                <li><b>Party Mode:</b> Flashing neon theme.</li>
-                <li><b>Refresh:</b> Fixes the TV if it freezes.</li>
+                <li><b>Search:</b> Find songs and tap Play or + to queue.</li>
+                <li><b>Paste URL:</b> Play or queue directly from a YouTube link.</li>
+                <li><b>Queue:</b> Songs play in order — tap &times; to remove one.</li>
+                <li><b>Auto Music:</b> YouTube radio plays automatically when queue is empty.</li>
+                <li><b>Karaoke Lock:</b> Hides ads while customers are singing.</li>
+                <li><b>Party Mode:</b> Flashing neon theme on the TV.</li>
+                <li><b>Show Flyer:</b> Displays the ad flyer immediately.</li>
+                <li><b>Slideshow:</b> Shows photo slideshow when nothing is playing.</li>
+                <li><b>Refresh TV:</b> Fixes the TV browser if it freezes.</li>
             </ul>
         </div>
         <div id="th-instr" class="instr">
             <strong>&#3623;&#3636;&#3608;&#3637;&#3651;&#3594;&#3657;&#3591;&#3634;&#3609;:</strong>
             <ul>
-                <li><b>Search:</b> &#3588;&#3657;&#3609;&#3627;&#3634;&#3648;&#3614;&#3621;&#3591;&#3649;&#3621;&#3657;&#3623;&#3585;&#3604;&#3648;&#3621;&#3656;&#3609;&#3627;&#3619;&#3639;&#3629;&#3648;&#3614;&#3636;&#3656;&#3617;&#3651;&#3609;&#3588;&#3636;&#3623;</li>
-                <li><b>Queue:</b> &#3648;&#3614;&#3621;&#3591;&#3592;&#3632;&#3648;&#3621;&#3656;&#3609;&#3605;&#3656;&#3629;&#3648;&#3609;&#3639;&#3656;&#3629;&#3591;&#3629;&#3633;&#3605;&#3650;&#3609;&#3617;&#3633;&#3605;&#3636;</li>
-                <li><b>Lock:</b> &#3651;&#3594;&#3657;&#3648;&#3617;&#3639;&#3656;&#3629;&#3621;&#3641;&#3585;&#3588;&#3657;&#3634;&#3585;&#3635;&#3621;&#3633;&#3591;&#3619;&#3657;&#3629;&#3591;&#3648;&#3614;&#3621;&#3591;</li>
-                <li><b>Party Mode:</b> &#3648;&#3611;&#3621;&#3637;&#3656;&#3618;&#3609;&#3608;&#3637;&#3617;&#3648;&#3611;&#3655;&#3609;&#3652;&#3615;&#3609;&#3637;&#3629;&#3629;&#3609;</li>
-                <li><b>Refresh:</b> &#3619;&#3637;&#3648;&#3615;&#3619;&#3594;&#3627;&#3609;&#3657;&#3634;&#3592;&#3629;&#3607;&#3637;&#3623;&#3637;&#3627;&#3634;&#3585;&#3588;&#3657;&#3634;&#3591;</li>
+                <li><b>Search:</b> &#3588;&#3657;&#3609;&#3627;&#3634;&#3648;&#3614;&#3621;&#3591; &#3649;&#3621;&#3657;&#3623;&#3585;&#3604; Play &#3627;&#3619;&#3639;&#3629; + &#3648;&#3614;&#3639;&#3656;&#3629;&#3648;&#3614;&#3636;&#3656;&#3617;&#3651;&#3609;&#3588;&#3636;&#3623;</li>
+                <li><b>Paste URL:</b> &#3623;&#3634;&#3591;&#3621;&#3636;&#3591;&#3585;&#3660; YouTube &#3648;&#3614;&#3639;&#3656;&#3629;&#3648;&#3621;&#3656;&#3609;&#3627;&#3619;&#3639;&#3629;&#3648;&#3614;&#3636;&#3656;&#3617;&#3651;&#3609;&#3588;&#3636;&#3623;&#3650;&#3604;&#3618;&#3605;&#3619;&#3591;</li>
+                <li><b>Queue:</b> &#3648;&#3614;&#3621;&#3591;&#3592;&#3632;&#3648;&#3621;&#3656;&#3609;&#3605;&#3656;&#3629;&#3648;&#3609;&#3639;&#3656;&#3629;&#3591; — &#3585;&#3604; &times; &#3648;&#3614;&#3639;&#3656;&#3629;&#3621;&#3610;&#3648;&#3614;&#3621;&#3591;</li>
+                <li><b>Auto Music:</b> &#3648;&#3614;&#3621;&#3591;&#3629;&#3633;&#3605;&#3650;&#3609;&#3617;&#3633;&#3605;&#3636;&#3592;&#3634;&#3585; YouTube &#3648;&#3617;&#3639;&#3656;&#3629;&#3588;&#3636;&#3623;&#3623;&#3656;&#3634;&#3591;</li>
+                <li><b>Karaoke Lock:</b> &#3611;&#3636;&#3604;&#3650;&#3615;&#3649;&#3619;&#3585;&#3586;&#3603;&#3632;&#3621;&#3641;&#3585;&#3588;&#3657;&#3634;&#3619;&#3657;&#3629;&#3591;&#3648;&#3614;&#3621;&#3591;</li>
+                <li><b>Party Mode:</b> &#3648;&#3611;&#3621;&#3637;&#3656;&#3618;&#3609;&#3608;&#3637;&#3617;&#3648;&#3611;&#3655;&#3609;&#3652;&#3615;&#3609;&#3637;&#3629;&#3629;&#3609;&#3610;&#3609;&#3607;&#3637;&#3623;&#3637;</li>
+                <li><b>Show Flyer:</b> &#3649;&#3626;&#3604;&#3591;&#3650;&#3611;&#3626;&#3648;&#3605;&#3629;&#3619;&#3660;&#3607;&#3633;&#3609;&#3607;&#3637;</li>
+                <li><b>Slideshow:</b> &#3649;&#3626;&#3604;&#3591;&#3619;&#3641;&#3611;&#3616;&#3634;&#3614;&#3648;&#3617;&#3639;&#3656;&#3629;&#3652;&#3617;&#3656;&#3617;&#3637;&#3648;&#3614;&#3621;&#3591;&#3648;&#3621;&#3656;&#3609;</li>
+                <li><b>Refresh TV:</b> &#3619;&#3637;&#3648;&#3615;&#3619;&#3594;&#3627;&#3609;&#3657;&#3634;&#3592;&#3629;&#3607;&#3637;&#3623;&#3637;&#3627;&#3634;&#3585;&#3588;&#3657;&#3634;&#3591;</li>
             </ul>
         </div>
     </div>
@@ -890,10 +967,16 @@
             };
         });
 
-        // Karaoke lock status
         db.ref('settings/karaokeLock').on('value', function(snap) {
-            var locked = snap.val();
-            if (locked) showStatus('Karaoke locked');
+            document.getElementById('toggle-karaoke').checked = !!snap.val();
+        });
+
+        db.ref('settings/autoMode').on('value', function(snap) {
+            document.getElementById('toggle-auto').checked = !!snap.val();
+        });
+
+        db.ref('settings/partyMode').on('value', function(snap) {
+            document.getElementById('toggle-party').checked = !!snap.val();
         });
     </script>
 </body>
