@@ -49,6 +49,15 @@
         </div>
     </div>
 
+    <!-- AirConsole Overlay -->
+    <div id="airconsole-overlay">
+        <iframe id="airconsole-frame" src="" allowfullscreen></iframe>
+        <button id="airconsole-close" onclick="closeAirConsole()">&#x2715; Back to Signage</button>
+    </div>
+
+    <!-- AirConsole Launch Button -->
+    <button id="airconsole-btn" onclick="openAirConsole()">🎮 AirConsole</button>
+
     <div id="ticker-container">
         <div id="weather-display"></div>
         <div class="ticker-wrap">
@@ -680,6 +689,23 @@
 
         setInterval(checkLastCallTime, 1000);
         checkLastCallTime();
+
+        // 11. AIRCONSOLE OVERLAY
+        function openAirConsole() {
+            var overlay = document.getElementById('airconsole-overlay');
+            var frame = document.getElementById('airconsole-frame');
+            frame.src = 'https://www.airconsole.com/';
+            overlay.classList.add('active');
+            if (player && playerReady) player.pauseVideo();
+        }
+
+        function closeAirConsole() {
+            var overlay = document.getElementById('airconsole-overlay');
+            var frame = document.getElementById('airconsole-frame');
+            overlay.classList.remove('active');
+            frame.src = '';
+            if (player && playerReady) player.playVideo();
+        }
     </script>
 
 </body>
