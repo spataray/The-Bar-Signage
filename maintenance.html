@@ -503,6 +503,17 @@
             </label>
         </div>
 
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#127918; AirConsole</div>
+                <div class="toggle-desc">Show AirConsole games on TV</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-airconsole" onchange="setAirConsole(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
         <div id="status-msg"></div>
@@ -878,6 +889,11 @@
             showStatus('Slideshow started');
         }
 
+        function setAirConsole(status) {
+            db.ref('settings/airConsole').set(status);
+            showStatus(status ? 'AirConsole ON' : 'AirConsole OFF');
+        }
+
         function remoteRefresh() {
             if (confirm('Refresh TV browser? Music will stop briefly.')) {
                 db.ref('settings/remoteRefresh').set(Date.now());
@@ -977,6 +993,10 @@
 
         db.ref('settings/partyMode').on('value', function(snap) {
             document.getElementById('toggle-party').checked = !!snap.val();
+        });
+
+        db.ref('settings/airConsole').on('value', function(snap) {
+            document.getElementById('toggle-airconsole').checked = !!snap.val();
         });
     </script>
 </body>

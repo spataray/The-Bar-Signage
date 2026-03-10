@@ -55,9 +55,6 @@
         <button id="airconsole-close" onclick="closeAirConsole()">&#x2715; Back to Signage</button>
     </div>
 
-    <!-- AirConsole Launch Button -->
-    <button id="airconsole-btn" onclick="openAirConsole()">🎮 AirConsole</button>
-
     <div id="ticker-container">
         <div id="weather-display"></div>
         <div class="ticker-wrap">
@@ -691,20 +688,22 @@
         checkLastCallTime();
 
         // 11. AIRCONSOLE OVERLAY
-        function openAirConsole() {
+        db.ref('settings/airConsole').on('value', function(snap) {
             var overlay = document.getElementById('airconsole-overlay');
             var frame = document.getElementById('airconsole-frame');
-            frame.src = 'https://www.airconsole.com/';
-            overlay.classList.add('active');
-            if (player && playerReady) player.pauseVideo();
-        }
+            if (snap.val()) {
+                frame.src = 'https://www.airconsole.com/';
+                overlay.classList.add('active');
+                if (player && playerReady) player.pauseVideo();
+            } else {
+                overlay.classList.remove('active');
+                frame.src = '';
+                if (player && playerReady) player.playVideo();
+            }
+        });
 
         function closeAirConsole() {
-            var overlay = document.getElementById('airconsole-overlay');
-            var frame = document.getElementById('airconsole-frame');
-            overlay.classList.remove('active');
-            frame.src = '';
-            if (player && playerReady) player.playVideo();
+            db.ref('settings/airConsole').set(false);
         }
     </script>
 

@@ -418,27 +418,3 @@ body.party-mode #ticker-container {
     background: rgba(255,68,68,0.85);
     border-color: var(--bar-red);
 }
-
-/* AirConsole Launch Button */
-#airconsole-btn {
-    position: fixed;
-    bottom: 60px;
-    right: 16px;
-    z-index: 1000;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
-    border: 2px solid rgba(255,255,255,0.25);
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    font-family: inherit;
-    cursor: pointer;
-    opacity: 0.4;
-    transition: opacity 0.2s, background 0.2s;
-}
-
-#airconsole-btn:hover {
-    opacity: 1;
-    background: rgba(255, 204, 0, 0.2);
-    border-color: var(--bar-gold);
-}
