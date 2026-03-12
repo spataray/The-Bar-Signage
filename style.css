@@ -379,6 +379,56 @@ body.party-mode #ticker-container {
     margin-top: 30px;
 }
 
+/* ── Responsive: Tablet (≤900px) ── */
+@media (max-width: 900px) {
+    #ticker-container { height: 48px; }
+    #app-container { height: calc(100vh - 48px); margin-top: 48px; }
+    #clock-display { font-size: 1.4rem; min-width: 100px; }
+    #weather-display { font-size: 1.2rem; min-width: 90px; }
+    #ticker-text { font-size: 1rem; }
+
+    #idle-logo { font-size: 2.8rem; letter-spacing: 5px; }
+    #idle-tagline { font-size: 1.1rem; }
+
+    #ad-sidebar { padding: 15px; }
+    #ad-sidebar h2 { font-size: 1.2rem; }
+    .menu-item { font-size: 0.9rem; }
+
+    .lc-title { font-size: 4rem; letter-spacing: 6px; }
+    .lc-countdown { font-size: 5rem; }
+    .lc-closed-sub { font-size: 1.8rem; }
+    .lc-goodbye { font-size: 1.4rem; }
+    .lc-sub { font-size: 1rem; }
+    .lc-bell { font-size: 3.5rem; }
+}
+
+/* ── Responsive: Phone (≤480px) ── */
+@media (max-width: 480px) {
+    #ticker-container { height: 40px; padding: 0 8px; }
+    #app-container { height: calc(100vh - 40px); margin-top: 40px; }
+    #clock-display { font-size: 1rem; min-width: 75px; }
+    #weather-display { font-size: 0.9rem; min-width: 65px; }
+    #ticker-text { font-size: 0.8rem; }
+
+    #idle-logo { font-size: 1.8rem; letter-spacing: 3px; }
+    #idle-tagline { font-size: 0.85rem; }
+
+    #app-container.ad-active { --sidebar-width: 45%; }
+    #ad-sidebar { padding: 10px; }
+    #ad-sidebar h2 { font-size: 0.95rem; letter-spacing: 1px; }
+    #ad-sidebar p { font-size: 0.75rem; }
+    .menu-item { font-size: 0.75rem; }
+    .menu-section h3 { font-size: 0.8rem; }
+
+    .lc-title { font-size: 2.2rem; letter-spacing: 3px; }
+    .lc-countdown { font-size: 3rem; letter-spacing: 2px; }
+    .lc-closed-sub { font-size: 1.1rem; letter-spacing: 3px; }
+    .lc-goodbye { font-size: 0.95rem; }
+    .lc-sub { font-size: 0.8rem; }
+    .lc-bell { font-size: 2.5rem; }
+    #lastcall-inner { padding: 20px; }
+}
+
 /* AirConsole Overlay */
 #airconsole-overlay {
     display: none;
