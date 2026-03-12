@@ -64,9 +64,8 @@
             <div id="clock-display"></div>
         </div>
         <div id="ticker-row2">
-            <div class="marquee-wrap">
+            <div class="ticker-wrap">
                 <span id="facts-text"></span>
-                <span id="facts-text-dup" aria-hidden="true"></span>
             </div>
         </div>
     </div>
@@ -200,15 +199,34 @@
             return sheetMessages.slice();
         }
 
-        function startFunFactsMarquee() {
-            var text = funFacts.join('   ✦   ');
-            var s1 = document.getElementById('facts-text');
-            var s2 = document.getElementById('facts-text-dup');
-            s1.textContent = text + '   ✦   ';
-            s2.textContent = text + '   ✦   ';
-            var dur = Math.max(40, text.length * 0.055);
-            var wrap = document.querySelector('.marquee-wrap');
-            wrap.style.animation = 'marquee-scroll ' + dur + 's linear infinite';
+        var factsShuffled = [];
+        var factIndex = 0;
+        var factsTimer = null;
+
+        function showFunFact() {
+            if (factsShuffled.length === 0) {
+                factsShuffled = funFacts.slice();
+                for (var i = factsShuffled.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = factsShuffled[i]; factsShuffled[i] = factsShuffled[j]; factsShuffled[j] = t;
+                }
+                factIndex = 0;
+            }
+            var el = document.getElementById('facts-text');
+            el.classList.remove('ticker-visible');
+            el.classList.add('ticker-hidden');
+            setTimeout(function() {
+                el.innerText = factsShuffled[factIndex];
+                factIndex = (factIndex + 1) % factsShuffled.length;
+                if (factIndex === 0) factsShuffled = [];
+                el.classList.remove('ticker-hidden');
+                el.classList.add('ticker-visible');
+                setTimeout(function() {
+                    el.classList.remove('ticker-visible');
+                    el.classList.add('ticker-hidden');
+                }, 15000);
+            }, 800);
+            factsTimer = setTimeout(showFunFact, 60000);
         }
 
         // 3. YOUTUBE SETUP
@@ -557,7 +575,7 @@
         // 7. START SYNC
         syncContent();
         setInterval(syncContent, 60000);
-        startFunFactsMarquee();
+        showFunFact();
 
         // 8. CLOCK — updates every second, Hawaii time
         function updateClock() {

@@ -232,24 +232,18 @@ iframe {
     overflow: hidden;
 }
 
-.marquee-wrap {
-    display: flex;
+
+#facts-text {
     white-space: nowrap;
-    will-change: transform;
-}
-
-#facts-text, #facts-text-dup {
     display: inline-block;
-    flex-shrink: 0;
-    font-size: 0.82rem;
-    color: rgba(255, 204, 0, 0.55);
-    padding: 0 20px;
+    font-size: 1rem;
+    color: var(--bar-gold);
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
 }
 
-@keyframes marquee-scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
+#facts-text.ticker-visible { opacity: 1; }
+#facts-text.ticker-hidden { opacity: 0; }
 
 .ticker-wrap {
     flex: 1;
@@ -422,7 +416,7 @@ body.party-mode #ticker-container {
     #clock-display { font-size: 1.4rem; min-width: 100px; }
     #weather-display { font-size: 1.2rem; min-width: 90px; }
     #ticker-text { font-size: 1rem; }
-    #facts-text, #facts-text-dup { font-size: 0.75rem; }
+    #facts-text { font-size: 0.85rem; }
 
     #idle-logo { font-size: 2.8rem; letter-spacing: 5px; }
     #idle-tagline { font-size: 1.1rem; }
@@ -448,7 +442,7 @@ body.party-mode #ticker-container {
     #clock-display { font-size: 1rem; min-width: 75px; }
     #weather-display { font-size: 0.9rem; min-width: 65px; }
     #ticker-text { font-size: 0.8rem; }
-    #facts-text, #facts-text-dup { font-size: 0.7rem; padding: 0 12px; }
+    #facts-text { font-size: 0.75rem; }
 
     #idle-logo { font-size: 1.8rem; letter-spacing: 3px; }
     #idle-tagline { font-size: 0.85rem; }
