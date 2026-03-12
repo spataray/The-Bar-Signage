@@ -22,7 +22,8 @@ body, html {
     display: grid;
     grid-template-columns: 1fr var(--sidebar-width);
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
     transition: grid-template-columns var(--transition-speed) ease-in-out;
 }
 
