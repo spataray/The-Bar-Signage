@@ -704,7 +704,14 @@
         setInterval(checkLastCallTime, 1000);
         checkLastCallTime();
 
-        // 11. AIRCONSOLE OVERLAY
+        // 11. TICKER POSITION
+        db.ref('settings/tickerPosition').on('value', function(snap) {
+            var pos = snap.val() || 'top';
+            document.body.classList.remove('ticker-bottom', 'ticker-left', 'ticker-right');
+            if (pos !== 'top') document.body.classList.add('ticker-' + pos);
+        });
+
+        // 12. AIRCONSOLE OVERLAY
         db.ref('settings/airConsole').on('value', function(snap) {
             var overlay = document.getElementById('airconsole-overlay');
             var frame = document.getElementById('airconsole-frame');

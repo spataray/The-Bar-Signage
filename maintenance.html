@@ -404,6 +404,9 @@
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+
+        .ticker-pos-btn { background: #333; color: #aaa; }
+        .ticker-pos-btn.active { background: var(--bar-gold); color: #000; }
     </style>
 </head>
 <body>
@@ -525,6 +528,14 @@
         <div class="btn-grid">
             <button class="btn btn-sm" style="background:#6f42c1; color:white;" onclick="startSlideshow()">&#128247; Slideshow</button>
             <button class="btn btn-sm btn-refresh" onclick="remoteRefresh()">&#128260; Refresh TV</button>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+        <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Ticker Position</div>
+        <div class="btn-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <button class="btn btn-sm ticker-pos-btn" id="tpos-top" onclick="setTickerPos('top')">&#8679; Top</button>
+            <button class="btn btn-sm ticker-pos-btn" id="tpos-bottom" onclick="setTickerPos('bottom')">&#8681; Bottom</button>
+            <button class="btn btn-sm ticker-pos-btn" id="tpos-left" onclick="setTickerPos('left')">&#8678; Left</button>
+            <button class="btn btn-sm ticker-pos-btn" id="tpos-right" onclick="setTickerPos('right')">&#8680; Right</button>
         </div>
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Last Call</div>
@@ -889,6 +900,11 @@
             showStatus('Slideshow started');
         }
 
+        function setTickerPos(pos) {
+            db.ref('settings/tickerPosition').set(pos);
+            showStatus('Ticker: ' + pos);
+        }
+
         function setAirConsole(status) {
             db.ref('settings/airConsole').set(status);
             showStatus(status ? 'AirConsole ON' : 'AirConsole OFF');
@@ -997,6 +1013,13 @@
 
         db.ref('settings/airConsole').on('value', function(snap) {
             document.getElementById('toggle-airconsole').checked = !!snap.val();
+        });
+
+        db.ref('settings/tickerPosition').on('value', function(snap) {
+            var pos = snap.val() || 'top';
+            ['top','bottom','left','right'].forEach(function(p) {
+                document.getElementById('tpos-' + p).classList.toggle('active', p === pos);
+            });
         });
     </script>
 </body>

@@ -429,6 +429,81 @@ body.party-mode #ticker-container {
     #lastcall-inner { padding: 20px; }
 }
 
+/* ── Ticker Position Overrides ── */
+
+/* Bottom */
+body.ticker-bottom #ticker-container {
+    top: auto;
+    bottom: 0;
+    border-bottom: none;
+    border-top: 2px solid var(--bar-gold);
+}
+body.ticker-bottom #app-container {
+    margin-top: 0 !important;
+}
+body.ticker-bottom.party-mode #ticker-container {
+    border-top: 2px solid #00f2ff;
+    border-bottom: none;
+}
+
+/* Left */
+body.ticker-left #ticker-container {
+    top: 0;
+    left: 0;
+    right: auto;
+    bottom: 0;
+    width: 60px;
+    height: 100vh;
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid var(--bar-gold);
+    padding: 15px 0;
+    box-sizing: border-box;
+}
+body.ticker-left #app-container {
+    margin-top: 0 !important;
+    margin-left: 60px;
+    width: calc(100vw - 60px) !important;
+    height: 100vh !important;
+}
+body.ticker-left #weather-display,
+body.ticker-left #clock-display { display: none; }
+body.ticker-left .ticker-wrap {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding: 10px 0;
+    text-align: center;
+}
+body.ticker-left #ticker-text { white-space: normal; }
+
+/* Right */
+body.ticker-right #ticker-container {
+    top: 0;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    width: 60px;
+    height: 100vh;
+    flex-direction: column;
+    border-bottom: none;
+    border-left: 2px solid var(--bar-gold);
+    padding: 15px 0;
+    box-sizing: border-box;
+}
+body.ticker-right #app-container {
+    margin-top: 0 !important;
+    width: calc(100vw - 60px) !important;
+    height: 100vh !important;
+}
+body.ticker-right #weather-display,
+body.ticker-right #clock-display { display: none; }
+body.ticker-right .ticker-wrap {
+    writing-mode: vertical-rl;
+    padding: 10px 0;
+    text-align: center;
+}
+body.ticker-right #ticker-text { white-space: normal; }
+
 /* AirConsole Overlay */
 #airconsole-overlay {
     display: none;
