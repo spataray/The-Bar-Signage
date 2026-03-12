@@ -204,10 +204,10 @@ iframe {
 /* Social Ticker */
 #ticker-container {
     position: fixed;
-    bottom: 0;
+    top: 0;
     width: 100%;
     background: rgba(0, 0, 0, 0.85);
-    border-top: 2px solid var(--bar-gold);
+    border-bottom: 2px solid var(--bar-gold);
     height: 60px;
     display: flex;
     align-items: center;
@@ -290,7 +290,7 @@ body.party-mode #ad-sidebar::before {
 }
 
 body.party-mode #ticker-container {
-    border-top: 2px solid #00f2ff;
+    border-bottom: 2px solid #00f2ff;
     animation: neon-flicker 1.5s infinite alternate;
 }
 
