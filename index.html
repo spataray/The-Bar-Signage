@@ -93,10 +93,30 @@
         var isLocked = false;
         var adCycleShowMenu = false;
 
-        // Auto music mode — YouTube Music radio playlists
+        // Auto music mode — fetch playlists from channel, fall back to hardcoded
         var AUTO_PLAYLISTS = ['RDAMVMDy_eP-mqWow', 'RDAMVM77pb0WXAz-Q'];
-        var autoPlaylistIndex = 0;
         var autoMode = false;
+        var YT_API_KEY = firebaseConfig.apiKey;
+
+        function fetchChannelPlaylists(handle) {
+            var channelUrl = 'https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=' +
+                encodeURIComponent(handle) + '&key=' + YT_API_KEY;
+            fetch(channelUrl)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var channelId = data.items && data.items[0] && data.items[0].id;
+                    if (!channelId) return;
+                    var playlistUrl = 'https://www.googleapis.com/youtube/v3/playlists?part=id&channelId=' +
+                        channelId + '&maxResults=50&key=' + YT_API_KEY;
+                    return fetch(playlistUrl).then(function(r) { return r.json(); });
+                })
+                .then(function(data) {
+                    if (!data || !data.items || data.items.length === 0) return;
+                    AUTO_PLAYLISTS = data.items.map(function(item) { return item.id; });
+                })
+                .catch(function() {});
+        }
+        fetchChannelPlaylists('infinityvideohub');
 
         // Idle slideshow
         var idlePhotos = [
@@ -238,8 +258,8 @@
 
         function startAutoPlaylist() {
             stopIdle();
-            player.loadPlaylist({ list: AUTO_PLAYLISTS[autoPlaylistIndex], listType: 'playlist' });
-            if (autoPlaylistIndex < AUTO_PLAYLISTS.length - 1) autoPlaylistIndex++;
+            var pick = AUTO_PLAYLISTS[Math.floor(Math.random() * AUTO_PLAYLISTS.length)];
+            player.loadPlaylist({ list: pick, listType: 'playlist' });
         }
 
         function playNext() {
@@ -466,10 +486,7 @@
 
         db.ref('settings/autoMode').on('value', function(snap) {
             autoMode = !!snap.val();
-            if (autoMode) {
-                autoPlaylistIndex = 0;
-                playNext();
-            }
+            if (autoMode) playNext();
         });
 
         db.ref('settings/partyMode').on('value', function(snap) {
