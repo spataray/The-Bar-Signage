@@ -56,11 +56,19 @@
     </div>
 
     <div id="ticker-container">
-        <div id="weather-display"></div>
-        <div class="ticker-wrap">
-            <span id="ticker-text"></span>
+        <div id="ticker-row1">
+            <div id="weather-display"></div>
+            <div class="ticker-wrap">
+                <span id="ticker-text"></span>
+            </div>
+            <div id="clock-display"></div>
         </div>
-        <div id="clock-display"></div>
+        <div id="ticker-row2">
+            <div class="marquee-wrap">
+                <span id="facts-text"></span>
+                <span id="facts-text-dup" aria-hidden="true"></span>
+            </div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -189,23 +197,18 @@
         ];
 
         function buildTickerMessages(sheetMessages) {
-            // Shuffle fun facts
-            var facts = funFacts.slice();
-            for (var i = facts.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var t = facts[i]; facts[i] = facts[j]; facts[j] = t;
-            }
-            if (sheetMessages.length === 0) return facts;
-            // Alternate: fact, sheet message, fact, sheet message...
-            var mixed = [];
-            var fi = 0;
-            var si = 0;
-            // Start with a fun fact so one appears immediately
-            while (fi < facts.length || si < sheetMessages.length) {
-                if (fi < facts.length) mixed.push(facts[fi++]);
-                if (si < sheetMessages.length) mixed.push(sheetMessages[si++]);
-            }
-            return mixed;
+            return sheetMessages.slice();
+        }
+
+        function startFunFactsMarquee() {
+            var text = funFacts.join('   ✦   ');
+            var s1 = document.getElementById('facts-text');
+            var s2 = document.getElementById('facts-text-dup');
+            s1.textContent = text + '   ✦   ';
+            s2.textContent = text + '   ✦   ';
+            var dur = Math.max(40, text.length * 0.055);
+            var wrap = document.querySelector('.marquee-wrap');
+            wrap.style.animation = 'marquee-scroll ' + dur + 's linear infinite';
         }
 
         // 3. YOUTUBE SETUP
@@ -554,6 +557,7 @@
         // 7. START SYNC
         syncContent();
         setInterval(syncContent, 60000);
+        startFunFactsMarquee();
 
         // 8. CLOCK — updates every second, Hawaii time
         function updateClock() {
