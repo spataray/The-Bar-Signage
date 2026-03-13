@@ -400,6 +400,7 @@
                     const next = queue[0];
                     const remaining = queue.slice(1);
                     vRef.child('settings/queue').set(remaining);
+                    stopIdle();
                     player.loadVideoById(next.id);
                 } else if (autoMode) {
                     startAutoPlaylist();

@@ -51,7 +51,7 @@
         .main-layout {
             flex: 1;
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr; /* Search gets a bit more space */
+            grid-template-columns: 1.2fr 0.8fr;
             gap: 10px;
             padding: 10px;
             overflow: hidden;
@@ -74,7 +74,7 @@
             border: 1px solid #2a2a2a;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Important for inner scroll */
+            overflow: hidden;
         }
 
         .card h3 { margin: 0 0 10px 0; font-size: 0.85rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; }
@@ -85,10 +85,10 @@
         input[type="search"] { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; font-size: 0.95rem; outline: none; }
         .btn-search { padding: 0 12px; background: var(--bar-gold); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* Preview Area (Even Larger) */
+        /* Preview Area */
         #now-playing-card {
             flex: 0 0 auto;
-            min-height: 45vh; /* Larger preview */
+            min-height: 45vh;
             justify-content: center;
             background: linear-gradient(180deg, #1e1e1e 0%, #000 100%);
             margin-bottom: 10px;
@@ -169,10 +169,11 @@
         <div class="left-col">
             <div class="card search-card">
                 <h3>🔍 FIND MUSIC</h3>
-                <div class="search-box">
-                    <input type="search" id="search-input" placeholder="Search songs..." enterkeyhint="search">
-                    <button class="btn-search" onclick="doSearch()">GO</button>
-                </div>
+                <form class="search-box" onsubmit="event.preventDefault(); doSearch();">
+                    <input type="search" id="search-input" placeholder="Search songs..." enterkeyhint="search" list="search-suggestions" autocomplete="off" oninput="updateSuggestions(this.value)">
+                    <datalist id="search-suggestions"></datalist>
+                    <button type="submit" class="btn-search">GO</button>
+                </form>
                 <div id="search-error" style="color:var(--bar-red); font-size:0.7rem; margin-bottom:10px; display:none;"></div>
                 <div class="scroll-content" id="search-results">
                     <div style="text-align:center; padding:40px; opacity:0.2;">Search for a song to begin!</div>
@@ -299,18 +300,48 @@
             vRef.child('settings/captionsEnabled').set(status);
         }
 
+        // Suggestions logic
+        let suggestionTimeout;
+        function updateSuggestions(query) {
+            clearTimeout(suggestionTimeout);
+            if (query.length < 2) return;
+            suggestionTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}`);
+                    const text = await res.text();
+                    const match = text.match(/\["(.*?)",\[(.*?)\]\]/);
+                    if (match && match[2]) {
+                        const items = JSON.parse(`[${match[2]}]`).map(i => i[0]);
+                        const datalist = document.getElementById('search-suggestions');
+                        datalist.innerHTML = items.map(i => `<option value="${escAttr(i)}">`).join('');
+                    }
+                } catch (e) {}
+            }, 300);
+        }
+
+        // Persistent Search Result Listener
+        document.getElementById('search-results').onclick = e => {
+            const btn = e.target.closest('.btn-add');
+            if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
+        };
+
         async function doSearch() {
             const query = document.getElementById('search-input').value.trim();
             if (!query) return;
+            document.getElementById('search-input').blur();
+
             const resultsEl = document.getElementById('search-results');
-            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
+            const errorEl = document.getElementById('search-error');
+            errorEl.style.display = 'none';
+            resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">Searching...</div>';
+
             try {
                 const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=30&key=${YT_API_KEY}`;
                 const res = await fetch(url);
                 const data = await res.json();
                 resultsEl.innerHTML = '';
                 if (!data.items || data.items.length === 0) {
-                    resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found</div>';
                     return;
                 }
                 data.items.forEach(item => {
@@ -330,10 +361,6 @@
                     `;
                     resultsEl.appendChild(div);
                 });
-                resultsEl.onclick = e => {
-                    const btn = e.target.closest('.btn-add');
-                    if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
-                };
             } catch (err) { resultsEl.innerHTML = '<div style="color:red; text-align:center;">Error searching.</div>'; }
         }
 
