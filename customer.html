@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>T.A. Station - Customer Queue</title>
+    <title>Customer Requests</title>
     <link rel="manifest" href="manifest-customer.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -31,276 +31,121 @@
             overflow: hidden;
         }
 
-        header {
-            padding: 10px;
-            text-align: center;
+        /* Slim Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
             background: var(--card-bg);
             border-bottom: 1px solid #333;
             flex-shrink: 0;
+            height: 50px;
+            box-sizing: border-box;
         }
 
-        h1 { margin: 0; font-size: 1.1rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; }
-        .subtitle { font-size: 0.65rem; opacity: 0.6; margin-top: 2px; }
+        .venue-name-display { margin: 0; font-size: 0.9rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
+        .cc-wrap { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; font-weight: bold; opacity: 0.8; }
 
-        /* New Layout Grid */
+        /* Dashboard Grid */
         .main-layout {
             flex: 1;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            padding: 15px;
+            grid-template-columns: 1.2fr 0.8fr; /* Search gets a bit more space */
+            gap: 10px;
+            padding: 10px;
             overflow: hidden;
+            box-sizing: border-box;
         }
 
-        .left-col {
+        /* Full Height Columns */
+        .left-col, .right-col {
             display: flex;
             flex-direction: column;
             overflow: hidden;
-        }
-
-        .right-col {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow: hidden;
+            height: 100%;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 15px;
+            padding: 12px;
+            border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border: 1px solid #2a2a2a;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Important for inner scroll */
         }
 
-        .card h3 { margin: 0 0 12px 0; font-size: 0.95rem; color: var(--bar-gold); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 1px; }
+        .card h3 { margin: 0 0 10px 0; font-size: 0.85rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Search Column (Left) */
-        .search-card {
-            flex: 1;
-            height: 100%;
+        /* Search Area */
+        .search-card { flex: 1; }
+        .search-box { display: flex; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
+        input[type="search"] { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; font-size: 0.95rem; outline: none; }
+        .btn-search { padding: 0 12px; background: var(--bar-gold); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Preview Area (Even Larger) */
+        #now-playing-card {
+            flex: 0 0 auto;
+            min-height: 45vh; /* Larger preview */
+            justify-content: center;
+            background: linear-gradient(180deg, #1e1e1e 0%, #000 100%);
+            margin-bottom: 10px;
+            padding: 15px;
         }
 
-        .search-box {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
+        #np-container { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        #np-thumb { width: 100%; max-width: 500px; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 1px solid #333; }
+        .np-info-wrap { text-align: center; width: 100%; }
+        #np-title { font-size: 1.2rem; font-weight: 900; color: var(--bar-gold); margin-bottom: 4px; line-height: 1.2; }
+        #np-author { font-size: 0.85rem; opacity: 0.6; }
 
-        input[type="search"] {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #333;
-            background: #000;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-        }
+        /* Queue Area */
+        .queue-card { flex: 1; min-height: 0; }
 
-        .btn-search {
-            padding: 0 15px;
-            background: var(--bar-gold);
-            color: black;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
+        /* Scrollable Content */
         .scroll-content {
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding-right: 5px;
+            padding-right: 2px;
         }
 
-        /* Results Styling */
-        .result-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            background: #252525;
-            border-radius: 10px;
-            align-items: center;
-            margin-bottom: 10px;
-            position: relative;
-            transition: background 0.2s;
-        }
+        /* Results & Queue Item Styling */
+        .result-item, .queue-item { display: flex; gap: 10px; padding: 10px; background: #252525; border-radius: 8px; align-items: center; margin-bottom: 8px; position: relative; }
+        .result-thumb { width: 90px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; }
+        .result-info { flex: 1; min-width: 0; padding-right: 35px; }
+        .result-title { font-size: 0.8rem; font-weight: 600; line-height: 1.3; color: #eee; }
+        .result-channel { font-size: 0.7rem; opacity: 0.5; }
 
-        .result-thumb {
-            width: 110px;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 6px;
-        }
+        .btn-add { position: absolute; right: 10px; background: var(--bar-gold); color: black; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 1.4rem; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .result-info {
-            flex: 1;
-            min-width: 0;
-            padding-right: 40px;
-        }
-
-        .result-title { font-size: 0.9rem; font-weight: 600; line-height: 1.3; color: #eee; }
-        .result-channel { font-size: 0.75rem; opacity: 0.5; margin-top: 4px; }
-
-        .btn-add {
-            position: absolute;
-            right: 12px;
-            background: var(--bar-gold);
-            color: black;
-            border: none;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            font-size: 1.6rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
-        }
-
-        /* Now Playing Card (Right Top) */
-        #now-playing-card {
-            flex: 0 0 auto;
-            min-height: 45vh;
-            justify-content: center;
-            padding: 25px;
-        }
-
-        #np-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-
-        #np-thumb {
-            width: 100%;
-            max-width: 540px;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 15px;
-            background: #000;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
-            border: 1px solid #333;
-        }
-
-        .np-info-wrap { text-align: center; width: 100%; }
-        #np-title { font-size: 1.4rem; font-weight: 900; color: var(--bar-gold); margin-bottom: 8px; line-height: 1.2; }
-        #np-author { font-size: 1rem; opacity: 0.6; }
-
-        /* Queue Card (Right Bottom) */
-        .queue-card {
-            flex: 1;
-        }
-
-        .queue-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            background: #252525;
-            border-radius: 10px;
-            align-items: center;
-            border-left: 5px solid var(--bar-gold);
-            margin-bottom: 10px;
-        }
-
-        .queue-item:first-child {
-            background: #2a2a2a;
-            border-left: 5px solid var(--bar-green);
-        }
-
-        .queue-thumb {
-            width: 80px;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 6px;
-            cursor: grab;
-        }
-
-        .queue-info { flex: 1; min-width: 0; }
-        .queue-title { font-size: 0.85rem; font-weight: 500; color: #fff; }
-
-        .queue-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .btn-q-play {
-            background: var(--bar-green);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            padding: 6px 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        .queue-remove {
-            background: none;
-            border: none;
-            color: #ff4444;
-            font-size: 1.4rem;
-            cursor: pointer;
-            align-self: flex-end;
-            padding: 0 5px;
-        }
+        .queue-item { border-left: 4px solid var(--bar-gold); }
+        .queue-item:first-child { background: #2a2a2a; border-left: 4px solid var(--bar-green); }
+        .queue-thumb { width: 70px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; cursor: grab; }
+        .queue-title { font-size: 0.75rem; font-weight: 500; color: #fff; flex: 1; min-width: 0; }
+        .btn-q-play { background: var(--bar-green); color: white; border: none; border-radius: 4px; font-size: 0.6rem; padding: 4px 6px; font-weight: bold; cursor: pointer; }
+        .queue-remove { background: none; border: none; color: #ff4444; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
 
         /* Toggles */
-        .toggle-switch { position: relative; width: 54px; height: 28px; }
+        .toggle-switch { position: relative; width: 40px; height: 22px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .toggle-slider { position: absolute; inset: 0; background: #444; border-radius: 20px; cursor: pointer; transition: 0.2s; }
-        .toggle-slider::before { content: ''; position: absolute; width: 22px; height: 22px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
         input:checked + .toggle-slider { background: var(--bar-gold); }
-        input:checked + .toggle-slider::before { transform: translateX(26px); }
+        input:checked + .toggle-slider::before { transform: translateX(18px); }
 
         /* Overlays */
-        #lock-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            text-align: center;
-            padding: 40px;
-        }
-        #lock-overlay h2 { color: var(--bar-gold); font-size: 2rem; margin-bottom: 15px; }
-        #lock-overlay p { opacity: 0.8; font-size: 1.1rem; line-height: 1.6; }
-
-        #status-msg {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bar-gold);
-            color: black;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
-            display: none;
-            z-index: 2000;
-        }
-
-        #offline-banner { background: var(--bar-red); color: white; text-align: center; padding: 6px; font-size: 0.75rem; font-weight: bold; display: none; }
+        #lock-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; padding: 40px; }
+        #status-msg { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bar-gold); color: black; padding: 10px 20px; border-radius: 30px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); display: none; z-index: 2000; }
+        #offline-banner { background: var(--bar-red); color: white; text-align: center; padding: 4px; font-size: 0.7rem; font-weight: bold; display: none; }
 
         @media (max-width: 850px) {
-            .main-layout { grid-template-columns: 1fr; overflow-y: auto; display: flex; flex-direction: column; }
-            .left-col, .right-col { overflow: visible; height: auto; }
+            .main-layout { grid-template-columns: 1fr; display: flex; flex-direction: column; }
             #now-playing-card { min-height: auto; order: -1; }
-            .search-card { height: auto; min-height: 400px; }
-            .queue-card { height: auto; min-height: 300px; }
+            .left-col, .right-col { height: auto; overflow: visible; }
+            .search-card, .queue-card { height: 400px; }
         }
     </style>
 </head>
@@ -308,35 +153,37 @@
 
     <div id="offline-banner">CONNECTION LOST - RECONNECTING...</div>
 
-    <header>
-        <h1 class="venue-name-display">T.A. Station</h1>
-        <div class="subtitle">KARAOKE & MUSIC QUEUE</div>
-    </header>
+    <div class="top-bar">
+        <h1 class="venue-name-display">THE STATION</h1>
+        <div class="cc-wrap">
+            <span>SUBTITLES (CC)</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
 
     <div class="main-layout">
-        <!-- LEFT COLUMN: SEARCH -->
+        <!-- LEFT: SEARCH -->
         <div class="left-col">
             <div class="card search-card">
-                <h3>&#128269; FIND A SONG</h3>
+                <h3>🔍 FIND MUSIC</h3>
                 <div class="search-box">
-                    <input type="search" id="search-input" placeholder="Search YouTube..." enterkeyhint="search">
-                    <button class="btn-search" onclick="doSearch()">SEARCH</button>
+                    <input type="search" id="search-input" placeholder="Search songs..." enterkeyhint="search">
+                    <button class="btn-search" onclick="doSearch()">GO</button>
                 </div>
-                <div id="search-error" style="color:var(--bar-red); font-size:0.8rem; margin-bottom:10px; display:none;"></div>
+                <div id="search-error" style="color:var(--bar-red); font-size:0.7rem; margin-bottom:10px; display:none;"></div>
                 <div class="scroll-content" id="search-results">
-                    <div style="text-align:center; padding:40px; opacity:0.3;">
-                        <div style="font-size: 3rem; margin-bottom: 10px;">🎵</div>
-                        Search for a song to get started!
-                    </div>
+                    <div style="text-align:center; padding:40px; opacity:0.2;">Search for a song to begin!</div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: PREVIEW & QUEUE -->
+        <!-- RIGHT: PREVIEW & QUEUE -->
         <div class="right-col">
-            <!-- PREVIEW -->
             <div class="card" id="now-playing-card">
-                <h3>&#127925; NOW PLAYING</h3>
+                <h3>🎵 NOW PLAYING</h3>
                 <div id="np-container">
                     <img id="np-thumb" src="" alt="">
                     <div class="np-info-wrap">
@@ -344,29 +191,21 @@
                         <div id="np-author">--</div>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 15px; margin-top: 15px;">
-                    <div style="font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">&#128172; Subtitles (CC)</div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
             </div>
 
-            <!-- QUEUE -->
             <div class="card queue-card">
-                <h3>&#128203; UP NEXT <span id="queue-count" style="opacity:0.5;"></span></h3>
+                <h3>📋 UP NEXT <span id="queue-count" style="opacity:0.5;"></span></h3>
                 <div class="scroll-content" id="queue-list">
-                    <div class="queue-empty">Queue is empty</div>
+                    <div class="queue-empty" style="text-align:center; padding:20px; opacity:0.3; font-style:italic;">Queue is empty</div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="lock-overlay">
-        <div style="font-size: 5rem; margin-bottom: 25px;">🔒</div>
+        <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
         <h2 id="lock-title">QUEUE LOCKED</h2>
-        <p id="lock-message">The queue is currently closed by staff.<br>Please check back later or ask your server!</p>
+        <p id="lock-message">The queue is currently closed by staff.</p>
     </div>
 
     <div id="status-msg"></div>
@@ -388,28 +227,27 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ── VENUE ISOLATION ──
         function getVenueId() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('v') || 'DEFAULT';
+            let v = urlParams.get('v');
+            if (!v) {
+                const promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+                if (promptVal) {
+                    v = promptVal.toUpperCase();
+                    window.location.search = '?v=' + v;
+                }
+            }
+            return v || 'DEFAULT';
         }
+        
         const venueId = getVenueId();
         const vRef = db.ref('venues/' + venueId);
-
         const YT_API_KEY = firebaseConfig.apiKey;
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js');
-            });
-        }
-
-        // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
             document.getElementById('offline-banner').style.display = snap.val() ? 'none' : 'block';
         });
 
-        // Karaoke & Last Call Lock Monitor
         let karaokeLocked = false;
         let lastCallActive = false;
 
@@ -417,37 +255,27 @@
             const overlay = document.getElementById('lock-overlay');
             const lockTitle = document.getElementById('lock-title');
             const lockMsg = document.getElementById('lock-message');
-            
             if (lastCallActive) {
                 overlay.style.display = 'flex';
                 lockTitle.textContent = "LAST CALL";
-                lockMsg.innerHTML = "We are currently in <b>Last Call</b>.<br>The queue is closed for the night!";
+                lockMsg.innerHTML = "The queue is closed for the night!";
             } else if (karaokeLocked) {
                 overlay.style.display = 'flex';
                 lockTitle.textContent = "QUEUE LOCKED";
-                lockMsg.innerHTML = "The queue is currently <b>Locked</b> by staff.<br>Please check back later or ask your server!";
+                lockMsg.innerHTML = "Staff has locked the queue.";
             } else {
                 overlay.style.display = 'none';
             }
         }
 
-        vRef.child('settings/karaokeLock').on('value', function(snap) {
-            karaokeLocked = !!snap.val();
-            updateLockState();
-        });
+        vRef.child('settings/karaokeLock').on('value', snap => { karaokeLocked = !!snap.val(); updateLockState(); });
+        vRef.child('settings/lastCallActive').on('value', snap => { lastCallActive = !!snap.val(); updateLockState(); });
 
-        vRef.child('settings/lastCallActive').on('value', function(snap) {
-            lastCallActive = !!snap.val();
-            updateLockState();
-        });
-
-        // Now Playing Sync
-        vRef.child('settings/nowPlaying').on('value', function(snap) {
+        vRef.child('settings/nowPlaying').on('value', snap => {
             const data = snap.val();
             const thumb = document.getElementById('np-thumb');
             const title = document.getElementById('np-title');
             const author = document.getElementById('np-author');
-            
             if (data) {
                 thumb.src = `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
                 title.textContent = data.title || 'Unknown';
@@ -459,18 +287,11 @@
             }
         });
 
-        // Caption Sync
-        vRef.child('settings/captionsEnabled').on('value', function(snap) {
-            document.getElementById('toggle-cc').checked = !!snap.val();
-        });
-
-        // Venue Name Sync
-        vRef.child('settings/venueName').on('value', function(snap) {
-            const name = snap.val() || "T.A. Station";
-            document.querySelectorAll('.venue-name-display').forEach(el => {
-                el.textContent = name;
-            });
-            document.title = name + " - Customer Queue";
+        vRef.child('settings/captionsEnabled').on('value', snap => { document.getElementById('toggle-cc').checked = !!snap.val(); });
+        vRef.child('settings/venueName').on('value', snap => {
+            const name = snap.val() || "THE STATION";
+            document.querySelectorAll('.venue-name-display').forEach(el => el.textContent = name);
+            document.title = name + " - Requests";
         });
 
         function setCaptions(status) {
@@ -478,44 +299,25 @@
             vRef.child('settings/captionsEnabled').set(status);
         }
 
-        // Search logic
-        document.getElementById('search-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') doSearch();
-        });
-
         async function doSearch() {
             const query = document.getElementById('search-input').value.trim();
             if (!query) return;
-
             const resultsEl = document.getElementById('search-results');
-            const errorEl = document.getElementById('search-error');
-            errorEl.style.display = 'none';
-            resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">Searching YouTube...</div>';
-
+            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
             try {
-                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=25&key=${YT_API_KEY}`;
+                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=30&key=${YT_API_KEY}`;
                 const res = await fetch(url);
                 const data = await res.json();
-
-                if (data.error) {
-                    errorEl.textContent = 'Search error: ' + data.error.message;
-                    errorEl.style.display = 'block';
-                    resultsEl.innerHTML = '';
-                    return;
-                }
-
                 resultsEl.innerHTML = '';
                 if (!data.items || data.items.length === 0) {
-                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found</div>';
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
                     return;
                 }
-
                 data.items.forEach(item => {
                     const id = item.id.videoId;
                     const title = item.snippet.title;
                     const channel = item.snippet.channelTitle;
                     const thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
-
                     const div = document.createElement('div');
                     div.className = 'result-item';
                     div.innerHTML = `
@@ -528,22 +330,15 @@
                     `;
                     resultsEl.appendChild(div);
                 });
-
-                resultsEl.onclick = function(e) {
+                resultsEl.onclick = e => {
                     const btn = e.target.closest('.btn-add');
-                    if (!btn) return;
-                    addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
+                    if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
                 };
-
-            } catch (err) {
-                errorEl.textContent = "Network error. Check connection.";
-                errorEl.style.display = 'block';
-                resultsEl.innerHTML = '';
-            }
+            } catch (err) { resultsEl.innerHTML = '<div style="color:red; text-align:center;">Error searching.</div>'; }
         }
 
         function addToQueue(id, title, author, thumb) {
-            vRef.child('settings/queue').once('value', function(snap) {
+            vRef.child('settings/queue').once('value', snap => {
                 const queue = snap.val() || [];
                 queue.push({ id, title, author, thumb });
                 vRef.child('settings/queue').set(queue);
@@ -553,34 +348,27 @@
 
         function playNow(id, title, author) {
             vRef.child('settings/currentVideoId').set(id);
-            vRef.child('settings/nowPlaying').set({
-                videoId: id,
-                title: title || '',
-                author: author || ''
-            });
-            showStatus('Playing: ' + (title || id));
+            vRef.child('settings/nowPlaying').set({ videoId: id, title: title || '', author: author || '' });
+            showStatus('Playing now...');
         }
 
         function removeFromQueue(index) {
-            vRef.child('settings/queue').once('value', function(snap) {
+            vRef.child('settings/queue').once('value', snap => {
                 const queue = snap.val() || [];
                 queue.splice(index, 1);
                 vRef.child('settings/queue').set(queue);
             });
         }
 
-        // Sync Queue
-        vRef.child('settings/queue').on('value', function(snap) {
+        vRef.child('settings/queue').on('value', snap => {
             const queue = snap.val() || [];
             const listEl = document.getElementById('queue-list');
             const countEl = document.getElementById('queue-count');
             countEl.textContent = queue.length > 0 ? `(${queue.length})` : '';
-
             if (queue.length === 0) {
-                listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>';
+                listEl.innerHTML = '<div class="queue-empty" style="text-align:center; padding:20px; opacity:0.3; font-style:italic;">Queue is empty</div>';
                 return;
             }
-
             listEl.innerHTML = '';
             queue.forEach((item, i) => {
                 const div = document.createElement('div');
@@ -597,13 +385,9 @@
                 `;
                 listEl.appendChild(div);
             });
-
-            listEl.onclick = function(e) {
+            listEl.onclick = e => {
                 const removeBtn = e.target.closest('.queue-remove');
-                if (removeBtn) {
-                    removeFromQueue(parseInt(removeBtn.dataset.index));
-                    return;
-                }
+                if (removeBtn) return removeFromQueue(parseInt(removeBtn.dataset.index));
                 const playBtn = e.target.closest('.btn-q-play');
                 if (playBtn) {
                     const idx = parseInt(playBtn.dataset.index);
@@ -612,16 +396,12 @@
                     removeFromQueue(idx);
                 }
             };
-
             rebuildSortable(listEl, queue);
         });
 
         function rebuildSortable(listEl, currentQueue) {
             if (window._sortable) window._sortable.destroy();
-            Array.from(listEl.children).forEach((child, i) => {
-                child.dataset.originalIndex = i;
-            });
-
+            Array.from(listEl.children).forEach((child, i) => child.dataset.originalIndex = i);
             window._sortable = new Sortable(listEl, {
                 handle: '.queue-thumb',
                 animation: 150,
@@ -644,7 +424,7 @@
 
         function escHtml(str) {
             const div = document.createElement('div');
-            div.textContent = str;
+            div.textContent = str || '';
             return div.innerHTML;
         }
 

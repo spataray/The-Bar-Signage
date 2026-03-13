@@ -13,10 +13,10 @@ message = client.messages.create(
     messages=[{
         "role": "user",
         "content": (
-            "Generate exactly 20 fun, silly, and entertaining facts about Thailand and Hawaii (10 each). "
-            "These scroll on a digital signage screen at T.A. Station, a Thai hostess bar in Honolulu, Hawaii. "
+            "Generate exactly 20 fun, silly, and entertaining facts about various countries and famous cities worldwide (Japan, France, Italy, USA, Thailand, Hawaii, etc.). "
             "Make them playful, surprising, and bar-appropriate. Keep each fact under 120 characters. "
-            "Start Thailand facts with '\\u1f1f9\\u1f1ed Fun Fact:' and Hawaii facts with '\\U0001F33A Fun Fact:'. "
+            "Include interesting trivia about local drinks, food, or quirks. "
+            "Start each fact with an appropriate emoji and the text '🌍 Fun Fact:'. "
             "Return ONLY a valid JSON array of exactly 20 strings. No markdown, no extra text."
         )
     }]
