@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>T.A. Station - Customer Queue</title>
-    <link rel="manifest" href="manifest-remote.json">
+    <link rel="manifest" href="manifest-customer.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
@@ -333,6 +333,12 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const YT_API_KEY = firebaseConfig.apiKey;
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js');
+            });
+        }
 
         // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
