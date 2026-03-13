@@ -260,16 +260,11 @@
                 overlay.style.display = 'flex';
                 lockTitle.textContent = "LAST CALL";
                 lockMsg.innerHTML = "The queue is closed for the night!";
-            } else if (karaokeLocked) {
-                overlay.style.display = 'flex';
-                lockTitle.textContent = "QUEUE LOCKED";
-                lockMsg.innerHTML = "Staff has locked the queue.";
             } else {
                 overlay.style.display = 'none';
             }
         }
 
-        vRef.child('settings/karaokeLock').on('value', snap => { karaokeLocked = !!snap.val(); updateLockState(); });
         vRef.child('settings/lastCallActive').on('value', snap => { lastCallActive = !!snap.val(); updateLockState(); });
 
         vRef.child('settings/nowPlaying').on('value', snap => {
