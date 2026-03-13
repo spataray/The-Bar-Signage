@@ -265,20 +265,20 @@
 
     <div class="container">
         <!-- NOW PLAYING -->
-        <div class="card" id="now-playing-card">
-            <h3>&#127925; NOW PLAYING</h3>
-            <div id="np-container" style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
-                <img id="np-thumb" src="" style="width: 120px; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; background: #000;">
-                <div style="flex: 1; min-width: 0;">
-                    <div id="np-title" style="font-size: 0.95rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nothing playing</div>
-                    <div id="np-author" style="font-size: 0.75rem; opacity: 0.6; margin-top: 4px;">--</div>
+        <div class="card" id="now-playing-card" style="min-height: 60vh; display: flex; flex-direction: column; justify-content: space-between; padding: 25px;">
+            <h3 style="margin-bottom: 20px;">&#127925; NOW PLAYING</h3>
+            <div id="np-container" style="display: flex; flex-direction: column; gap: 20px; flex: 1; justify-content: center; align-items: center;">
+                <img id="np-thumb" src="" style="width: 100%; max-width: 600px; aspect-ratio: 16/9; object-fit: cover; border-radius: 15px; background: #000; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid #333;">
+                <div style="text-align: center; width: 100%;">
+                    <div id="np-title" style="font-size: 1.5rem; font-weight: 900; color: var(--bar-gold); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2;">Nothing playing</div>
+                    <div id="np-author" style="font-size: 1.1rem; opacity: 0.6;">--</div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 15px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="font-size: 0.85rem; font-weight: 600;">&#128172; Subtitles (CC)</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 20px; margin-top: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="font-size: 1rem; font-weight: 600;">&#128172; Subtitles (CC)</div>
                 </div>
-                <label class="toggle-switch">
+                <label class="toggle-switch" style="width: 60px; height: 32px;">
                     <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
                     <span class="toggle-slider"></span>
                 </label>
@@ -352,7 +352,7 @@
             const author = document.getElementById('np-author');
             
             if (data) {
-                thumb.src = `https://img.youtube.com/vi/${data.videoId}/mqdefault.jpg`;
+                thumb.src = `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
                 title.textContent = data.title || 'Unknown';
                 author.textContent = data.author || '--';
             } else {
