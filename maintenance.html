@@ -522,6 +522,17 @@
             </label>
         </div>
 
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#128242; Customer QR</div>
+                <div class="toggle-desc">Show QR on TV for song requests</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-qr" onchange="setQRMode(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
         <div id="status-msg"></div>
@@ -932,6 +943,11 @@
             showStatus(status ? 'AirConsole ON' : 'AirConsole OFF');
         }
 
+        function setQRMode(status) {
+            db.ref('settings/showRequestQR').set(status);
+            showStatus(status ? 'QR Code ' + (status ? 'Visible' : 'Hidden'));
+        }
+
         function remoteRefresh() {
             if (confirm('Refresh TV browser? Music will stop briefly.')) {
                 db.ref('settings/remoteRefresh').set(Date.now());
@@ -1052,6 +1068,10 @@
 
         db.ref('settings/airConsole').on('value', function(snap) {
             document.getElementById('toggle-airconsole').checked = !!snap.val();
+        });
+
+        db.ref('settings/showRequestQR').on('value', function(snap) {
+            document.getElementById('toggle-qr').checked = snap.val() !== false;
         });
 
         db.ref('settings/tickerPosition').on('value', function(snap) {

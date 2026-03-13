@@ -65,6 +65,15 @@
         <button id="airconsole-close" onclick="closeAirConsole()">&#x2715; Back to Signage</button>
     </div>
 
+    <!-- Request Song QR Code -->
+    <div id="request-qr-container" style="position: fixed; bottom: 105px; right: 20px; z-index: 90; background: rgba(0,0,0,0.85); padding: 12px; border-radius: 15px; border: 2px solid var(--bar-gold); text-align: center; width: 120px; display: none; flex-direction: column; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: opacity 0.5s ease;">
+        <div style="font-size: 0.65rem; color: var(--bar-gold); font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase;">Request a Song</div>
+        <div id="qr-wrapper" style="background: white; padding: 5px; border-radius: 8px; line-height: 0;">
+            <img id="request-qr-img" src="" style="width: 100px; height: 100px; display: block;" alt="QR Code">
+        </div>
+        <div style="font-size: 0.6rem; margin-top: 8px; opacity: 0.7;">Scan with Phone</div>
+    </div>
+
     <div id="ticker-container">
         <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.1.0</div>
         <div id="ticker-row1">
@@ -218,6 +227,30 @@
         let tickerMessages = [];
         let tickerIndex = 0;
         let tickerTimer = null;
+
+        // 3. Connect QR Code
+        function initConnectQR() {
+            const qrImg = document.getElementById('request-qr-img');
+            const container = document.getElementById('request-qr-container');
+            
+            // Generate URL for customer interface
+            let customerUrl = window.location.href.split('?')[0].split('#')[0];
+            if (customerUrl.endsWith('index.html')) {
+                customerUrl = customerUrl.replace('index.html', 'customer.html');
+            } else if (customerUrl.endsWith('/')) {
+                customerUrl += 'customer.html';
+            } else {
+                customerUrl += '/customer.html';
+            }
+            
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(customerUrl);
+            
+            db.ref('settings/showRequestQR').on('value', function(snap) {
+                const show = snap.val() !== false; // Default to true if not set
+                container.style.display = show ? 'flex' : 'none';
+            });
+        }
+        initConnectQR();
 
         // Fun facts mixed into the ticker
         const funFacts = [

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>T.A. Station - Customer Queue</title>
+    <link rel="manifest" href="manifest-remote.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        :root {
+            --bar-gold: #ffcc00;
+            --bar-red: #ff4444;
+            --bar-green: #28a745;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 15px;
+            text-align: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; }
+        .subtitle { font-size: 0.7rem; opacity: 0.6; margin-top: 4px; }
+
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .card h3 { margin: 0 0 12px 0; font-size: 1rem; color: var(--bar-gold); display: flex; justify-content: space-between; align-items: center; }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        input[type="search"] {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #000;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .btn-search {
+            padding: 0 15px;
+            background: var(--bar-gold);
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Results */
+        #search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            gap: 10px;
+            padding: 8px;
+            background: #252525;
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .result-thumb {
+            width: 80px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .result-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-channel {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            margin-top: 2px;
+        }
+
+        .btn-add {
+            background: var(--bar-gold);
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Queue */
+        #queue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .queue-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #252525;
+            border-radius: 8px;
+            align-items: center;
+            border-left: 4px solid var(--bar-gold);
+        }
+
+        .queue-thumb {
+            width: 60px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: grab;
+        }
+
+        .queue-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .queue-title {
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .queue-remove {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        .queue-empty {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.4;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        /* Locked Overlay */
+        #lock-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #lock-overlay i { font-size: 4rem; margin-bottom: 20px; color: var(--bar-gold); }
+        #lock-overlay h2 { color: var(--bar-gold); margin-bottom: 10px; }
+        #lock-overlay p { opacity: 0.7; line-height: 1.5; }
+
+        /* Toast */
+        #status-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bar-gold);
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 2000;
+            white-space: nowrap;
+        }
+
+        #offline-banner {
+            background: var(--bar-red);
+            color: white;
+            text-align: center;
+            padding: 5px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+            background: var(--bar-gold);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="offline-banner">CONNECTION LOST - RECONNECTING...</div>
+
+    <header>
+        <h1>T.A. Station</h1>
+        <div class="subtitle">KARAOKE & MUSIC QUEUE</div>
+    </header>
+
+    <div class="container">
+        <!-- SEARCH -->
+        <div class="card">
+            <h3>&#128269; FIND A SONG</h3>
+            <div class="search-box">
+                <input type="search" id="search-input" placeholder="Search YouTube..." enterkeyhint="search">
+                <button class="btn-search" onclick="doSearch()">GO</button>
+            </div>
+            <div id="search-error" style="color:var(--bar-red); font-size:0.8rem; margin-bottom:10px; display:none;"></div>
+            <div id="search-results"></div>
+        </div>
+
+        <!-- QUEUE -->
+        <div class="card">
+            <h3>&#128203; UP NEXT <span id="queue-count" style="opacity:0.5; font-size:0.8rem;"></span></h3>
+            <div id="queue-list">
+                <div class="queue-empty">Queue is empty</div>
+            </div>
+            <p style="font-size: 0.7rem; opacity: 0.4; margin-top: 10px; text-align: center;">
+                Drag thumbnails to reorder your songs.
+            </p>
+        </div>
+    </div>
+
+    <div id="lock-overlay">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+        <h2>KARAOKE LOCKED</h2>
+        <p>The queue is currently closed by staff.<br>Please check back later or ask your server!</p>
+    </div>
+
+    <div id="status-msg"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
+            authDomain: "ta-station-remote.firebaseapp.com",
+            databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
+            projectId: "ta-station-remote",
+            storageBucket: "ta-station-remote.firebasestorage.app",
+            messagingSenderId: "805160829750",
+            appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const YT_API_KEY = firebaseConfig.apiKey;
+
+        // Connection Monitor
+        db.ref(".info/connected").on("value", function(snap) {
+            document.getElementById('offline-banner').style.display = snap.val() ? 'none' : 'block';
+        });
+
+        // Karaoke Lock Monitor
+        db.ref('settings/karaokeLock').on('value', function(snap) {
+            document.getElementById('lock-overlay').style.display = snap.val() ? 'flex' : 'none';
+        });
+
+        // Search logic
+        document.getElementById('search-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        async function doSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return;
+
+            const resultsEl = document.getElementById('search-results');
+            const errorEl = document.getElementById('search-error');
+            errorEl.style.display = 'none';
+            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
+
+            try {
+                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=15&key=${YT_API_KEY}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.error) {
+                    if (data.error.code === 403) {
+                        const msg = data.error.message || '';
+                        errorEl.textContent = (msg.indexOf('referer') !== -1 || msg.indexOf('referrer') !== -1)
+                            ? 'Search blocked. Your domain might not be authorized in Google Cloud Console.'
+                            : 'YouTube API not enabled. Enable it in Google Cloud Console.';
+                    } else {
+                        errorEl.textContent = 'Search error: ' + data.error.message;
+                    }
+                    errorEl.style.display = 'block';
+                    resultsEl.innerHTML = '';
+                    return;
+                }
+
+                resultsEl.innerHTML = '';
+                if (!data.items || data.items.length === 0) {
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
+                    return;
+                }
+
+                data.items.forEach(item => {
+                    const id = item.id.videoId;
+                    const title = item.snippet.title;
+                    const channel = item.snippet.channelTitle;
+                    const thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
+
+                    const div = document.createElement('div');
+                    div.className = 'result-item';
+                    div.innerHTML = `
+                        <img class="result-thumb" src="${thumb}">
+                        <div class="result-info">
+                            <div class="result-title">${escHtml(title)}</div>
+                            <div class="result-channel">${escHtml(channel)}</div>
+                        </div>
+                        <button class="btn-add" onclick="addToQueue('${id}', '${escAttr(title)}', '${escAttr(channel)}', '${thumb}')">+</button>
+                    `;
+                    resultsEl.appendChild(div);
+                });
+            } catch (err) {
+                errorEl.textContent = "Network error. Check connection.";
+                errorEl.style.display = 'block';
+                resultsEl.innerHTML = '';
+            }
+        }
+
+        function addToQueue(id, title, author, thumb) {
+            db.ref('settings/queue').once('value', function(snap) {
+                const queue = snap.val() || [];
+                queue.push({ id, title, author, thumb });
+                db.ref('settings/queue').set(queue);
+                showStatus('Added to queue!');
+            });
+        }
+
+        function removeFromQueue(index) {
+            db.ref('settings/queue').once('value', function(snap) {
+                const queue = snap.val() || [];
+                queue.splice(index, 1);
+                db.ref('settings/queue').set(queue);
+            });
+        }
+
+        // Sync Queue
+        db.ref('settings/queue').on('value', function(snap) {
+            const queue = snap.val() || [];
+            const listEl = document.getElementById('queue-list');
+            const countEl = document.getElementById('queue-count');
+            countEl.textContent = queue.length > 0 ? `(${queue.length})` : '';
+
+            if (queue.length === 0) {
+                listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>';
+                return;
+            }
+
+            listEl.innerHTML = '';
+            queue.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'queue-item';
+                div.innerHTML = `
+                    <img class="queue-thumb" src="${item.thumb}">
+                    <div class="queue-info">
+                        <div class="queue-title">${escHtml(item.title)}</div>
+                    </div>
+                    <button class="queue-remove" onclick="removeFromQueue(${i})">&times;</button>
+                `;
+                listEl.appendChild(div);
+            });
+
+            // Improved Sortable logic below
+            rebuildSortable(listEl, queue);
+        });
+
+        function rebuildSortable(listEl, currentQueue) {
+            if (window._sortable) window._sortable.destroy();
+            
+            // Add indices to the elements for easier reordering
+            Array.from(listEl.children).forEach((child, i) => {
+                child.dataset.originalIndex = i;
+            });
+
+            window._sortable = new Sortable(listEl, {
+                handle: '.queue-thumb',
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: function() {
+                    const newIndices = Array.from(listEl.children).map(el => parseInt(el.dataset.originalIndex));
+                    const newQueue = newIndices.map(idx => currentQueue[idx]);
+                    db.ref('settings/queue').set(newQueue);
+                }
+            });
+        }
+
+        function showStatus(msg) {
+            const el = document.getElementById('status-msg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 2000);
+        }
+
+        function escHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function escAttr(str) {
+            if (!str) return "";
+            return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        }
+    </script>
+</body>
+</html>
