@@ -14,6 +14,12 @@
 
     <div id="status-indicator">KARAOKE LOCKED</div>
 
+    <!-- Venue Code Display -->
+    <div id="venue-code-badge" style="position: fixed; top: 105px; left: 20px; z-index: 100; background: rgba(0,0,0,0.8); padding: 8px 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); font-family: monospace; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+        <div style="font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Connect Code</div>
+        <div id="display-venue-id" style="font-size: 1.2rem; font-weight: 900; color: var(--bar-gold); letter-spacing: 2px;">----</div>
+    </div>
+
     <div id="disconnect-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); color: #ff4444; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-family: sans-serif;">
         <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
         <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">CONNECTION LOST</div>
@@ -121,6 +127,23 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // ── VENUE ISOLATION ──
+        function getVenueId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let v = urlParams.get('v');
+            if (!v) {
+                // Generate a random 4-char code for new setups
+                v = Math.random().toString(36).substring(2, 6).toUpperCase();
+                // Update URL without reload so staff can see it
+                const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?v=' + v;
+                window.history.pushState({path:newurl},'',newurl);
+            }
+            return v;
+        }
+        const venueId = getVenueId();
+        const vRef = db.ref('venues/' + venueId);
+        document.getElementById('display-venue-id').textContent = venueId;
+
         // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
             const overlay = document.getElementById('disconnect-overlay');
@@ -142,13 +165,13 @@
         window.addEventListener('keydown', function(e) {
             switch(e.keyCode) {
                 case 403: // RED
-                    db.ref('settings/karaokeLock').set(!isLocked);
+                    vRef.child('settings/karaokeLock').set(!isLocked);
                     break;
                 case 404: // GREEN
-                    db.ref('settings/forceAd').set(true);
+                    vRef.child('settings/forceAd').set(true);
                     break;
                 case 405: // YELLOW
-                    db.ref('settings/partyMode').set(!isPartyMode);
+                    vRef.child('settings/partyMode').set(!isPartyMode);
                     break;
                 case 406: // BLUE
                     location.reload();
@@ -242,10 +265,11 @@
             } else {
                 customerUrl += '/customer.html';
             }
+            customerUrl += '?v=' + venueId;
             
             qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(customerUrl);
             
-            db.ref('settings/showRequestQR').on('value', function(snap) {
+            vRef.child('settings/showRequestQR').on('value', function(snap) {
                 const show = snap.val() !== false; // Default to true if not set
                 container.style.display = show ? 'flex' : 'none';
             });
@@ -342,21 +366,21 @@
             if (event.data === YT.PlayerState.PLAYING) {
                 reportNowPlaying();
                 // Re-apply captions if enabled
-                db.ref('settings/captionsEnabled').once('value', function(snap) {
+                vRef.child('settings/captionsEnabled').once('value', function(snap) {
                     if (snap.val()) player.loadModule('captions');
                 });
             }
             if (event.data === YT.PlayerState.ENDED) {
                 playNext();
             }
-            db.ref('settings/playerState').set(event.data);
+            vRef.child('settings/playerState').set(event.data);
         }
 
         function reportNowPlaying() {
             if (!player || !player.getVideoData) return;
             const data = player.getVideoData();
             if (data.video_id) {
-                db.ref('settings/nowPlaying').set({
+                vRef.child('settings/nowPlaying').set({
                     videoId: data.video_id,
                     title: data.title || '',
                     author: data.author || ''
@@ -371,12 +395,12 @@
         }
 
         function playNext() {
-            db.ref('settings/queue').once('value', function(snap) {
+            vRef.child('settings/queue').once('value', function(snap) {
                 const queue = snap.val() || [];
                 if (queue.length > 0) {
                     const next = queue[0];
                     const remaining = queue.slice(1);
-                    db.ref('settings/queue').set(remaining);
+                    vRef.child('settings/queue').set(remaining);
                     player.loadVideoById(next.id);
                 } else if (autoMode) {
                     startAutoPlaylist();
@@ -392,7 +416,7 @@
             const screen = document.getElementById('idle-screen');
             screen.classList.add('active');
             showAd(true);
-            db.ref('settings/nowPlaying').set(null);
+            vRef.child('settings/nowPlaying').set(null);
             shuffleIdlePhotos();
             showIdleItem();
             animateOverlay();
@@ -567,7 +591,7 @@
             // 2. Sync Menu & Ticker
             try {
                 // Sync Menu
-                db.ref('settings/menu').once('value', async function(snap) {
+                vRef.child('settings/menu').once('value', async function(snap) {
                     if (snap.exists()) return; // Don't fetch sheet if Firebase menu exists
 
                     const menuRes = await fetch(URL_MENU);
@@ -601,7 +625,7 @@
         }
 
         // 5. FIREBASE LISTENERS
-        db.ref('settings/menu').on('value', function(snap) {
+        vRef.child('settings/menu').on('value', function(snap) {
             const menu = snap.val();
             if (menu) {
                 let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
@@ -616,7 +640,7 @@
             }
         });
 
-        db.ref('settings/lastCallActive').on('value', function(snap) {
+        vRef.child('settings/lastCallActive').on('value', function(snap) {
             const active = !!snap.val();
             if (active) {
                 previewLastCall();
@@ -625,7 +649,7 @@
             }
         });
 
-        db.ref('settings/currentVideoId').on('value', function(snap) {
+        vRef.child('settings/currentVideoId').on('value', function(snap) {
             const vid = snap.val();
             if (!vid) return;
             stopIdle();
@@ -636,7 +660,7 @@
             }
         });
 
-        db.ref('settings/playerCommand').on('value', function(snap) {
+        vRef.child('settings/playerCommand').on('value', function(snap) {
             const cmd = snap.val();
             if (!cmd || !player) return;
             switch (cmd.action) {
@@ -654,29 +678,29 @@
                     else player.unloadModule('captions');
                     break;
             }
-            db.ref('settings/playerCommand').set(null);
+            vRef.child('settings/playerCommand').set(null);
         });
 
-        db.ref('settings/autoMode').on('value', function(snap) {
+        vRef.child('settings/autoMode').on('value', function(snap) {
             autoMode = !!snap.val();
             if (autoMode) playNext();
         });
 
-        db.ref('settings/partyMode').on('value', function(snap) {
+        vRef.child('settings/partyMode').on('value', function(snap) {
             isPartyMode = !!snap.val();
             if (isPartyMode) document.body.classList.add('party-mode');
             else document.body.classList.remove('party-mode');
         });
 
-        db.ref('settings/remoteRefresh').on('value', function(snap) {
+        vRef.child('settings/remoteRefresh').on('value', function(snap) {
             if (snap.val()) {
-                db.ref('settings/remoteRefresh').set(null);
+                vRef.child('settings/remoteRefresh').set(null);
                 location.reload();
             }
         });
 
         // Karaoke Lock — hides ads when customers are singing
-        db.ref('settings/karaokeLock').on('value', function(snap) {
+        vRef.child('settings/karaokeLock').on('value', function(snap) {
             isLocked = !!snap.val();
             const indicator = document.getElementById('status-indicator');
             if (isLocked) {
@@ -688,14 +712,14 @@
         });
 
         // Force Ad — show flyer immediately for 25 seconds
-        db.ref('settings/forceAd').on('value', function(snap) {
+        vRef.child('settings/forceAd').on('value', function(snap) {
             if (snap.val() && !isLocked) {
                 showAd(true);
             }
         });
 
         // Venue Name Sync
-        db.ref('settings/venueName').on('value', function(snap) {
+        vRef.child('settings/venueName').on('value', function(snap) {
             const name = snap.val() || "T.A. Station";
             window._currentVenueName = name;
             document.querySelectorAll('.venue-name-display').forEach(el => {
@@ -901,14 +925,14 @@
         checkLastCallTime();
 
         // 11. TICKER POSITION
-        db.ref('settings/tickerPosition').on('value', function(snap) {
+        vRef.child('settings/tickerPosition').on('value', function(snap) {
             const pos = snap.val() || 'top';
             document.body.classList.remove('ticker-bottom', 'ticker-left', 'ticker-right');
             if (pos !== 'top') document.body.classList.add('ticker-' + pos);
         });
 
         // 12. AIRCONSOLE OVERLAY
-        db.ref('settings/airConsole').on('value', function(snap) {
+        vRef.child('settings/airConsole').on('value', function(snap) {
             const overlay = document.getElementById('airconsole-overlay');
             const frame = document.getElementById('airconsole-frame');
             if (snap.val()) {
@@ -923,7 +947,7 @@
         });
 
         function closeAirConsole() {
-            db.ref('settings/airConsole').set(false);
+            vRef.child('settings/airConsole').set(false);
         }
     </script>
 

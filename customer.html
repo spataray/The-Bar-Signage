@@ -371,6 +371,15 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+
+        // ── VENUE ISOLATION ──
+        function getVenueId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('v') || 'DEFAULT';
+        }
+        const venueId = getVenueId();
+        const vRef = db.ref('venues/' + venueId);
+
         const YT_API_KEY = firebaseConfig.apiKey;
 
         if ('serviceWorker' in navigator) {
@@ -406,18 +415,18 @@
             }
         }
 
-        db.ref('settings/karaokeLock').on('value', function(snap) {
+        vRef.child('settings/karaokeLock').on('value', function(snap) {
             karaokeLocked = !!snap.val();
             updateLockState();
         });
 
-        db.ref('settings/lastCallActive').on('value', function(snap) {
+        vRef.child('settings/lastCallActive').on('value', function(snap) {
             lastCallActive = !!snap.val();
             updateLockState();
         });
 
         // Now Playing Sync
-        db.ref('settings/nowPlaying').on('value', function(snap) {
+        vRef.child('settings/nowPlaying').on('value', function(snap) {
             const data = snap.val();
             const thumb = document.getElementById('np-thumb');
             const title = document.getElementById('np-title');
@@ -435,12 +444,12 @@
         });
 
         // Caption Sync
-        db.ref('settings/captionsEnabled').on('value', function(snap) {
+        vRef.child('settings/captionsEnabled').on('value', function(snap) {
             document.getElementById('toggle-cc').checked = !!snap.val();
         });
 
         // Venue Name Sync
-        db.ref('settings/venueName').on('value', function(snap) {
+        vRef.child('settings/venueName').on('value', function(snap) {
             const name = snap.val() || "T.A. Station";
             document.querySelectorAll('.venue-name-display').forEach(el => {
                 el.textContent = name;
@@ -449,8 +458,8 @@
         });
 
         function setCaptions(status) {
-            db.ref('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
-            db.ref('settings/captionsEnabled').set(status);
+            vRef.child('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
+            vRef.child('settings/captionsEnabled').set(status);
         }
 
         // Search logic
@@ -526,17 +535,17 @@
         }
 
         function addToQueue(id, title, author, thumb) {
-            db.ref('settings/queue').once('value', function(snap) {
+            vRef.child('settings/queue').once('value', function(snap) {
                 const queue = snap.val() || [];
                 queue.push({ id, title, author, thumb });
-                db.ref('settings/queue').set(queue);
+                vRef.child('settings/queue').set(queue);
                 showStatus('Added to queue!');
             });
         }
 
         function playNow(id, title, author) {
-            db.ref('settings/currentVideoId').set(id);
-            db.ref('settings/nowPlaying').set({
+            vRef.child('settings/currentVideoId').set(id);
+            vRef.child('settings/nowPlaying').set({
                 videoId: id,
                 title: title || '',
                 author: author || ''
@@ -545,15 +554,15 @@
         }
 
         function removeFromQueue(index) {
-            db.ref('settings/queue').once('value', function(snap) {
+            vRef.child('settings/queue').once('value', function(snap) {
                 const queue = snap.val() || [];
                 queue.splice(index, 1);
-                db.ref('settings/queue').set(queue);
+                vRef.child('settings/queue').set(queue);
             });
         }
 
         // Sync Queue
-        db.ref('settings/queue').on('value', function(snap) {
+        vRef.child('settings/queue').on('value', function(snap) {
             const queue = snap.val() || [];
             const listEl = document.getElementById('queue-list');
             const countEl = document.getElementById('queue-count');
@@ -615,7 +624,7 @@
                     // Filter out invalid indices (like if there was an empty div)
                     const validIndices = newIndices.filter(n => !isNaN(n));
                     const newQueue = validIndices.map(idx => currentQueue[idx]);
-                    db.ref('settings/queue').set(newQueue);
+                    vRef.child('settings/queue').set(newQueue);
                 }
             });
         }
