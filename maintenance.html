@@ -415,9 +415,9 @@
 </head>
 <body>
 
-    <h1>T.A. STATION</h1>
+    <h1 class="venue-name-display">T.A. STATION</h1>
     <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
-    <div class="subtitle">Honolulu, HI &bull; Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.1.0</span></div>
+    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.1.0</span></div>
 
     <!-- NOW PLAYING -->
     <div class="card" id="now-playing-card">
@@ -547,6 +547,17 @@
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
         <div id="status-msg"></div>
+    </div>
+
+    <!-- VENUE SETTINGS -->
+    <div class="card">
+        <h3>&#127968; VENUE SETTINGS</h3>
+        <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Venue / Wi-Fi Name</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" id="venue-name-input" placeholder="e.g. T.A. Station" style="margin-bottom: 0;">
+            <button class="btn btn-sm" style="background:var(--bar-gold); color:black; width:auto; padding: 0 15px;" onclick="saveVenueName()">Save</button>
+        </div>
+        <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 5px; line-height: 1.4;">This updates the name displayed on the TV, Staff Remote, and Customer Request App (e.g. to display your guest Wi-Fi name).</p>
     </div>
 
     <!-- SYSTEM TOOLS -->
@@ -965,6 +976,12 @@
             showStatus(status ? 'Captions ON' : 'Captions OFF');
         }
 
+        function saveVenueName() {
+            const name = document.getElementById('venue-name-input').value.trim();
+            db.ref('settings/venueName').set(name || "T.A. Station");
+            showStatus('Venue Name Updated');
+        }
+
         function remoteRefresh() {
             if (confirm('Refresh TV browser? Music will stop briefly.')) {
                 db.ref('settings/remoteRefresh').set(Date.now());
@@ -1100,6 +1117,15 @@
             ['top','bottom','left','right'].forEach(function(p) {
                 document.getElementById('tpos-' + p).classList.toggle('active', p === pos);
             });
+        });
+
+        db.ref('settings/venueName').on('value', function(snap) {
+            const name = snap.val() || "T.A. STATION";
+            document.getElementById('venue-name-input').value = snap.val() ? name : "";
+            document.querySelectorAll('.venue-name-display').forEach(el => {
+                el.textContent = name.toUpperCase();
+            });
+            document.title = name + " - Staff Remote";
         });
     </script>
 </body>

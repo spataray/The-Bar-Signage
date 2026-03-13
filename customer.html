@@ -259,7 +259,7 @@
     <div id="offline-banner">CONNECTION LOST - RECONNECTING...</div>
 
     <header>
-        <h1>T.A. Station</h1>
+        <h1 class="venue-name-display">T.A. Station</h1>
         <div class="subtitle">KARAOKE & MUSIC QUEUE</div>
     </header>
 
@@ -371,6 +371,15 @@
         // Caption Sync
         db.ref('settings/captionsEnabled').on('value', function(snap) {
             document.getElementById('toggle-cc').checked = !!snap.val();
+        });
+
+        // Venue Name Sync
+        db.ref('settings/venueName').on('value', function(snap) {
+            const name = snap.val() || "T.A. Station";
+            document.querySelectorAll('.venue-name-display').forEach(el => {
+                el.textContent = name;
+            });
+            document.title = name + " - Customer Queue";
         });
 
         function setCaptions(status) {

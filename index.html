@@ -17,7 +17,7 @@
     <div id="disconnect-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); color: #ff4444; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-family: sans-serif;">
         <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
         <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">CONNECTION LOST</div>
-        <div style="margin-top: 10px; opacity: 0.7;">Reconnecting to T.A. Station...</div>
+        <div style="margin-top: 10px; opacity: 0.7;">Reconnecting to <span class="venue-name-display">T.A. Station</span>...</div>
     </div>
 
     <div id="app-container">
@@ -27,7 +27,7 @@
                 <img id="idle-photo" src="images/TAStation-1.JPG" alt="">
                 <video id="idle-video" muted playsinline preload="auto"></video>
                 <div id="idle-overlay">
-                    <div id="idle-logo">T.A. STATION</div>
+                    <div id="idle-logo" class="venue-name-display" style="text-transform: uppercase;">T.A. STATION</div>
                     <div id="idle-tagline">Honolulu, HI</div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="lc-title">MAHALO!</div>
                 <div class="lc-closed-sub">We Are Now Closed</div>
                 <div class="lc-goodbye" id="lc-goodbye"></div>
-                <div class="lc-sub">T.A. Station &bull; Honolulu, HI 🌺</div>
+                <div class="lc-sub"><span class="venue-name-display">T.A. Station</span> &bull; Honolulu, HI 🌺</div>
             </div>
         </div>
     </div>
@@ -530,7 +530,14 @@
             const desc = adRows[1] && adRows[1][0];
             const flyer = adRows[2] && adRows[2][0];
 
-            document.getElementById('ad-title').innerText = title || "T.A. Station";
+            if (title) {
+                document.getElementById('ad-title').innerText = title;
+                document.getElementById('ad-title').dataset.hasCustomText = 'true';
+            } else {
+                document.getElementById('ad-title').innerText = window._currentVenueName || "T.A. Station";
+                document.getElementById('ad-title').dataset.hasCustomText = '';
+            }
+            
             document.getElementById('ad-desc').innerText = desc || "";
             if (flyer && flyer.includes('http')) {
                 document.getElementById('ad-flyer').src = normalizeFlyerUrl(flyer);
@@ -656,6 +663,24 @@
         db.ref('settings/forceAd').on('value', function(snap) {
             if (snap.val() && !isLocked) {
                 showAd(true);
+            }
+        });
+
+        // Venue Name Sync
+        db.ref('settings/venueName').on('value', function(snap) {
+            const name = snap.val() || "T.A. Station";
+            window._currentVenueName = name;
+            document.querySelectorAll('.venue-name-display').forEach(el => {
+                el.textContent = name;
+                if (el.id === 'idle-logo') {
+                    el.textContent = name.toUpperCase();
+                }
+            });
+            document.title = name + " - Digital Signage";
+            
+            // Re-apply to ad title if empty in sheet
+            if (!document.getElementById('ad-title').dataset.hasCustomText) {
+                 document.getElementById('ad-title').innerText = name;
             }
         });
 
