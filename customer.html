@@ -42,215 +42,231 @@
         h1 { margin: 0; font-size: 1.1rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; }
         .subtitle { font-size: 0.65rem; opacity: 0.6; margin-top: 2px; }
 
-        .container {
+        /* New Layout Grid */
+        .main-layout {
             flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
             overflow: hidden;
+        }
+
+        .left-col {
             display: flex;
             flex-direction: column;
-            padding: 10px;
-            gap: 10px;
+            overflow: hidden;
+        }
+
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow: hidden;
         }
 
         .card {
             background: var(--card-bg);
             padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border: 1px solid #2a2a2a;
             display: flex;
             flex-direction: column;
         }
 
-        .card h3 { margin: 0 0 12px 0; font-size: 0.9rem; color: var(--bar-gold); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+        .card h3 { margin: 0 0 12px 0; font-size: 0.95rem; color: var(--bar-gold); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Hero Preview (Now Playing) */
-        #now-playing-card {
-            min-height: 40vh; /* Reduced from 60vh to make room for columns */
-            flex-shrink: 0;
-            justify-content: space-between;
-        }
-
-        #np-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        /* Search Column (Left) */
+        .search-card {
             flex: 1;
-            justify-content: center;
-            align-items: center;
+            height: 100%;
         }
 
-        #np-thumb {
-            width: 100%;
-            max-width: 480px;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 12px;
-            background: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        input[type="search"] {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
             border: 1px solid #333;
+            background: #000;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
         }
 
-        .np-info-wrap { text-align: center; width: 100%; }
-        #np-title { font-size: 1.2rem; font-weight: 900; color: var(--bar-gold); margin-bottom: 5px; line-height: 1.2; }
-        #np-author { font-size: 0.9rem; opacity: 0.6; }
-
-        /* Two Column Layout */
-        .bottom-sections {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            overflow: hidden; /* Important for inner scroll */
-        }
-
-        .scroll-card {
-            flex: 1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+        .btn-search {
+            padding: 0 15px;
+            background: var(--bar-gold);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .scroll-content {
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding-right: 5px;
         }
 
-        /* Search Section */
-        .search-box {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        input[type="search"] {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #000;
-            color: #fff;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .btn-search {
-            padding: 0 12px;
-            background: var(--bar-gold);
-            color: black;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
+        /* Results Styling */
         .result-item {
             display: flex;
-            gap: 10px;
-            padding: 10px;
+            gap: 12px;
+            padding: 12px;
             background: #252525;
-            border-radius: 8px;
+            border-radius: 10px;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             position: relative;
+            transition: background 0.2s;
         }
 
         .result-thumb {
-            width: 90px;
+            width: 110px;
             aspect-ratio: 16/9;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
         .result-info {
             flex: 1;
             min-width: 0;
-            padding-right: 35px; /* Room for + button */
+            padding-right: 40px;
         }
 
-        .result-title { font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
-        .result-channel { font-size: 0.7rem; opacity: 0.5; margin-top: 2px; }
+        .result-title { font-size: 0.9rem; font-weight: 600; line-height: 1.3; color: #eee; }
+        .result-channel { font-size: 0.75rem; opacity: 0.5; margin-top: 4px; }
 
         .btn-add {
             position: absolute;
-            right: 10px;
+            right: 12px;
             background: var(--bar-gold);
             color: black;
             border: none;
             border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            font-size: 1.4rem;
+            width: 38px;
+            height: 38px;
+            font-size: 1.6rem;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
         }
 
-        /* Queue Section */
+        /* Now Playing Card (Right Top) */
+        #now-playing-card {
+            flex: 0 0 auto;
+            min-height: 45vh;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        #np-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        #np-thumb {
+            width: 100%;
+            max-width: 540px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 15px;
+            background: #000;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            border: 1px solid #333;
+        }
+
+        .np-info-wrap { text-align: center; width: 100%; }
+        #np-title { font-size: 1.4rem; font-weight: 900; color: var(--bar-gold); margin-bottom: 8px; line-height: 1.2; }
+        #np-author { font-size: 1rem; opacity: 0.6; }
+
+        /* Queue Card (Right Bottom) */
+        .queue-card {
+            flex: 1;
+        }
+
         .queue-item {
             display: flex;
-            gap: 10px;
-            padding: 10px;
+            gap: 12px;
+            padding: 12px;
             background: #252525;
-            border-radius: 8px;
+            border-radius: 10px;
             align-items: center;
-            border-left: 4px solid var(--bar-gold);
-            margin-bottom: 8px;
+            border-left: 5px solid var(--bar-gold);
+            margin-bottom: 10px;
         }
 
-        /* Highlight first item */
         .queue-item:first-child {
             background: #2a2a2a;
-            border-left: 4px solid var(--bar-green);
+            border-left: 5px solid var(--bar-green);
         }
 
         .queue-thumb {
-            width: 70px;
+            width: 80px;
             aspect-ratio: 16/9;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: grab;
         }
 
         .queue-info { flex: 1; min-width: 0; }
-        .queue-title { font-size: 0.8rem; font-weight: 500; }
+        .queue-title { font-size: 0.85rem; font-weight: 500; color: #fff; }
 
         .queue-actions {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
         .btn-q-play {
             background: var(--bar-green);
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            padding: 6px 10px;
             font-weight: bold;
             text-transform: uppercase;
+            cursor: pointer;
         }
 
         .queue-remove {
             background: none;
             border: none;
             color: #ff4444;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             cursor: pointer;
             align-self: flex-end;
+            padding: 0 5px;
         }
 
-        .queue-empty { text-align: center; padding: 20px; opacity: 0.4; font-style: italic; font-size: 0.85rem; }
+        /* Toggles */
+        .toggle-switch { position: relative; width: 54px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: #444; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 22px; height: 22px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+        input:checked + .toggle-slider { background: var(--bar-gold); }
+        input:checked + .toggle-slider::before { transform: translateX(26px); }
 
-        /* Locked Overlay */
+        /* Overlays */
         #lock-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             display: none;
             flex-direction: column;
             align-items: center;
@@ -259,40 +275,32 @@
             text-align: center;
             padding: 40px;
         }
-        #lock-overlay h2 { color: var(--bar-gold); margin-bottom: 10px; }
-        #lock-overlay p { opacity: 0.7; line-height: 1.5; }
+        #lock-overlay h2 { color: var(--bar-gold); font-size: 2rem; margin-bottom: 15px; }
+        #lock-overlay p { opacity: 0.8; font-size: 1.1rem; line-height: 1.6; }
 
-        /* Toggle switches */
-        .toggle-switch { position: relative; width: 50px; height: 26px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider { position: absolute; inset: 0; background: #444; border-radius: 20px; cursor: pointer; transition: 0.2s; }
-        .toggle-slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
-        input:checked + .toggle-slider { background: var(--bar-gold); }
-        input:checked + .toggle-slider::before { transform: translateX(24px); }
-
-        /* Status Toast */
         #status-msg {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--bar-gold);
             color: black;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 25px;
+            border-radius: 30px;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
             display: none;
             z-index: 2000;
         }
 
-        #offline-banner { background: var(--bar-red); color: white; text-align: center; padding: 5px; font-size: 0.7rem; font-weight: bold; display: none; }
+        #offline-banner { background: var(--bar-red); color: white; text-align: center; padding: 6px; font-size: 0.75rem; font-weight: bold; display: none; }
 
-        @media (max-width: 600px) {
-            .bottom-sections { grid-template-columns: 1fr; overflow-y: auto; }
-            .scroll-card { overflow: visible; }
-            .scroll-content { overflow: visible; }
-            #now-playing-card { min-height: auto; }
+        @media (max-width: 850px) {
+            .main-layout { grid-template-columns: 1fr; overflow-y: auto; display: flex; flex-direction: column; }
+            .left-col, .right-col { overflow: visible; height: auto; }
+            #now-playing-card { min-height: auto; order: -1; }
+            .search-card { height: auto; min-height: 400px; }
+            .queue-card { height: auto; min-height: 300px; }
         }
     </style>
 </head>
@@ -305,41 +313,49 @@
         <div class="subtitle">KARAOKE & MUSIC QUEUE</div>
     </header>
 
-    <div class="container">
-        <!-- NOW PLAYING HERO -->
-        <div class="card" id="now-playing-card">
-            <h3>&#127925; NOW PLAYING</h3>
-            <div id="np-container">
-                <img id="np-thumb" src="" alt="">
-                <div class="np-info-wrap">
-                    <div id="np-title">Nothing playing</div>
-                    <div id="np-author">--</div>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 10px; margin-top: 10px;">
-                <div style="font-size: 0.85rem; font-weight: 600;">&#128172; Subtitles (CC)</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="bottom-sections">
-            <!-- SEARCH COLUMN -->
-            <div class="card scroll-card">
+    <div class="main-layout">
+        <!-- LEFT COLUMN: SEARCH -->
+        <div class="left-col">
+            <div class="card search-card">
                 <h3>&#128269; FIND A SONG</h3>
                 <div class="search-box">
                     <input type="search" id="search-input" placeholder="Search YouTube..." enterkeyhint="search">
-                    <button class="btn-search" onclick="doSearch()">GO</button>
+                    <button class="btn-search" onclick="doSearch()">SEARCH</button>
                 </div>
-                <div id="search-error" style="color:var(--bar-red); font-size:0.75rem; margin-bottom:10px; display:none;"></div>
-                <div class="scroll-content" id="search-results"></div>
+                <div id="search-error" style="color:var(--bar-red); font-size:0.8rem; margin-bottom:10px; display:none;"></div>
+                <div class="scroll-content" id="search-results">
+                    <div style="text-align:center; padding:40px; opacity:0.3;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">🎵</div>
+                        Search for a song to get started!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: PREVIEW & QUEUE -->
+        <div class="right-col">
+            <!-- PREVIEW -->
+            <div class="card" id="now-playing-card">
+                <h3>&#127925; NOW PLAYING</h3>
+                <div id="np-container">
+                    <img id="np-thumb" src="" alt="">
+                    <div class="np-info-wrap">
+                        <div id="np-title">Nothing playing</div>
+                        <div id="np-author">--</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 15px; margin-top: 15px;">
+                    <div style="font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">&#128172; Subtitles (CC)</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
             </div>
 
-            <!-- QUEUE COLUMN -->
-            <div class="card scroll-card">
-                <h3>&#128203; UP NEXT <span id="queue-count" style="opacity:0.5; font-size:0.75rem;"></span></h3>
+            <!-- QUEUE -->
+            <div class="card queue-card">
+                <h3>&#128203; UP NEXT <span id="queue-count" style="opacity:0.5;"></span></h3>
                 <div class="scroll-content" id="queue-list">
                     <div class="queue-empty">Queue is empty</div>
                 </div>
@@ -348,7 +364,7 @@
     </div>
 
     <div id="lock-overlay">
-        <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+        <div style="font-size: 5rem; margin-bottom: 25px;">🔒</div>
         <h2 id="lock-title">QUEUE LOCKED</h2>
         <p id="lock-message">The queue is currently closed by staff.<br>Please check back later or ask your server!</p>
     </div>
@@ -474,22 +490,15 @@
             const resultsEl = document.getElementById('search-results');
             const errorEl = document.getElementById('search-error');
             errorEl.style.display = 'none';
-            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
+            resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">Searching YouTube...</div>';
 
             try {
-                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=15&key=${YT_API_KEY}`;
+                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=25&key=${YT_API_KEY}`;
                 const res = await fetch(url);
                 const data = await res.json();
 
                 if (data.error) {
-                    if (data.error.code === 403) {
-                        const msg = data.error.message || '';
-                        errorEl.textContent = (msg.indexOf('referer') !== -1 || msg.indexOf('referrer') !== -1)
-                            ? 'Search blocked. Check Google Cloud domain authorization.'
-                            : 'YouTube API not enabled.';
-                    } else {
-                        errorEl.textContent = 'Search error: ' + data.error.message;
-                    }
+                    errorEl.textContent = 'Search error: ' + data.error.message;
                     errorEl.style.display = 'block';
                     resultsEl.innerHTML = '';
                     return;
@@ -497,7 +506,7 @@
 
                 resultsEl.innerHTML = '';
                 if (!data.items || data.items.length === 0) {
-                    resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found</div>';
                     return;
                 }
 
@@ -520,7 +529,6 @@
                     resultsEl.appendChild(div);
                 });
 
-                // Use event delegation for Add button
                 resultsEl.onclick = function(e) {
                     const btn = e.target.closest('.btn-add');
                     if (!btn) return;
@@ -601,7 +609,6 @@
                     const idx = parseInt(playBtn.dataset.index);
                     const item = queue[idx];
                     playNow(item.id, item.title, item.author);
-                    // Also remove from queue since it's playing now
                     removeFromQueue(idx);
                 }
             };
@@ -621,7 +628,6 @@
                 ghostClass: 'sortable-ghost',
                 onEnd: function() {
                     const newIndices = Array.from(listEl.children).map(el => parseInt(el.dataset.originalIndex));
-                    // Filter out invalid indices (like if there was an empty div)
                     const validIndices = newIndices.filter(n => !isNaN(n));
                     const newQueue = validIndices.map(idx => currentQueue[idx]);
                     vRef.child('settings/queue').set(newQueue);
