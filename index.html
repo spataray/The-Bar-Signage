@@ -98,7 +98,6 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
@@ -108,10 +107,10 @@
             });
         }
 
-        // 1. DATA SOURCES
-        const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
-        const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
-        const URL_TICKER = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1639387472&single=true&output=csv";
+        // 1. DATA SOURCES (DEPRECATED: Now using Firebase)
+        const URL_ADS = "";
+        const URL_MENU = "";
+        const URL_TICKER = "";
 
         // 2. FIREBASE CONFIG
         const firebaseConfig = {
@@ -548,82 +547,6 @@
             return url;
         }
 
-        function updateAdsUI(adRows) {
-            if (!adRows || adRows.length < 1) return;
-            const title = adRows[0] && adRows[0][0];
-            const desc = adRows[1] && adRows[1][0];
-            const flyer = adRows[2] && adRows[2][0];
-
-            if (title) {
-                document.getElementById('ad-title').innerText = title;
-                document.getElementById('ad-title').dataset.hasCustomText = 'true';
-            } else {
-                document.getElementById('ad-title').innerText = window._currentVenueName || "T.A. Station";
-                document.getElementById('ad-title').dataset.hasCustomText = '';
-            }
-            
-            document.getElementById('ad-desc').innerText = desc || "";
-            if (flyer && flyer.includes('http')) {
-                document.getElementById('ad-flyer').src = normalizeFlyerUrl(flyer);
-            }
-        }
-
-        // 4. ASYNC CONTENT SYNC
-        async function syncContent() {
-            // 1. Sync Ads (with Caching)
-            try {
-                const adRes = await fetch(URL_ADS);
-                if (!adRes.ok) throw new Error('Ads fetch failed');
-                const adText = await adRes.text();
-                const adResults = Papa.parse(adText, { skipEmptyLines: true });
-                const adRows = adResults.data;
-
-                updateAdsUI(adRows);
-                localStorage.setItem('cachedAds', JSON.stringify(adRows));
-            } catch (e) {
-                console.warn("Ads Sync Failed, loading from cache:", e);
-                const cached = localStorage.getItem('cachedAds');
-                if (cached) {
-                    updateAdsUI(JSON.parse(cached));
-                }
-            }
-
-            // 2. Sync Menu & Ticker
-            try {
-                // Sync Menu
-                vRef.child('settings/menu').once('value', async function(snap) {
-                    if (snap.exists()) return; // Don't fetch sheet if Firebase menu exists
-
-                    const menuRes = await fetch(URL_MENU);
-                    const menuText = await menuRes.text();
-                    const menuResults = Papa.parse(menuText, { skipEmptyLines: true });
-                    const menuRows = menuResults.data;
-
-                    let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
-                    menuRows.forEach(row => {
-                        if(row[0] && row[0] !== "Item Name") {
-                            menuHtml += `<div class="menu-item"><span>${row[0]}</span><span>${row[1] || ''}</span></div>`;
-                        }
-                    });
-                    document.getElementById('menu-content').innerHTML = menuHtml;
-                });
-
-                // Sync Ticker
-                const tickRes = await fetch(URL_TICKER);
-                const tickText = await tickRes.text();
-                const tickResults = Papa.parse(tickText, { skipEmptyLines: true });
-                const tickRows = tickResults.data.flat().map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
-                
-                tickerMessages = buildTickerMessages(tickRows);
-                if (!tickerTimer && tickerMessages.length > 0) {
-                    showTickerMessage();
-                }
-
-            } catch (e) {
-                console.error("Menu/Ticker Sync Failed:", e);
-            }
-        }
-
         // 5. FIREBASE LISTENERS
         vRef.child('settings/menu').on('value', function(snap) {
             const menu = snap.val();
@@ -635,8 +558,31 @@
                 }
                 document.getElementById('menu-content').innerHTML = menuHtml;
             } else {
-                // If Firebase menu is empty, the syncContent function will still try Google Sheets
-                syncContent(); 
+                document.getElementById('menu-content').innerHTML = "<h3>MENU</h3><div style='opacity:0.3;text-align:center;'>Set menu in remote</div>";
+            }
+        });
+
+        vRef.child('settings/adConfig').on('value', function(snap) {
+            const ad = snap.val();
+            if (ad) {
+                document.getElementById('ad-title').innerText = ad.title || window._currentVenueName || "T.A. Station";
+                document.getElementById('ad-desc').innerText = ad.desc || "";
+                if (ad.flyer) {
+                    document.getElementById('ad-flyer').src = normalizeFlyerUrl(ad.flyer);
+                }
+            }
+        });
+
+        vRef.child('settings/ticker').on('value', function(snap) {
+            const msgs = snap.val();
+            if (msgs) {
+                const sheetMessages = Object.values(msgs);
+                tickerMessages = buildTickerMessages(sheetMessages);
+                if (!tickerTimer && tickerMessages.length > 0) {
+                    showTickerMessage();
+                }
+            } else {
+                tickerMessages = buildTickerMessages([]);
             }
         });
 
@@ -767,12 +713,7 @@
             }
         }, 180000);
 
-        // 7. START SYNC
-        const cachedAds = localStorage.getItem('cachedAds');
-        if (cachedAds) updateAdsUI(JSON.parse(cachedAds));
-        
-        syncContent();
-        setInterval(syncContent, 60000);
+        // 7. STARTUP
         showFunFact();
 
         // 8. CLOCK — updates every second, Hawaii time

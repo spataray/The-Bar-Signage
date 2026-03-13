@@ -441,13 +441,14 @@
         </div>
     </div>
 
-    <!-- SEARCH / URL / MENU -->
+    <!-- SEARCH / URL / MENU / TICKER -->
     <div class="card">
         <h3>&#128269; MANAGEMENT</h3>
-        <div class="tab-row">
+        <div class="tab-row" style="flex-wrap: wrap;">
             <button class="tab-btn active" onclick="switchTab('search')">Search</button>
             <button class="tab-btn" onclick="switchTab('url')">Paste URL</button>
-            <button class="tab-btn" onclick="switchTab('menu')">Edit Menu</button>
+            <button class="tab-btn" onclick="switchTab('menu')">Menu</button>
+            <button class="tab-btn" onclick="switchTab('ticker')">Ads & Ticker</button>
         </div>
 
         <div id="tab-search" class="tab-content active">
@@ -476,7 +477,27 @@
                 <input type="text" id="menu-item-price" placeholder="Price (e.g. $12)" style="margin-bottom: 8px;">
                 <button class="btn btn-sm" style="background:var(--bar-green); color:white;" onclick="addMenuItem()">+ Add to Menu</button>
             </div>
-            <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 10px; line-height: 1.4;">Changes appear instantly on the TV sidebar. Multiple staff can edit at once.</p>
+        </div>
+
+        <div id="tab-ticker" class="tab-content">
+            <div style="margin-bottom: 20px;">
+                <div style="font-size:0.8rem; color:var(--bar-gold); font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Sidebar Flyer (Ad)</div>
+                <input type="text" id="ad-title-input" placeholder="Flyer Title (e.g. Happy Hour)">
+                <input type="text" id="ad-desc-input" placeholder="Description (e.g. All drinks 50% off)">
+                <input type="text" id="ad-flyer-input" placeholder="Flyer Image URL (Google Drive/Imgur)">
+                <button class="btn btn-sm" style="background:var(--bar-gold); color:black;" onclick="saveAd()">Update Flyer</button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+
+            <div>
+                <div style="font-size:0.8rem; color:var(--bar-gold); font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Scrolling Ticker Messages</div>
+                <div id="staff-ticker-list" style="margin-bottom: 10px;"></div>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="ticker-msg-input" placeholder="New message..." style="margin-bottom: 0;">
+                    <button class="btn btn-sm" style="background:var(--bar-green); color:white; width: 60px;" onclick="addTickerMsg()">+</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -718,12 +739,14 @@
             document.querySelectorAll('.tab-btn').forEach(function(b) {
                 const isMatch = (tab === 'search' && b.innerText === 'Search') || 
                                 (tab === 'url' && b.innerText === 'Paste URL') || 
-                                (tab === 'menu' && b.innerText === 'Edit Menu');
+                                (tab === 'menu' && b.innerText === 'Menu') ||
+                                (tab === 'ticker' && b.innerText === 'Ads & Ticker');
                 b.classList.toggle('active', isMatch);
             });
             document.getElementById('tab-search').classList.toggle('active', tab === 'search');
             document.getElementById('tab-url').classList.toggle('active', tab === 'url');
             document.getElementById('tab-menu').classList.toggle('active', tab === 'menu');
+            document.getElementById('tab-ticker').classList.toggle('active', tab === 'ticker');
         }
 
         // ── YouTube URL Helpers ──
@@ -1068,6 +1091,32 @@
             showStatus('Item removed');
         }
 
+        function saveAd() {
+            const title = document.getElementById('ad-title-input').value.trim();
+            const desc = document.getElementById('ad-desc-input').value.trim();
+            const flyer = document.getElementById('ad-flyer-input').value.trim();
+            
+            vRef.child('settings/adConfig').set({
+                title: title,
+                desc: desc,
+                flyer: flyer
+            });
+            showStatus('Flyer Updated');
+        }
+
+        function addTickerMsg() {
+            const msg = document.getElementById('ticker-msg-input').value.trim();
+            if (!msg) return;
+            vRef.child('settings/ticker').push(msg);
+            document.getElementById('ticker-msg-input').value = '';
+            showStatus('Ticker message added');
+        }
+
+        function removeTickerMsg(key) {
+            vRef.child('settings/ticker').child(key).remove();
+            showStatus('Message removed');
+        }
+
         function remoteRefresh() {
             if (confirm('Refresh TV browser? Music will stop briefly.')) {
                 vRef.child('settings/remoteRefresh').set(Date.now());
@@ -1221,6 +1270,28 @@
                 `;
             }
             listEl.innerHTML = html;
+        });
+
+        vRef.child('settings/adConfig').on('value', function(snap) {
+            const config = snap.val() || {};
+            document.getElementById('ad-title-input').value = config.title || '';
+            document.getElementById('ad-desc-input').value = config.desc || '';
+            document.getElementById('ad-flyer-input').value = config.flyer || '';
+        });
+
+        vRef.child('settings/ticker').on('value', function(snap) {
+            const msgs = snap.val() || {};
+            const listEl = document.getElementById('staff-ticker-list');
+            let html = '';
+            for (let key in msgs) {
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #222; border-radius: 6px; margin-bottom: 5px;">
+                        <div style="font-size: 0.85rem; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escHtml(msgs[key])}</div>
+                        <button onclick="removeTickerMsg('${key}')" style="background: none; border: none; color: var(--bar-red); padding: 0 5px; cursor: pointer;">&times;</button>
+                    </div>
+                `;
+            }
+            listEl.innerHTML = html || '<div style="opacity:0.3; font-size:0.8rem; text-align:center;">No messages</div>';
         });
 
         vRef.child('settings/captionsEnabled').on('value', function(snap) {
