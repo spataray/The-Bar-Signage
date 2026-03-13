@@ -80,6 +80,11 @@
         <div style="font-size: 0.6rem; margin-top: 8px; opacity: 0.7;">Scan with Phone</div>
     </div>
 
+    <!-- Song Fact Bubble -->
+    <div id="fact-bubble">
+        <div id="fact-bubble-text"></div>
+    </div>
+
     <div id="ticker-container">
         <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.1.0</div>
         <div id="ticker-row1">
@@ -368,11 +373,58 @@
                 vRef.child('settings/captionsEnabled').once('value', function(snap) {
                     if (snap.val()) player.loadModule('captions');
                 });
+                // Try showing a song fact
+                showSongFact();
             }
             if (event.data === YT.PlayerState.ENDED) {
                 playNext();
+                hideSongFact();
             }
             vRef.child('settings/playerState').set(event.data);
+        }
+
+        let factTimer = null;
+        async function showSongFact() {
+            hideSongFact();
+            if (!player || !player.getVideoData) return;
+            const data = player.getVideoData();
+            const title = data.title || "";
+            
+            // Skip if it looks like karaoke
+            const lowerTitle = title.toLowerCase();
+            if (lowerTitle.includes('karaoke') || lowerTitle.includes('instrumental') || lowerTitle.includes('backing track')) {
+                return;
+            }
+
+            // Wait 10 seconds before showing
+            factTimer = setTimeout(async () => {
+                try {
+                    // Try to find a Wikipedia summary
+                    // Remove common non-essential tags like (Official Video) or [HD]
+                    const cleanTitle = title.replace(/\(.*?\)|\[.*?\]/g, '').trim();
+                    const searchUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTitle)}`;
+                    const res = await fetch(searchUrl);
+                    if (!res.ok) return;
+                    
+                    const info = await res.json();
+                    if (info.extract && info.extract.length > 50) {
+                        const el = document.getElementById('fact-bubble');
+                        const text = document.getElementById('fact-bubble-text');
+                        text.innerText = info.extract;
+                        el.classList.add('visible');
+                        
+                        // Hide after 15 seconds
+                        factTimer = setTimeout(hideSongFact, 15000);
+                    }
+                } catch (e) {
+                    console.warn("Could not fetch song fact:", e);
+                }
+            }, 10000);
+        }
+
+        function hideSongFact() {
+            clearTimeout(factTimer);
+            document.getElementById('fact-bubble').classList.remove('visible');
         }
 
         function reportNowPlaying() {
@@ -423,6 +475,7 @@
         }
 
         function stopIdle() {
+            hideSongFact();
             const screen = document.getElementById('idle-screen');
             screen.classList.remove('active');
             clearTimeout(idleTimer);
@@ -700,6 +753,7 @@
         });
 
         function showAd(forceFlyer) {
+            hideSongFact();
             const sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.add('ad-active');
             if (forceFlyer || !adCycleShowMenu) {
