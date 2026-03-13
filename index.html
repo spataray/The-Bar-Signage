@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T.A. Station - Digital Signage</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
 </head>
 <body>
 
     <div id="status-indicator">KARAOKE LOCKED</div>
+
+    <div id="disconnect-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); color: #ff4444; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-family: sans-serif;">
+        <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
+        <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">CONNECTION LOST</div>
+        <div style="margin-top: 10px; opacity: 0.7;">Reconnecting to T.A. Station...</div>
+    </div>
 
     <div id="app-container">
         <div id="video-section">
@@ -56,6 +66,7 @@
     </div>
 
     <div id="ticker-container">
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.1.0</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -72,9 +83,16 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js');
+            });
+        }
+
         // 1. DATA SOURCES
         const URL_ADS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=572262531&single=true&output=csv";
         const URL_MENU = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSY_76oR-biNXkDm9_MUA-RjKm-DBkeaAX903MPQJHMd2Ku_HFj2Z8w8xDIA-mxl7-Bf474N7MlKdYY/pub?gid=1406308889&single=true&output=csv";
@@ -94,26 +112,58 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        var player;
-        var playerReady = false;
-        var pendingVideoId = null;
-        var isLocked = false;
-        var adCycleShowMenu = false;
+        // Connection Monitor
+        db.ref(".info/connected").on("value", function(snap) {
+            const overlay = document.getElementById('disconnect-overlay');
+            if (snap.val() === true) {
+                overlay.style.display = 'none';
+            } else {
+                overlay.style.display = 'flex';
+            }
+        });
+
+        let player;
+        let playerReady = false;
+        let pendingVideoId = null;
+        let isLocked = false;
+        let isPartyMode = false;
+        let adCycleShowMenu = false;
+
+        // TV Remote Navigation
+        window.addEventListener('keydown', function(e) {
+            switch(e.keyCode) {
+                case 403: // RED
+                    db.ref('settings/karaokeLock').set(!isLocked);
+                    break;
+                case 404: // GREEN
+                    db.ref('settings/forceAd').set(true);
+                    break;
+                case 405: // YELLOW
+                    db.ref('settings/partyMode').set(!isPartyMode);
+                    break;
+                case 406: // BLUE
+                    location.reload();
+                    break;
+                case 13: // ENTER
+                    // Could be used to dismiss overlays
+                    break;
+            }
+        });
 
         // Auto music mode — fetch playlists from channel, fall back to hardcoded
-        var AUTO_PLAYLISTS = ['RDAMVMDy_eP-mqWow', 'RDAMVM77pb0WXAz-Q'];
-        var autoMode = false;
-        var YT_API_KEY = firebaseConfig.apiKey;
+        let AUTO_PLAYLISTS = ['RDAMVMDy_eP-mqWow', 'RDAMVM77pb0WXAz-Q'];
+        let autoMode = false;
+        const YT_API_KEY = firebaseConfig.apiKey;
 
         function fetchChannelPlaylists(handle) {
-            var channelUrl = 'https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=' +
+            const channelUrl = 'https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=' +
                 encodeURIComponent(handle) + '&key=' + YT_API_KEY;
             fetch(channelUrl)
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    var channelId = data.items && data.items[0] && data.items[0].id;
+                    const channelId = data.items && data.items[0] && data.items[0].id;
                     if (!channelId) return;
-                    var playlistUrl = 'https://www.googleapis.com/youtube/v3/playlists?part=id&channelId=' +
+                    const playlistUrl = 'https://www.googleapis.com/youtube/v3/playlists?part=id&channelId=' +
                         channelId + '&maxResults=50&key=' + YT_API_KEY;
                     return fetch(playlistUrl).then(function(r) { return r.json(); });
                 })
@@ -126,7 +176,7 @@
         fetchChannelPlaylists('infinityvideohub');
 
         // Idle slideshow
-        var idlePhotos = [
+        const idlePhotos = [
             'images/TAStation-1.JPG',
             'images/TAStation-2.JPG',
             'images/TAStation-3.JPG',
@@ -150,27 +200,27 @@
             'images/TAStation-21.JPG',
             'images/TAStation-22.JPG'
         ];
-        var idleShuffled = [];
-        var idleIndex = 0;
-        var idleTimer = null;
-        var overlayTimer = null;
+        let idleShuffled = [];
+        let idleIndex = 0;
+        let idleTimer = null;
+        let overlayTimer = null;
 
         function shuffleIdlePhotos() {
             idleShuffled = idlePhotos.slice();
-            for (var i = idleShuffled.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var tmp = idleShuffled[i]; idleShuffled[i] = idleShuffled[j]; idleShuffled[j] = tmp;
+            for (let i = idleShuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const tmp = idleShuffled[i]; idleShuffled[i] = idleShuffled[j]; idleShuffled[j] = tmp;
             }
             idleIndex = 0;
         }
 
         // Ticker state
-        var tickerMessages = [];
-        var tickerIndex = 0;
-        var tickerTimer = null;
+        let tickerMessages = [];
+        let tickerIndex = 0;
+        let tickerTimer = null;
 
         // Fun facts mixed into the ticker
-        var funFacts = [
+        const funFacts = [
             // AUTO-GENERATED-FACTS-START
             "🇹🇭 Fun Fact: Thailand has 35,000+ Buddhist temples. That's more temples than bars!",
             "🇹🇭 Fun Fact: Thai people never step on money—it has the King's face on it!",
@@ -199,20 +249,20 @@
             return sheetMessages.slice();
         }
 
-        var factsShuffled = [];
-        var factIndex = 0;
-        var factsTimer = null;
+        let factsShuffled = [];
+        let factIndex = 0;
+        let factsTimer = null;
 
         function showFunFact() {
             if (factsShuffled.length === 0) {
                 factsShuffled = funFacts.slice();
-                for (var i = factsShuffled.length - 1; i > 0; i--) {
-                    var j = Math.floor(Math.random() * (i + 1));
-                    var t = factsShuffled[i]; factsShuffled[i] = factsShuffled[j]; factsShuffled[j] = t;
+                for (let i = factsShuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const t = factsShuffled[i]; factsShuffled[i] = factsShuffled[j]; factsShuffled[j] = t;
                 }
                 factIndex = 0;
             }
-            var el = document.getElementById('facts-text');
+            const el = document.getElementById('facts-text');
             el.classList.remove('ticker-visible');
             el.classList.add('ticker-hidden');
             setTimeout(function() {
@@ -267,7 +317,7 @@
 
         function reportNowPlaying() {
             if (!player || !player.getVideoData) return;
-            var data = player.getVideoData();
+            const data = player.getVideoData();
             if (data.video_id) {
                 db.ref('settings/nowPlaying').set({
                     videoId: data.video_id,
@@ -279,16 +329,16 @@
 
         function startAutoPlaylist() {
             stopIdle();
-            var pick = AUTO_PLAYLISTS[Math.floor(Math.random() * AUTO_PLAYLISTS.length)];
+            const pick = AUTO_PLAYLISTS[Math.floor(Math.random() * AUTO_PLAYLISTS.length)];
             player.loadPlaylist({ list: pick, listType: 'playlist' });
         }
 
         function playNext() {
             db.ref('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
+                const queue = snap.val() || [];
                 if (queue.length > 0) {
-                    var next = queue[0];
-                    var remaining = queue.slice(1);
+                    const next = queue[0];
+                    const remaining = queue.slice(1);
                     db.ref('settings/queue').set(remaining);
                     player.loadVideoById(next.id);
                 } else if (autoMode) {
@@ -302,7 +352,7 @@
         function startIdle() {
             clearTimeout(idleTimer);
             idleTimer = null;
-            var screen = document.getElementById('idle-screen');
+            const screen = document.getElementById('idle-screen');
             screen.classList.add('active');
             showAd(true);
             db.ref('settings/nowPlaying').set(null);
@@ -312,11 +362,11 @@
         }
 
         function stopIdle() {
-            var screen = document.getElementById('idle-screen');
+            const screen = document.getElementById('idle-screen');
             screen.classList.remove('active');
             clearTimeout(idleTimer);
             idleTimer = null;
-            var vid = document.getElementById('idle-video');
+            const vid = document.getElementById('idle-video');
             vid.onended = null;
             vid.pause();
             vid.src = '';
@@ -326,21 +376,21 @@
         }
 
         function animateOverlay() {
-            var screen = document.getElementById('idle-screen');
+            const screen = document.getElementById('idle-screen');
             if (!screen.classList.contains('active')) return;
-            var overlay = document.getElementById('idle-overlay');
+            const overlay = document.getElementById('idle-overlay');
 
             // Give browser 150ms to render idle screen before reading layout
             overlayTimer = setTimeout(function() {
                 if (!document.getElementById('idle-screen').classList.contains('active')) return;
 
-                var screenW = screen.offsetWidth || Math.round(window.innerWidth * 0.7);
-                var screenH = screen.offsetHeight || window.innerHeight;
-                var overlayW = overlay.offsetWidth || 350;
-                var overlayH = overlay.offsetHeight || 130;
+                const screenW = screen.offsetWidth || Math.round(window.innerWidth * 0.7);
+                const screenH = screen.offsetHeight || window.innerHeight;
+                const overlayW = overlay.offsetWidth || 350;
+                const overlayH = overlay.offsetHeight || 130;
 
-                var maxX = Math.max(screenW - overlayW - 40, 20);
-                var maxY = Math.max(screenH - overlayH - 80, 20);
+                const maxX = Math.max(screenW - overlayW - 40, 20);
+                const maxY = Math.max(screenH - overlayH - 80, 20);
 
                 // Position while invisible
                 overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
@@ -361,10 +411,10 @@
         }
 
         function showIdleItem() {
-            var src = idleShuffled[idleIndex];
-            var isVideo = /\.mp4$/i.test(src);
-            var photo = document.getElementById('idle-photo');
-            var vid = document.getElementById('idle-video');
+            const src = idleShuffled[idleIndex];
+            const isVideo = /\.mp4$/i.test(src);
+            const photo = document.getElementById('idle-photo');
+            const vid = document.getElementById('idle-video');
 
             if (isVideo) {
                 photo.style.display = 'none';
@@ -394,8 +444,8 @@
         function advanceIdleItem() {
             clearTimeout(idleTimer);
             idleTimer = null;
-            var photo = document.getElementById('idle-photo');
-            var vid = document.getElementById('idle-video');
+            const photo = document.getElementById('idle-photo');
+            const vid = document.getElementById('idle-video');
             photo.classList.add('fading');
             vid.classList.add('fading');
             setTimeout(function() {
@@ -406,7 +456,7 @@
         }
 
         function showTickerMessage() {
-            var el = document.getElementById('ticker-text');
+            const el = document.getElementById('ticker-text');
             if (tickerMessages.length === 0) return;
             // Fade out current message
             el.classList.remove('ticker-visible');
@@ -430,30 +480,54 @@
         // Converts Google Drive share links to a directly embeddable image URL
         function normalizeFlyerUrl(url) {
             url = url.trim();
-            var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
+            const match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
             if (match) {
                 return 'https://lh3.googleusercontent.com/d/' + match[1];
             }
             return url;
         }
 
+        function updateAdsUI(adRows) {
+            if (!adRows || adRows.length < 1) return;
+            const title = adRows[0] && adRows[0][0];
+            const desc = adRows[1] && adRows[1][0];
+            const flyer = adRows[2] && adRows[2][0];
+
+            document.getElementById('ad-title').innerText = title || "T.A. Station";
+            document.getElementById('ad-desc').innerText = desc || "";
+            if (flyer && flyer.includes('http')) {
+                document.getElementById('ad-flyer').src = normalizeFlyerUrl(flyer);
+            }
+        }
+
         // 4. ASYNC CONTENT SYNC
         async function syncContent() {
+            // 1. Sync Ads (with Caching)
             try {
-                // Sync Ads
                 const adRes = await fetch(URL_ADS);
+                if (!adRes.ok) throw new Error('Ads fetch failed');
                 const adText = await adRes.text();
-                const adRows = adText.split('\n').map(r => r.split(','));
-                document.getElementById('ad-title').innerText = adRows[0][0] || "T.A. Station";
-                document.getElementById('ad-desc').innerText = adRows[1][0] || "";
-                if(adRows[2] && adRows[2][0].includes('http')) {
-                    document.getElementById('ad-flyer').src = normalizeFlyerUrl(adRows[2][0]);
-                }
+                const adResults = Papa.parse(adText, { skipEmptyLines: true });
+                const adRows = adResults.data;
 
+                updateAdsUI(adRows);
+                localStorage.setItem('cachedAds', JSON.stringify(adRows));
+            } catch (e) {
+                console.warn("Ads Sync Failed, loading from cache:", e);
+                const cached = localStorage.getItem('cachedAds');
+                if (cached) {
+                    updateAdsUI(JSON.parse(cached));
+                }
+            }
+
+            // 2. Sync Menu & Ticker
+            try {
                 // Sync Menu
                 const menuRes = await fetch(URL_MENU);
                 const menuText = await menuRes.text();
-                const menuRows = menuText.split('\n').map(r => r.split(','));
+                const menuResults = Papa.parse(menuText, { skipEmptyLines: true });
+                const menuRows = menuResults.data;
+
                 let menuHtml = "<h3>DRINKS & PUPUS</h3>";
                 menuRows.forEach(row => {
                     if(row[0] && row[0] !== "Item Name") {
@@ -465,20 +539,22 @@
                 // Sync Ticker
                 const tickRes = await fetch(URL_TICKER);
                 const tickText = await tickRes.text();
-                const tickRows = tickText.split('\n').map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
+                const tickResults = Papa.parse(tickText, { skipEmptyLines: true });
+                const tickRows = tickResults.data.flat().map(r => r.trim()).filter(r => r.length > 0 && r !== "Message");
+                
                 tickerMessages = buildTickerMessages(tickRows);
                 if (!tickerTimer && tickerMessages.length > 0) {
                     showTickerMessage();
                 }
 
             } catch (e) {
-                console.error("Content Sync Failed:", e);
+                console.error("Menu/Ticker Sync Failed:", e);
             }
         }
 
         // 5. FIREBASE LISTENERS
         db.ref('settings/currentVideoId').on('value', function(snap) {
-            var vid = snap.val();
+            const vid = snap.val();
             if (!vid) return;
             stopIdle();
             if (playerReady) {
@@ -489,7 +565,7 @@
         });
 
         db.ref('settings/playerCommand').on('value', function(snap) {
-            var cmd = snap.val();
+            const cmd = snap.val();
             if (!cmd || !player) return;
             switch (cmd.action) {
                 case 'pause': player.pauseVideo(); break;
@@ -511,7 +587,8 @@
         });
 
         db.ref('settings/partyMode').on('value', function(snap) {
-            if (snap.val()) document.body.classList.add('party-mode');
+            isPartyMode = !!snap.val();
+            if (isPartyMode) document.body.classList.add('party-mode');
             else document.body.classList.remove('party-mode');
         });
 
@@ -525,7 +602,7 @@
         // Karaoke Lock — hides ads when customers are singing
         db.ref('settings/karaokeLock').on('value', function(snap) {
             isLocked = !!snap.val();
-            var indicator = document.getElementById('status-indicator');
+            const indicator = document.getElementById('status-indicator');
             if (isLocked) {
                 indicator.style.display = 'block';
                 hideAd();
@@ -542,7 +619,7 @@
         });
 
         function showAd(forceFlyer) {
-            var sidebar = document.getElementById('ad-sidebar');
+            const sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.add('ad-active');
             if (forceFlyer || !adCycleShowMenu) {
                 sidebar.classList.add('show-flyer');
@@ -559,7 +636,7 @@
         }
 
         function hideAd() {
-            var sidebar = document.getElementById('ad-sidebar');
+            const sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.remove('ad-active');
             sidebar.classList.remove('show-flyer');
             sidebar.classList.remove('show-menu');
@@ -573,13 +650,16 @@
         }, 180000);
 
         // 7. START SYNC
+        const cachedAds = localStorage.getItem('cachedAds');
+        if (cachedAds) updateAdsUI(JSON.parse(cachedAds));
+        
         syncContent();
         setInterval(syncContent, 60000);
         showFunFact();
 
         // 8. CLOCK — updates every second, Hawaii time
         function updateClock() {
-            var el = document.getElementById('clock-display');
+            const el = document.getElementById('clock-display');
             el.innerText = new Date().toLocaleTimeString('en-US', {
                 timeZone: 'Pacific/Honolulu',
                 hour: 'numeric',
@@ -605,7 +685,7 @@
             fetch('https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583&current_weather=true&temperature_unit=fahrenheit')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    var w = data.current_weather;
+                    const w = data.current_weather;
                     document.getElementById('weather-display').innerText =
                         getWeatherIcon(w.weathercode) + ' ' + Math.round(w.temperature) + '°F';
                 })
@@ -642,7 +722,7 @@
         function previewClosed() {
             lcIsPreview = true;
             showLastCallScreen();
-            var msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
+            const msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
             document.getElementById('lc-goodbye').textContent = msg;
             document.getElementById('phase-lastcall').classList.remove('active');
             document.getElementById('phase-closed').classList.add('active');
@@ -657,7 +737,7 @@
         }
 
         // 10. LAST CALL / CLOSED SEQUENCE
-        var goodbyeMessages = [
+        const goodbyeMessages = [
             "Thank you for an amazing night! Drive safe and aloha! 🤙",
             "Khob khun mak kha! You were wonderful guests — come back soon! 🇹🇭",
             "Mahalo for making tonight unforgettable! Safe travels home! 🌺",
@@ -670,23 +750,23 @@
             "Khob khun! Tonight was wonderful, thanks to each and every one of you! 🇹🇭🌺"
         ];
 
-        var lcLastCallActive = false;
-        var lcClosedActive = false;
-        var lcIsPreview = false;
+        let lcLastCallActive = false;
+        let lcClosedActive = false;
+        let lcIsPreview = false;
 
         function checkLastCallTime() {
-            var now = new Date();
-            var hawaii = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
-            var h = hawaii.getHours();
-            var m = hawaii.getMinutes();
-            var s = hawaii.getSeconds();
-            var totalSec = h * 3600 + m * 60 + s;
+            const now = new Date();
+            const hawaii = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
+            const h = hawaii.getHours();
+            const m = hawaii.getMinutes();
+            const s = hawaii.getSeconds();
+            const totalSec = h * 3600 + m * 60 + s;
 
-            var LAST_CALL = 1 * 3600 + 45 * 60; // 1:45 AM
-            var CLOSING   = 2 * 3600;            // 2:00 AM
-            var RESET     = 3 * 3600;            // 3:00 AM
+            const LAST_CALL = 1 * 3600 + 45 * 60; // 1:45 AM
+            const CLOSING   = 2 * 3600;            // 2:00 AM
+            const RESET     = 3 * 3600;            // 3:00 AM
 
-            var screen = document.getElementById('lastcall-screen');
+            const screen = document.getElementById('lastcall-screen');
 
             if (totalSec >= LAST_CALL && totalSec < CLOSING) {
                 // ── Last Call phase ──
@@ -698,9 +778,9 @@
                     document.getElementById('phase-closed').classList.remove('active');
                     screen.classList.add('active');
                 }
-                var remaining = CLOSING - totalSec;
-                var mins = Math.floor(remaining / 60);
-                var secs = remaining % 60;
+                const remaining = CLOSING - totalSec;
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
                 document.getElementById('lc-countdown').textContent =
                     mins + ':' + (secs < 10 ? '0' : '') + secs;
 
@@ -710,7 +790,7 @@
                     lcClosedActive = true;
                     lcLastCallActive = false;
                     showLastCallScreen();
-                    var msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
+                    const msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
                     document.getElementById('lc-goodbye').textContent = msg;
                     document.getElementById('phase-lastcall').classList.remove('active');
                     document.getElementById('phase-closed').classList.add('active');
@@ -728,15 +808,15 @@
 
         // 11. TICKER POSITION
         db.ref('settings/tickerPosition').on('value', function(snap) {
-            var pos = snap.val() || 'top';
+            const pos = snap.val() || 'top';
             document.body.classList.remove('ticker-bottom', 'ticker-left', 'ticker-right');
             if (pos !== 'top') document.body.classList.add('ticker-' + pos);
         });
 
         // 12. AIRCONSOLE OVERLAY
         db.ref('settings/airConsole').on('value', function(snap) {
-            var overlay = document.getElementById('airconsole-overlay');
-            var frame = document.getElementById('airconsole-frame');
+            const overlay = document.getElementById('airconsole-overlay');
+            const frame = document.getElementById('airconsole-frame');
             if (snap.val()) {
                 frame.src = 'https://www.airconsole.com/';
                 overlay.classList.add('active');

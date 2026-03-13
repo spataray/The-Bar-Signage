@@ -1,0 +1,21 @@
+{
+  "name": "T.A. Station Signage",
+  "short_name": "TA Signage",
+  "description": "Digital Signage for T.A. Station",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#ffcc00",
+  "icons": [
+    {
+      "src": "images/TAStation-1.JPG",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "images/TAStation-1.JPG",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

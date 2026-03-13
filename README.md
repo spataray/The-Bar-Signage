@@ -1,16 +1,41 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
 Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
 
-### T.A. Station - Digital Signage System
+### T.A. Station - Digital Signage System v1.1.0
 
-A digital signage system for T.A. Station (Honolulu, HI). Plays YouTube music/videos on a bar TV with ads, menus, and a scrolling ticker — all controlled from a staff phone.
+A professional digital signage system for T.A. Station (Honolulu, HI). Features real-time YouTube playback, automated ad rotation, and staff remote control.
+
+### 📱 "App Mode" & Installation
+
+This project is now a **Progressive Web App (PWA)**. You can install it on your device for an app-like experience without a browser bar:
+
+- **Staff Phone/iPad:** Open `maintenance.html` in Safari (iOS) or Chrome (Android) and select **"Add to Home Screen"**.
+- **Samsung Smart TV:** 
+  - Open the URL in the TV browser once.
+  - If the TV supports it, select "Add to Home Screen" from the browser menu.
+  - The project also includes a `config.xml` for packaging as a native Tizen Web App.
+
+---
+
+### 🎮 TV Remote Control Shortcuts
+
+When the `index.html` page is open on your TV, you can use the physical remote buttons:
+
+- **🔴 Red Button:** Toggle Karaoke Lock (Hides ads)
+- **🟢 Green Button:** Show Flyer/Ad Now
+- **🟡 Yellow Button:** Toggle Party Mode (Neon theme)
+- **🔵 Blue Button:** Force Refresh/Reload Page
+- **OK/Enter:** Dismiss any active overlays
+
+---
 
 ### Project Files
 
-* **`index.html`**: The main TV display. Open this on the TV browser.
-* **`style.css`**: Visual branding, layout, idle slideshow, and party mode styles.
-* **`maintenance.html`**: Staff remote control (iPad/phone).
-* **`images/`**: Bar photos used in the ad sidebar and idle slideshow.
+* **`index.html`**: The main TV display. v1.1.0 includes D-Pad support and PWA features.
+* **`maintenance.html`**: Staff remote. v1.1.0 includes drag-and-drop queue reordering (SortableJS).
+* **`style.css`**: Visual branding and "Party Mode" styles.
+* **`manifest.json`**: PWA configuration.
+* **`config.xml`**: Samsung Tizen Web App configuration.
 
 ---
 
@@ -19,33 +44,25 @@ A digital signage system for T.A. Station (Honolulu, HI). Plays YouTube music/vi
 Open `maintenance.html` on your iPad or phone:
 
 * **Search**: Search YouTube directly from the remote. Tap play or add to queue.
-* **Queue**: Songs play automatically one after another. View, reorder, or remove upcoming songs.
+* **Queue (New!)**: Drag and drop the thumbnail of any song to reorder it in the queue.
 * **Playlists**: Paste a YouTube playlist URL to load all songs into the queue.
-* **Paste URL**: Switch to the "Paste URL" tab to play or queue a specific video link.
-* **Playback**: Play/pause, skip, previous, and volume controls sync to the TV in real time.
-* **Idle Screen**: When the queue is empty, the TV shows a photo slideshow with the bar logo.
+* **Playback**: Play/pause, skip, and volume controls sync to the TV in real time.
+* **Connection Monitoring**: Both the TV and Remote show a warning if the internet connection is lost.
 
 ---
 
 ### Ads & Karaoke
 
-* **Auto-Ads**: Ads (flyer + menu) slide in every 3 minutes for 25 seconds.
-* **Show Flyer Now**: Forces the ad sidebar to appear immediately.
+* **Auto-Ads**: Ads rotate every 3 minutes. v1.1.0 includes **offline caching**—if the internet drops, the last fetched ads will still display.
 * **Karaoke Lock**: Hides all ads while customers are singing. Shows a red "KARAOKE LOCKED" indicator.
-* **Unlock**: Resumes automatic ad rotation.
 * **Party Mode**: Switches to a neon pink/blue theme with flickering effects.
 
 ---
 
 ### Content Management
 
-Ads, menu, and ticker are managed via [Google Sheets](https://docs.google.com/spreadsheets/d/1SCT9dV1cGovk2o3Dd7y1fE3CUY2CR58GQvxgKLITeU4/edit):
-
-* **Ads Tab**: Party name, description, and flyer image URL.
-* **Menu Tab**: Drink/food items and prices.
-* **Ticker Tab**: Scrolling messages at the bottom of the screen.
-
-Content syncs automatically every 60 seconds.
+Ads, menu, and ticker are managed via [Google Sheets](https://docs.google.com/spreadsheets/d/1SCT9dV1cGovk2o3Dd7y1fE3CUY2CR58GQvxgKLITeU4/edit).
+Content syncs automatically every 60 seconds using `PapaParse` for reliability.
 
 ---
 

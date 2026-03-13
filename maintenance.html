@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T.A. Station - Staff Remote</title>
+    <link rel="manifest" href="manifest-remote.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
     <style>
         :root {
             --bar-gold: #ffcc00;
@@ -412,7 +416,8 @@
 <body>
 
     <h1>T.A. STATION</h1>
-    <div class="subtitle">Honolulu, HI &bull; Staff Remote <span style="opacity:0.35; font-size:0.75em;">v57</span></div>
+    <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
+    <div class="subtitle">Honolulu, HI &bull; Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.1.0</span></div>
 
     <!-- NOW PLAYING -->
     <div class="card" id="now-playing-card">
@@ -588,8 +593,15 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js');
+            });
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
             authDomain: "ta-station-remote.firebaseapp.com",
@@ -603,12 +615,22 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Connection Monitor
+        db.ref(".info/connected").on("value", function(snap) {
+            const banner = document.getElementById('offline-banner');
+            if (snap.val() === true) {
+                banner.style.display = 'none';
+            } else {
+                banner.style.display = 'block';
+            }
+        });
+
         // YouTube Data API key — uses same Google Cloud project as Firebase.
         // If search fails, enable "YouTube Data API v3" at:
         // https://console.cloud.google.com/apis/library/youtube.googleapis.com
         const YT_API_KEY = firebaseConfig.apiKey;
 
-        var currentPlayerState = null;
+        let currentPlayerState = null;
 
         // ── Tabs ──
         function switchTab(tab) {
@@ -621,18 +643,18 @@
 
         // ── YouTube URL Helpers ──
         function extractVideoId(url) {
-            var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            var match = url.match(regex);
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
             return match ? match[1] : null;
         }
 
         function extractPlaylistId(url) {
-            var match = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+            const match = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
             return match ? match[1] : null;
         }
 
         // ── Search ──
-        var searchTimeout = null;
+        let searchTimeout = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('search-input').addEventListener('keydown', function(e) {
@@ -641,16 +663,16 @@
         });
 
         async function doSearch() {
-            var query = document.getElementById('search-input').value.trim();
+            const query = document.getElementById('search-input').value.trim();
             if (!query) return;
 
-            var errorEl = document.getElementById('search-error');
-            var resultsEl = document.getElementById('search-results');
+            const errorEl = document.getElementById('search-error');
+            const resultsEl = document.getElementById('search-results');
             errorEl.style.display = 'none';
             resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
 
             // Check if it's a URL pasted into search
-            var vidId = extractVideoId(query);
+            const vidId = extractVideoId(query);
             if (vidId) {
                 resultsEl.innerHTML = '';
                 playNow(vidId, query, '');
@@ -659,14 +681,14 @@
             }
 
             try {
-                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
+                const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
                     encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
-                var res = await fetch(url);
-                var data = await res.json();
+                const res = await fetch(url);
+                const data = await res.json();
 
                 if (data.error) {
                     if (data.error.code === 403) {
-                        var msg = data.error.message || '';
+                        const msg = data.error.message || '';
                         errorEl.textContent = msg.indexOf('referer') !== -1 || msg.indexOf('referrer') !== -1
                             ? 'API key blocked. Add "spataray.github.io/*" to your API key\'s allowed HTTP referrers in Google Cloud Console > APIs & Services > Credentials.'
                             : 'YouTube API not enabled. Enable "YouTube Data API v3" in Google Cloud Console for your Firebase project.';
@@ -685,12 +707,12 @@
                 }
 
                 data.items.forEach(function(item) {
-                    var id = item.id.videoId;
-                    var title = item.snippet.title;
-                    var channel = item.snippet.channelTitle;
-                    var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
+                    const id = item.id.videoId;
+                    const title = item.snippet.title;
+                    const channel = item.snippet.channelTitle;
+                    const thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
 
-                    var div = document.createElement('div');
+                    const div = document.createElement('div');
                     div.className = 'result-card';
                     div.innerHTML =
                         '<div class="result-thumb-wrap">' +
@@ -709,11 +731,11 @@
 
                 // Event delegation for result buttons
                 resultsEl.onclick = function(e) {
-                    var btn = e.target.closest('button');
+                    const btn = e.target.closest('button');
                     if (!btn) return;
-                    var id = btn.dataset.id;
-                    var title = btn.dataset.title;
-                    var author = btn.dataset.author;
+                    const id = btn.dataset.id;
+                    const title = btn.dataset.title;
+                    const author = btn.dataset.author;
                     if (btn.classList.contains('btn-play-sm')) {
                         playNow(id, title, author);
                     } else if (btn.classList.contains('btn-queue-sm')) {
@@ -736,7 +758,7 @@
 
         function addToQueue(id, title, author) {
             db.ref('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
+                const queue = snap.val() || [];
                 queue.push({
                     id: id,
                     title: title || '',
@@ -755,7 +777,7 @@
 
         function removeFromQueue(index) {
             db.ref('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
+                const queue = snap.val() || [];
                 queue.splice(index, 1);
                 db.ref('settings/queue').set(queue);
             });
@@ -763,17 +785,17 @@
 
         // ── URL Tab ──
         function playFromUrl() {
-            var input = document.getElementById('url-input').value.trim();
+            const input = document.getElementById('url-input').value.trim();
             if (!input) return;
 
-            var playlistId = extractPlaylistId(input);
+            const playlistId = extractPlaylistId(input);
             if (playlistId) {
                 loadPlaylist(playlistId, true);
                 document.getElementById('url-input').value = '';
                 return;
             }
 
-            var vidId = extractVideoId(input) || input.trim();
+            const vidId = extractVideoId(input) || input.trim();
             if (vidId.length === 11) {
                 playNow(vidId, '', '');
                 document.getElementById('url-input').value = '';
@@ -781,17 +803,17 @@
         }
 
         function queueFromUrl() {
-            var input = document.getElementById('url-input').value.trim();
+            const input = document.getElementById('url-input').value.trim();
             if (!input) return;
 
-            var playlistId = extractPlaylistId(input);
+            const playlistId = extractPlaylistId(input);
             if (playlistId) {
                 loadPlaylist(playlistId, false);
                 document.getElementById('url-input').value = '';
                 return;
             }
 
-            var vidId = extractVideoId(input) || input.trim();
+            const vidId = extractVideoId(input) || input.trim();
             if (vidId.length === 11) {
                 addToQueue(vidId, '', '');
                 document.getElementById('url-input').value = '';
@@ -801,22 +823,22 @@
         async function loadPlaylist(playlistId, playFirst) {
             showStatus('Loading playlist...');
             try {
-                var items = [];
-                var nextPageToken = '';
+                const items = [];
+                let nextPageToken = '';
                 // Fetch up to 100 items (2 pages)
-                for (var page = 0; page < 2; page++) {
-                    var url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=' +
+                for (let page = 0; page < 2; page++) {
+                    let url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=' +
                         playlistId + '&key=' + YT_API_KEY;
                     if (nextPageToken) url += '&pageToken=' + nextPageToken;
-                    var res = await fetch(url);
-                    var data = await res.json();
+                    const res = await fetch(url);
+                    const data = await res.json();
                     if (data.error) {
                         showStatus('Playlist error: ' + data.error.message);
                         return;
                     }
                     if (data.items) {
                         data.items.forEach(function(item) {
-                            var vid = item.snippet.resourceId.videoId;
+                            const vid = item.snippet.resourceId.videoId;
                             items.push({
                                 id: vid,
                                 title: item.snippet.title || '',
@@ -836,18 +858,18 @@
 
                 if (playFirst) {
                     // Play the first track, queue the rest
-                    var first = items.shift();
+                    const first = items.shift();
                     playNow(first.id, first.title, first.author);
                     if (items.length > 0) {
                         db.ref('settings/queue').once('value', function(snap) {
-                            var queue = snap.val() || [];
+                            const queue = snap.val() || [];
                             db.ref('settings/queue').set(queue.concat(items));
                         });
                     }
                     showStatus('Playing playlist (' + (items.length + 1) + ' songs)');
                 } else {
                     db.ref('settings/queue').once('value', function(snap) {
-                        var queue = snap.val() || [];
+                        const queue = snap.val() || [];
                         db.ref('settings/queue').set(queue.concat(items));
                         showStatus('Queued ' + items.length + ' songs from playlist');
                     });
@@ -867,7 +889,7 @@
             sendCommand(currentPlayerState === 1 ? 'pause' : 'play');
         }
 
-        var volumeTimeout = null;
+        let volumeTimeout = null;
         function sendVolume(val) {
             clearTimeout(volumeTimeout);
             volumeTimeout = setTimeout(function() {
@@ -924,14 +946,14 @@
 
         // ── Status ──
         function showStatus(msg) {
-            var el = document.getElementById('status-msg');
+            const el = document.getElementById('status-msg');
             el.innerText = msg;
             setTimeout(function() { el.innerText = ''; }, 3000);
         }
 
         // ── Helpers ──
         function escHtml(str) {
-            var div = document.createElement('div');
+            const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
         }
@@ -944,8 +966,8 @@
 
         // Now Playing
         db.ref('settings/nowPlaying').on('value', function(snap) {
-            var np = snap.val();
-            var container = document.getElementById('np-container');
+            const np = snap.val();
+            const container = document.getElementById('np-container');
             if (np && np.videoId) {
                 container.classList.remove('np-idle');
                 document.getElementById('np-thumb').src = 'https://img.youtube.com/vi/' + np.videoId + '/mqdefault.jpg';
@@ -962,16 +984,16 @@
         // Player State (for play/pause button)
         db.ref('settings/playerState').on('value', function(snap) {
             currentPlayerState = snap.val();
-            var btn = document.getElementById('btn-playpause');
+            const btn = document.getElementById('btn-playpause');
             // 1 = playing, 2 = paused
             btn.innerHTML = currentPlayerState === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
         });
 
         // Queue
         db.ref('settings/queue').on('value', function(snap) {
-            var queue = snap.val() || [];
-            var listEl = document.getElementById('queue-list');
-            var countEl = document.getElementById('queue-count');
+            const queue = snap.val() || [];
+            const listEl = document.getElementById('queue-list');
+            const countEl = document.getElementById('queue-count');
             countEl.textContent = queue.length > 0 ? '(' + queue.length + ')' : '';
 
             if (queue.length === 0) {
@@ -981,20 +1003,37 @@
 
             listEl.innerHTML = '';
             queue.forEach(function(item, i) {
-                var div = document.createElement('div');
+                const div = document.createElement('div');
                 div.className = 'queue-item';
-                var thumb = item.thumb || ('https://img.youtube.com/vi/' + (item.id || '') + '/default.jpg');
-                var title = item.title || item.id || 'Unknown';
+                div.dataset.index = i;
+                const thumb = item.thumb || ('https://img.youtube.com/vi/' + (item.id || '') + '/default.jpg');
+                const title = item.title || item.id || 'Unknown';
                 div.innerHTML =
                     '<span class="queue-num">' + (i + 1) + '</span>' +
-                    '<img class="queue-thumb" src="' + thumb + '" alt="">' +
+                    '<img class="queue-thumb" src="' + thumb + '" style="cursor:grab;" alt="">' +
                     '<div class="queue-info"><div class="queue-title">' + escHtml(title) + '</div></div>' +
                     '<button class="queue-remove" data-index="' + i + '" title="Remove">&times;</button>';
                 listEl.appendChild(div);
             });
 
+            // Re-init sortable
+            if (window._queueSortable) window._queueSortable.destroy();
+            window._queueSortable = new Sortable(listEl, {
+                animation: 150,
+                handle: '.queue-thumb',
+                onEnd: function(evt) {
+                    if (evt.oldIndex === evt.newIndex) return;
+                    db.ref('settings/queue').once('value', function(snap) {
+                        const q = snap.val() || [];
+                        const item = q.splice(evt.oldIndex, 1)[0];
+                        q.splice(evt.newIndex, 0, item);
+                        db.ref('settings/queue').set(q);
+                    });
+                }
+            });
+
             listEl.onclick = function(e) {
-                var btn = e.target.closest('.queue-remove');
+                const btn = e.target.closest('.queue-remove');
                 if (btn) removeFromQueue(parseInt(btn.dataset.index));
             };
         });
@@ -1016,7 +1055,7 @@
         });
 
         db.ref('settings/tickerPosition').on('value', function(snap) {
-            var pos = snap.val() || 'top';
+            const pos = snap.val() || 'top';
             ['top','bottom','left','right'].forEach(function(p) {
                 document.getElementById('tpos-' + p).classList.toggle('active', p === pos);
             });
