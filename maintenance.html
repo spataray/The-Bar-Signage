@@ -582,11 +582,11 @@
 
         <div class="toggle-row">
             <div>
-                <div class="toggle-label">&#128276; Last Call Mode</div>
-                <div class="toggle-desc">Show countdown and block requests</div>
+                <div class="toggle-label">&#128276; End-of-Night Timer</div>
+                <div class="toggle-desc">Auto-Last Call at 1:45 AM</div>
             </div>
             <label class="toggle-switch">
-                <input type="checkbox" id="toggle-lastcall" onchange="setLastCall(this.checked)">
+                <input type="checkbox" id="toggle-lastcall" onchange="setLastCallEnabled(this.checked)">
                 <span class="toggle-slider"></span>
             </label>
         </div>
@@ -1075,15 +1075,9 @@
         }
         initStaffQR();
 
-        function setLastCall(status) {
-            vRef.child('settings/lastCallActive').set(status);
-            showStatus(status ? 'Last Call: ACTIVE' : 'Last Call: OFF');
-            // If turning on, also send the preview command to TV to trigger overlay
-            if (status) {
-                sendCommand('previewLastCall');
-            } else {
-                sendCommand('resetLastCall');
-            }
+        function setLastCallEnabled(status) {
+            vRef.child('settings/lastCallEnabled').set(status);
+            showStatus(status ? 'Timer: ENABLED' : 'Timer: DISABLED');
         }
 
         function addMenuItem() {
@@ -1250,7 +1244,7 @@
             document.getElementById('toggle-airconsole').checked = !!snap.val();
         });
 
-        vRef.child('settings/lastCallActive').on('value', function(snap) {
+        vRef.child('settings/lastCallEnabled').on('value', function(snap) {
             document.getElementById('toggle-lastcall').checked = !!snap.val();
         });
 

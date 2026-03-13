@@ -671,11 +671,11 @@
             }
         });
 
-        vRef.child('settings/lastCallActive').on('value', function(snap) {
-            const active = !!snap.val();
-            if (active) {
-                previewLastCall();
-            } else {
+        let lastCallEnabled = false;
+        vRef.child('settings/lastCallEnabled').on('value', function(snap) {
+            lastCallEnabled = !!snap.val();
+            // If disabled, reset any active last call state immediately
+            if (!lastCallEnabled) {
                 resetLastCall();
             }
         });
@@ -894,6 +894,9 @@
 
         function resetLastCall() {
             lcIsPreview = false;
+            lcLastCallActive = false;
+            lcClosedActive = false;
+            vRef.child('settings/lastCallActive').set(false);
             hideLastCallScreen();
         }
 
@@ -916,6 +919,7 @@
         let lcIsPreview = false;
 
         function checkLastCallTime() {
+            if (!lastCallEnabled) return; 
             const now = new Date();
             const hawaii = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
             const h = hawaii.getHours();
@@ -934,6 +938,7 @@
                 if (!lcLastCallActive) {
                     lcLastCallActive = true;
                     lcClosedActive = false;
+                    vRef.child('settings/lastCallActive').set(true); 
                     showLastCallScreen();
                     document.getElementById('phase-lastcall').classList.add('active');
                     document.getElementById('phase-closed').classList.remove('active');
@@ -950,6 +955,7 @@
                 if (!lcClosedActive) {
                     lcClosedActive = true;
                     lcLastCallActive = false;
+                    vRef.child('settings/lastCallActive').set(true); 
                     showLastCallScreen();
                     const msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
                     document.getElementById('lc-goodbye').textContent = msg;
