@@ -388,38 +388,69 @@
             hideSongFact();
             if (!player || !player.getVideoData) return;
             const data = player.getVideoData();
-            const title = data.title || "";
+            const rawTitle = data.title || "";
+            const author = data.author || "";
             
             // Skip if it looks like karaoke
-            const lowerTitle = title.toLowerCase();
-            if (lowerTitle.includes('karaoke') || lowerTitle.includes('instrumental') || lowerTitle.includes('backing track')) {
+            const lowerTitle = rawTitle.toLowerCase();
+            if (lowerTitle.includes('karaoke') || lowerTitle.includes('instrumental') || lowerTitle.includes('backing track') || lowerTitle.includes('no vocal')) {
                 return;
             }
 
             // Wait 10 seconds before showing
             factTimer = setTimeout(async () => {
                 try {
-                    // Try to find a Wikipedia summary
-                    // Remove common non-essential tags like (Official Video) or [HD]
-                    const cleanTitle = title.replace(/\(.*?\)|\[.*?\]/g, '').trim();
-                    const searchUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTitle)}`;
-                    const res = await fetch(searchUrl);
+                    // 1. Better title cleaning
+                    // Remove (Official...), [Official...], (feat...), (Lyrics), etc.
+                    let cleanQuery = rawTitle
+                        .replace(/\(.*?\)|\[.*?\]/g, '') // Remove everything in brackets/parens
+                        .replace(/official (video|audio|music video|lyric video|lyrics)/gi, '')
+                        .replace(/ft\.|feat\./gi, '')
+                        .replace(/video/gi, '')
+                        .replace(/lyrics/gi, '')
+                        .replace(/HD|4K|HQ/g, '')
+                        .trim();
+
+                    // 2. Use Wikipedia SEARCH API to find the best page title
+                    // This is much more reliable than guessing the URL
+                    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*&srlimit=1`;
+                    const sRes = await fetch(searchUrl);
+                    const sData = await sRes.json();
+                    
+                    if (!sData.query || !sData.query.search || sData.query.search.length === 0) {
+                        // Try again with just the author + title parts if it was "Artist - Title"
+                        if (cleanQuery.includes('-')) {
+                            const parts = cleanQuery.split('-');
+                            cleanQuery = parts[parts.length-1].trim(); // try just the song title part
+                            const sRes2 = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*&srlimit=1`);
+                            const sData2 = await sRes2.json();
+                            if (!sData2.query || sData2.query.search.length === 0) return;
+                            sData.query.search[0] = sData2.query.search[0];
+                        } else return;
+                    }
+
+                    const pageTitle = sData.query.search[0].title;
+
+                    // 3. Get the SUMMARY for that specific page title
+                    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle.replace(/ /g, '_'))}`;
+                    const res = await fetch(summaryUrl);
                     if (!res.ok) return;
                     
                     const info = await res.json();
-                    if (info.extract && info.extract.length > 50) {
+                    if (info.extract && info.extract.length > 40) {
                         const el = document.getElementById('fact-bubble');
                         const text = document.getElementById('fact-bubble-text');
+                        // Use the description or first part of extract
                         text.innerText = info.extract;
                         el.classList.add('visible');
                         
-                        // Hide after 15 seconds
-                        factTimer = setTimeout(hideSongFact, 15000);
+                        // Hide after 18 seconds (slightly longer for reading)
+                        factTimer = setTimeout(hideSongFact, 18000);
                     }
                 } catch (e) {
-                    console.warn("Could not fetch song fact:", e);
+                    console.warn("Song fact error:", e);
                 }
-            }, 10000);
+            }, 8000); // Trigger a bit faster
         }
 
         function hideSongFact() {
