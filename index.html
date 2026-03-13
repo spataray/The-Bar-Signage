@@ -440,11 +440,29 @@
                     if (info.extract && info.extract.length > 40) {
                         const el = document.getElementById('fact-bubble');
                         const text = document.getElementById('fact-bubble-text');
-                        // Use the description or first part of extract
-                        text.innerText = info.extract;
+                        
+                        // Smart Truncation:
+                        // 1. Prefer the short description if it's good
+                        // 2. Otherwise take the first 2 sentences of the extract
+                        // 3. Max character limit of 240
+                        let displayInfo = info.description || info.extract;
+                        
+                        if (displayInfo.includes('.') && displayInfo.length > 150) {
+                            // Split by period but keep the period, take first 2 sentences
+                            const sentences = displayInfo.match(/[^.!?]+[.!?]+/g);
+                            if (sentences && sentences.length >= 2) {
+                                displayInfo = sentences[0] + " " + sentences[1];
+                            }
+                        }
+
+                        if (displayInfo.length > 240) {
+                            displayInfo = displayInfo.substring(0, 237) + "...";
+                        }
+
+                        text.innerText = displayInfo;
                         el.classList.add('visible');
                         
-                        // Hide after 18 seconds (slightly longer for reading)
+                        // Hide after 18 seconds
                         factTimer = setTimeout(hideSongFact, 18000);
                     }
                 } catch (e) {
