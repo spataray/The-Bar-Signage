@@ -630,6 +630,12 @@
                 case 'previewLastCall': previewLastCall(); break;
                 case 'previewClosed': previewClosed(); break;
                 case 'resetLastCall': resetLastCall(); break;
+                case 'fixDisplay': 
+                    stopIdle(); 
+                    if (player && player.getPlayerState() !== 1) {
+                        playNext();
+                    }
+                    break;
                 case 'captions':
                     if (cmd.value) player.loadModule('captions');
                     else player.unloadModule('captions');

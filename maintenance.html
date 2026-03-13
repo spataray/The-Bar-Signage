@@ -626,7 +626,9 @@
         <h3>&#128736;&#65039; SYSTEM</h3>
         <div class="btn-grid">
             <button class="btn btn-sm" style="background:#6f42c1; color:white;" onclick="startSlideshow()">&#128247; Slideshow</button>
+            <button class="btn btn-sm" style="background:#dc3545; color:white;" onclick="sendCommand('fixDisplay')">&#128640; Fix Display</button>
             <button class="btn btn-sm btn-refresh" onclick="remoteRefresh()">&#128260; Refresh TV</button>
+            <button class="btn btn-sm btn-refresh" onclick="location.reload()">&#128259; Refresh Remote</button>
         </div>
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Ticker Position</div>
@@ -712,7 +714,16 @@
         // ── VENUE ISOLATION ──
         function getVenueId() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('v') || 'DEFAULT';
+            let v = urlParams.get('v');
+            if (!v || v === 'DEFAULT') {
+                const promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+                if (promptVal) {
+                    v = promptVal.toUpperCase();
+                    // Update URL and reload to apply
+                    window.location.search = '?v=' + v;
+                }
+            }
+            return v || 'DEFAULT';
         }
         const venueId = getVenueId();
         const vRef = db.ref('venues/' + venueId);
