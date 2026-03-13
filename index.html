@@ -567,18 +567,22 @@
             // 2. Sync Menu & Ticker
             try {
                 // Sync Menu
-                const menuRes = await fetch(URL_MENU);
-                const menuText = await menuRes.text();
-                const menuResults = Papa.parse(menuText, { skipEmptyLines: true });
-                const menuRows = menuResults.data;
+                db.ref('settings/menu').once('value', async function(snap) {
+                    if (snap.exists()) return; // Don't fetch sheet if Firebase menu exists
 
-                let menuHtml = "<h3>DRINKS & PUPUS</h3>";
-                menuRows.forEach(row => {
-                    if(row[0] && row[0] !== "Item Name") {
-                        menuHtml += `<div class="menu-item"><span>${row[0]}</span><span>${row[1] || ''}</span></div>`;
-                    }
+                    const menuRes = await fetch(URL_MENU);
+                    const menuText = await menuRes.text();
+                    const menuResults = Papa.parse(menuText, { skipEmptyLines: true });
+                    const menuRows = menuResults.data;
+
+                    let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
+                    menuRows.forEach(row => {
+                        if(row[0] && row[0] !== "Item Name") {
+                            menuHtml += `<div class="menu-item"><span>${row[0]}</span><span>${row[1] || ''}</span></div>`;
+                        }
+                    });
+                    document.getElementById('menu-content').innerHTML = menuHtml;
                 });
-                document.getElementById('menu-content').innerHTML = menuHtml;
 
                 // Sync Ticker
                 const tickRes = await fetch(URL_TICKER);
@@ -597,6 +601,30 @@
         }
 
         // 5. FIREBASE LISTENERS
+        db.ref('settings/menu').on('value', function(snap) {
+            const menu = snap.val();
+            if (menu) {
+                let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
+                for (let key in menu) {
+                    const item = menu[key];
+                    menuHtml += `<div class="menu-item"><span>${item.name}</span><span>${item.price || ''}</span></div>`;
+                }
+                document.getElementById('menu-content').innerHTML = menuHtml;
+            } else {
+                // If Firebase menu is empty, the syncContent function will still try Google Sheets
+                syncContent(); 
+            }
+        });
+
+        db.ref('settings/lastCallActive').on('value', function(snap) {
+            const active = !!snap.val();
+            if (active) {
+                previewLastCall();
+            } else {
+                resetLastCall();
+            }
+        });
+
         db.ref('settings/currentVideoId').on('value', function(snap) {
             const vid = snap.val();
             if (!vid) return;

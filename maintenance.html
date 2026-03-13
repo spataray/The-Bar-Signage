@@ -474,6 +474,22 @@
         <button class="btn" style="background:#444; color:white; margin-top:10px;" onclick="clearQueue()">&#128465;&#65039; Clear Queue</button>
     </div>
 
+    <!-- MENU MANAGEMENT -->
+    <div class="card">
+        <h3>&#127864; MENU MANAGEMENT</h3>
+        <div id="staff-menu-list" style="margin-bottom: 15px;">
+            <div style="opacity: 0.5; text-align: center; padding: 10px;">Loading menu...</div>
+        </div>
+        
+        <div style="border-top: 1px solid #333; padding-top: 15px;">
+            <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Add New Item</div>
+            <input type="text" id="menu-item-name" placeholder="Item Name (e.g. Mai Tai)" style="margin-bottom: 8px;">
+            <input type="text" id="menu-item-price" placeholder="Price (e.g. $12)" style="margin-bottom: 8px;">
+            <button class="btn btn-sm" style="background:var(--bar-green); color:white;" onclick="addMenuItem()">+ Add to Menu</button>
+        </div>
+        <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 10px; line-height: 1.4;">Changes appear instantly on the TV sidebar. Multiple staff can edit at once.</p>
+    </div>
+
     <!-- QUICK CONTROLS -->
     <div class="card">
         <h3>&#127918; QUICK CONTROLS</h3>
@@ -544,6 +560,17 @@
             </label>
         </div>
 
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#128276; Last Call Mode</div>
+                <div class="toggle-desc">Show countdown and block requests</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-lastcall" onchange="setLastCall(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
         <div id="status-msg"></div>
@@ -558,6 +585,20 @@
             <button class="btn btn-sm" style="background:var(--bar-gold); color:black; width:auto; padding: 0 15px;" onclick="saveVenueName()">Save</button>
         </div>
         <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 5px; line-height: 1.4;">This updates the name displayed on the TV, Staff Remote, and Customer Request App (e.g. to display your guest Wi-Fi name).</p>
+    </div>
+
+    <!-- STAFF ACCESS QR -->
+    <div class="card">
+        <h3>&#128242; STAFF ACCESS</h3>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="background: white; padding: 5px; border-radius: 8px; line-height: 0;">
+                <img id="staff-qr-img" src="" style="width: 80px; height: 80px; display: block;" alt="Staff QR">
+            </div>
+            <div style="flex: 1;">
+                <div style="font-size: 0.85rem; font-weight: bold; margin-bottom: 4px;">Share Remote</div>
+                <div style="font-size: 0.75rem; opacity: 0.6; line-height: 1.3;">New staff can scan this to open the remote on their phones instantly.</div>
+            </div>
+        </div>
     </div>
 
     <!-- SYSTEM TOOLS -->
@@ -982,6 +1023,40 @@
             showStatus('Venue Name Updated');
         }
 
+        function initStaffQR() {
+            const qrImg = document.getElementById('staff-qr-img');
+            const staffUrl = window.location.href;
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(staffUrl);
+        }
+        initStaffQR();
+
+        function setLastCall(status) {
+            db.ref('settings/lastCallActive').set(status);
+            showStatus(status ? 'Last Call: ACTIVE' : 'Last Call: OFF');
+            // If turning on, also send the preview command to TV to trigger overlay
+            if (status) {
+                sendCommand('previewLastCall');
+            } else {
+                sendCommand('resetLastCall');
+            }
+        }
+
+        function addMenuItem() {
+            const name = document.getElementById('menu-item-name').value.trim();
+            const price = document.getElementById('menu-item-price').value.trim();
+            if (!name) return;
+            
+            db.ref('settings/menu').push({ name: name, price: price });
+            document.getElementById('menu-item-name').value = '';
+            document.getElementById('menu-item-price').value = '';
+            showStatus('Added: ' + name);
+        }
+
+        function removeMenuItem(key) {
+            db.ref('settings/menu').child(key).remove();
+            showStatus('Item removed');
+        }
+
         function remoteRefresh() {
             if (confirm('Refresh TV browser? Music will stop briefly.')) {
                 db.ref('settings/remoteRefresh').set(Date.now());
@@ -1104,8 +1179,37 @@
             document.getElementById('toggle-airconsole').checked = !!snap.val();
         });
 
+        db.ref('settings/lastCallActive').on('value', function(snap) {
+            document.getElementById('toggle-lastcall').checked = !!snap.val();
+        });
+
         db.ref('settings/showRequestQR').on('value', function(snap) {
             document.getElementById('toggle-qr').checked = snap.val() !== false;
+        });
+
+        db.ref('settings/menu').on('value', function(snap) {
+            const menu = snap.val();
+            const listEl = document.getElementById('staff-menu-list');
+            
+            if (!menu) {
+                listEl.innerHTML = '<div style="opacity: 0.5; text-align: center; padding: 10px;">Menu is empty</div>';
+                return;
+            }
+
+            let html = '';
+            for (let key in menu) {
+                const item = menu[key];
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #222; border-radius: 8px; margin-bottom: 5px; border: 1px solid #333;">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escHtml(item.name)}</div>
+                            <div style="font-size: 0.8rem; color: var(--bar-gold);">${escHtml(item.price || '')}</div>
+                        </div>
+                        <button onclick="removeMenuItem('${key}')" style="background: none; border: none; color: var(--bar-red); font-size: 1.2rem; cursor: pointer; padding: 5px;">&times;</button>
+                    </div>
+                `;
+            }
+            listEl.innerHTML = html;
         });
 
         db.ref('settings/captionsEnabled').on('value', function(snap) {

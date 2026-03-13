@@ -310,8 +310,8 @@
 
     <div id="lock-overlay">
         <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
-        <h2>KARAOKE LOCKED</h2>
-        <p>The queue is currently closed by staff.<br>Please check back later or ask your server!</p>
+        <h2 id="lock-title">QUEUE LOCKED</h2>
+        <p id="lock-message">The queue is currently closed by staff.<br>Please check back later or ask your server!</p>
     </div>
 
     <div id="status-msg"></div>
@@ -345,9 +345,36 @@
             document.getElementById('offline-banner').style.display = snap.val() ? 'none' : 'block';
         });
 
-        // Karaoke Lock Monitor
+        // Karaoke & Last Call Lock Monitor
+        let karaokeLocked = false;
+        let lastCallActive = false;
+
+        function updateLockState() {
+            const overlay = document.getElementById('lock-overlay');
+            const lockTitle = document.getElementById('lock-title');
+            const lockMsg = document.getElementById('lock-message');
+            
+            if (lastCallActive) {
+                overlay.style.display = 'flex';
+                lockTitle.textContent = "LAST CALL";
+                lockMsg.innerHTML = "We are currently in <b>Last Call</b>.<br>The queue is closed for the night!";
+            } else if (karaokeLocked) {
+                overlay.style.display = 'flex';
+                lockTitle.textContent = "QUEUE LOCKED";
+                lockMsg.innerHTML = "The queue is currently <b>Locked</b> by staff.<br>Please check back later or ask your server!";
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+
         db.ref('settings/karaokeLock').on('value', function(snap) {
-            document.getElementById('lock-overlay').style.display = snap.val() ? 'flex' : 'none';
+            karaokeLocked = !!snap.val();
+            updateLockState();
+        });
+
+        db.ref('settings/lastCallActive').on('value', function(snap) {
+            lastCallActive = !!snap.val();
+            updateLockState();
         });
 
         // Now Playing Sync
