@@ -341,6 +341,10 @@
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
                 reportNowPlaying();
+                // Re-apply captions if enabled
+                db.ref('settings/captionsEnabled').once('value', function(snap) {
+                    if (snap.val()) player.loadModule('captions');
+                });
             }
             if (event.data === YT.PlayerState.ENDED) {
                 playNext();
@@ -610,6 +614,10 @@
                 case 'previewLastCall': previewLastCall(); break;
                 case 'previewClosed': previewClosed(); break;
                 case 'resetLastCall': resetLastCall(); break;
+                case 'captions':
+                    if (cmd.value) player.loadModule('captions');
+                    else player.unloadModule('captions');
+                    break;
             }
             db.ref('settings/playerCommand').set(null);
         });

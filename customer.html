@@ -264,6 +264,27 @@
     </header>
 
     <div class="container">
+        <!-- NOW PLAYING -->
+        <div class="card" id="now-playing-card">
+            <h3>&#127925; NOW PLAYING</h3>
+            <div id="np-container" style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                <img id="np-thumb" src="" style="width: 120px; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; background: #000;">
+                <div style="flex: 1; min-width: 0;">
+                    <div id="np-title" style="font-size: 0.95rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nothing playing</div>
+                    <div id="np-author" style="font-size: 0.75rem; opacity: 0.6; margin-top: 4px;">--</div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="font-size: 0.85rem; font-weight: 600;">&#128172; Subtitles (CC)</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
         <!-- SEARCH -->
         <div class="card">
             <h3>&#128269; FIND A SONG</h3>
@@ -322,6 +343,34 @@
         db.ref('settings/karaokeLock').on('value', function(snap) {
             document.getElementById('lock-overlay').style.display = snap.val() ? 'flex' : 'none';
         });
+
+        // Now Playing Sync
+        db.ref('settings/nowPlaying').on('value', function(snap) {
+            const data = snap.val();
+            const thumb = document.getElementById('np-thumb');
+            const title = document.getElementById('np-title');
+            const author = document.getElementById('np-author');
+            
+            if (data) {
+                thumb.src = `https://img.youtube.com/vi/${data.videoId}/mqdefault.jpg`;
+                title.textContent = data.title || 'Unknown';
+                author.textContent = data.author || '--';
+            } else {
+                thumb.src = '';
+                title.textContent = 'Nothing playing';
+                author.textContent = '--';
+            }
+        });
+
+        // Caption Sync
+        db.ref('settings/captionsEnabled').on('value', function(snap) {
+            document.getElementById('toggle-cc').checked = !!snap.val();
+        });
+
+        function setCaptions(status) {
+            db.ref('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
+            db.ref('settings/captionsEnabled').set(status);
+        }
 
         // Search logic
         document.getElementById('search-input').addEventListener('keydown', (e) => {

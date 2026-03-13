@@ -533,6 +533,17 @@
             </label>
         </div>
 
+        <div class="toggle-row">
+            <div>
+                <div class="toggle-label">&#128172; Subtitles (CC)</div>
+                <div class="toggle-desc">Show captions on TV when available</div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
         <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
         <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
         <div id="status-msg"></div>
@@ -945,7 +956,13 @@
 
         function setQRMode(status) {
             db.ref('settings/showRequestQR').set(status);
-            showStatus(status ? 'QR Code ' + (status ? 'Visible' : 'Hidden'));
+            showStatus(status ? 'QR Code Visible' : 'QR Code Hidden');
+        }
+
+        function setCaptions(status) {
+            db.ref('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
+            db.ref('settings/captionsEnabled').set(status);
+            showStatus(status ? 'Captions ON' : 'Captions OFF');
         }
 
         function remoteRefresh() {
@@ -1072,6 +1089,10 @@
 
         db.ref('settings/showRequestQR').on('value', function(snap) {
             document.getElementById('toggle-qr').checked = snap.val() !== false;
+        });
+
+        db.ref('settings/captionsEnabled').on('value', function(snap) {
+            document.getElementById('toggle-cc').checked = !!snap.val();
         });
 
         db.ref('settings/tickerPosition').on('value', function(snap) {
