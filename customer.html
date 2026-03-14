@@ -332,11 +332,26 @@
 
             try {
                 const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoEmbeddable=true&maxResults=30&key=${YT_API_KEY}`;
+                // console.log("Searching URL:", url); // Debugging
                 const res = await fetch(url);
                 const data = await res.json();
+
+                if (data.error) {
+                    let msg = data.error.message || 'Unknown error';
+                    if (data.error.code === 403) {
+                        msg = (msg.indexOf('referer') !== -1 || msg.indexOf('referrer') !== -1)
+                            ? 'API key blocked. Add this domain to your API key\'s allowed HTTP referrers in Google Cloud Console.'
+                            : 'YouTube Data API v3 not enabled in Google Cloud Console.';
+                    }
+                    errorEl.textContent = "Search Error (" + data.error.code + "): " + msg;
+                    errorEl.style.display = 'block';
+                    resultsEl.innerHTML = '';
+                    return;
+                }
+
                 resultsEl.innerHTML = '';
                 if (!data.items || data.items.length === 0) {
-                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found</div>';
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found for: ' + query + '</div>';
                     return;
                 }
                 data.items.forEach(item => {
