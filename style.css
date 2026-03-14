@@ -596,6 +596,7 @@ body.ticker-right #ticker-text { white-space: normal; }
     box-shadow: 0 15px 50px rgba(0,0,0,0.5);
     opacity: 0;
     transform: scale(0.5) translateY(20px);
+    transform-origin: bottom right;
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: none;
     pointer-events: none;
@@ -620,19 +621,19 @@ body.ticker-right #ticker-text { white-space: normal; }
     width: 40px;
     height: 40px;
     bottom: -15px;
-    left: 50px;
+    right: 50px;
     box-shadow: 
-        30px 10px 0 -5px white,
-        -20px -10px 0 5px white,
-        60px -20px 0 10px white;
+        -30px 10px 0 -5px white,
+        20px -10px 0 5px white,
+        -60px -20px 0 10px white;
 }
 
 #fact-bubble::after {
     width: 20px;
     height: 20px;
     bottom: -35px;
-    left: 30px;
-    box-shadow: 15px 10px 0 -2px white;
+    right: 30px;
+    box-shadow: -15px 10px 0 -2px white;
 }
 
 #fact-bubble-text {
