@@ -106,6 +106,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
+    <!-- CONFIGURATION -->
+    <script src="config.js"></script>
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
@@ -118,17 +121,7 @@
         const URL_MENU = "";
         const URL_TICKER = "";
 
-        // 2. FIREBASE CONFIG
-        const firebaseConfig = {
-            apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
-            authDomain: "ta-station-remote.firebaseapp.com",
-            databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
-            projectId: "ta-station-remote",
-            storageBucket: "ta-station-remote.firebasestorage.app",
-            messagingSenderId: "805160829750",
-            appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
-        };
-
+        // 2. FIREBASE SETUP
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -190,7 +183,6 @@
         // Auto music mode — fetch playlists from channel, fall back to hardcoded
         let AUTO_PLAYLISTS = ['RDAMVMDy_eP-mqWow', 'RDAMVM77pb0WXAz-Q'];
         let autoMode = false;
-        const YT_API_KEY = firebaseConfig.apiKey;
 
         function fetchChannelPlaylists(handle) {
             const channelUrl = 'https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=' +

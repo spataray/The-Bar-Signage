@@ -696,22 +696,15 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
+    <!-- CONFIGURATION -->
+    <script src="config.js"></script>
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('service-worker.js');
             });
         }
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
-            authDomain: "ta-station-remote.firebaseapp.com",
-            databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
-            projectId: "ta-station-remote",
-            storageBucket: "ta-station-remote.firebasestorage.app",
-            messagingSenderId: "805160829750",
-            appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
-        };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -752,10 +745,10 @@
             }
         });
 
-        // YouTube Data API key — uses same Google Cloud project as Firebase.
+        // YouTube Data API key is now in config.js
         // If search fails, enable "YouTube Data API v3" at:
         // https://console.cloud.google.com/apis/library/youtube.googleapis.com
-        const YT_API_KEY = firebaseConfig.apiKey;
+
 
         let currentPlayerState = null;
 
@@ -821,14 +814,17 @@
 
                 if (data.error) {
                     const originalMsg = data.error.message || 'Unknown error';
-                    const rawError = JSON.stringify(data.error);
                     let msg = originalMsg;
                     if (data.error.code === 403) {
-                        msg = (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1)
-                            ? 'API key blocked. Add "spataray.github.io/*" to your API key\'s allowed HTTP referrers in Google Cloud Console > APIs & Services > Credentials.'
-                            : 'YouTube API not enabled or quota exceeded.';
+                        if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
+                            msg = 'API key blocked. Add "spataray.github.io/*" to your API key\'s allowed HTTP referrers in Google Cloud Console.';
+                        } else if (originalMsg.indexOf('quota') !== -1) {
+                            msg = 'Daily search limit reached. Staff: Please paste a YouTube URL directly instead of searching.';
+                        } else {
+                            msg = 'YouTube API not enabled for this project.';
+                        }
                     }
-                    errorEl.textContent = 'Search Error (' + data.error.code + '): ' + msg + ' | RAW: ' + rawError;
+                    errorEl.textContent = 'Search Error: ' + msg;
                     errorEl.style.display = 'block';
                     resultsEl.innerHTML = '';
                     return;

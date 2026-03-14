@@ -234,17 +234,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyByZx_LjyqpqOl90XMZFWy4eHBQJklCooc",
-            authDomain: "ta-station-remote.firebaseapp.com",
-            databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
-            projectId: "ta-station-remote",
-            storageBucket: "ta-station-remote.firebasestorage.app",
-            messagingSenderId: "805160829750",
-            appId: "1:805160829750:web:9a2a9e1cbf639562aba997"
-        };
+    <!-- CONFIGURATION -->
+    <script src="config.js"></script>
 
+    <script>
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -272,11 +265,11 @@
         var venueId = getVenueId();
         document.getElementById('current-code-display').textContent = venueId;
         var vRef = db.ref('venues/' + venueId);
-        var YT_API_KEY = firebaseConfig.apiKey;
 
         db.ref(".info/connected").on("value", function(snap) {
             document.getElementById('offline-banner').style.display = snap.val() ? 'none' : 'block';
         });
+
 
         let karaokeLocked = false;
         let lastCallActive = false;
@@ -370,11 +363,15 @@
                         var originalMsg = data.error.message || 'Unknown error';
                         var msg = originalMsg;
                         if (data.error.code === 403) {
-                            msg = (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1)
-                                ? 'API key blocked. Add this domain to your API key\'s allowed HTTP referrers in Google Cloud Console.'
-                                : 'YouTube Data API v3 not enabled in Google Cloud Console.';
+                            if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
+                                msg = 'API key blocked. Add domain to allowed referrers.';
+                            } else if (originalMsg.indexOf('quota') !== -1) {
+                                msg = 'Daily search limit reached. Try searching again after 9 PM Hawaii time.';
+                            } else {
+                                msg = 'YouTube Data API v3 not enabled.';
+                            }
                         }
-                        errorEl.textContent = "Search Error (" + data.error.code + "): " + msg + " (Google said: " + originalMsg + ")";
+                        errorEl.textContent = "Search Error: " + msg;
                         errorEl.style.display = 'block';
                         resultsEl.innerHTML = '';
                         return;

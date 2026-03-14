@@ -2,6 +2,8 @@ const CACHE_NAME = 'ta-station-v1.1.0';
 const ASSETS = [
   'index.html',
   'maintenance.html',
+  'customer.html',
+  'config.js',
   'style.css',
   'manifest.json',
   'manifest-remote.json'
