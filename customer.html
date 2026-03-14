@@ -168,7 +168,13 @@
     <div id="offline-banner">CONNECTION LOST - RECONNECTING...</div>
 
     <div class="top-bar">
-        <h1 class="venue-name-display">THE STATION</h1>
+        <div style="display:flex; flex-direction:column;">
+            <h1 class="venue-name-display" style="margin-bottom:2px;">THE STATION</h1>
+            <div style="font-size:0.6rem; opacity:0.7; font-weight:bold; display:flex; align-items:center; gap:5px;">
+                CONNECTED: <span id="current-code-display" style="color:var(--bar-gold);">----</span>
+                <a href="#" onclick="switchVenue(); return false;" style="color:white; text-decoration:underline; font-size:0.55rem; opacity:0.5;">[SWITCH]</a>
+            </div>
+        </div>
         <div class="cc-wrap">
             <span>SUBTITLES (CC)</span>
             <label class="toggle-switch">
@@ -243,10 +249,10 @@
         const db = firebase.database();
 
         function getVenueId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            let v = urlParams.get('v');
+            var urlParams = new URLSearchParams(window.location.search);
+            var v = urlParams.get('v');
             if (!v) {
-                const promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+                var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
                 if (promptVal) {
                     v = promptVal.toUpperCase();
                     window.location.search = '?v=' + v;
@@ -254,10 +260,19 @@
             }
             return v || 'DEFAULT';
         }
+
+        function switchVenue() {
+            var current = venueId;
+            var promptVal = prompt("Enter new 4-character Connect Code:", current);
+            if (promptVal && promptVal.toUpperCase() !== current) {
+                window.location.search = '?v=' + promptVal.toUpperCase();
+            }
+        }
         
-        const venueId = getVenueId();
-        const vRef = db.ref('venues/' + venueId);
-        const YT_API_KEY = firebaseConfig.apiKey;
+        var venueId = getVenueId();
+        document.getElementById('current-code-display').textContent = venueId;
+        var vRef = db.ref('venues/' + venueId);
+        var YT_API_KEY = firebaseConfig.apiKey;
 
         db.ref(".info/connected").on("value", function(snap) {
             document.getElementById('offline-banner').style.display = snap.val() ? 'none' : 'block';

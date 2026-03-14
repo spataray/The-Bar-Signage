@@ -416,7 +416,11 @@
 </head>
 <body>
 
-    <h1 class="venue-name-display">T.A. STATION</h1>
+    <h1 class="venue-name-display" style="margin-bottom:0;">T.A. STATION</h1>
+    <div style="font-size:0.75rem; font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:8px; opacity:0.8;">
+        TV CONNECTED: <span id="current-code-display" style="color:var(--bar-gold); letter-spacing:1px;">----</span>
+        <button onclick="switchVenue()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; cursor:pointer;">SWITCH</button>
+    </div>
     <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
     <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.1.0</span></div>
 
@@ -714,20 +718,29 @@
 
         // ── VENUE ISOLATION ──
         function getVenueId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            let v = urlParams.get('v');
+            var urlParams = new URLSearchParams(window.location.search);
+            var v = urlParams.get('v');
             if (!v || v === 'DEFAULT') {
-                const promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+                var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
                 if (promptVal) {
                     v = promptVal.toUpperCase();
-                    // Update URL and reload to apply
                     window.location.search = '?v=' + v;
                 }
             }
             return v || 'DEFAULT';
         }
-        const venueId = getVenueId();
-        const vRef = db.ref('venues/' + venueId);
+
+        function switchVenue() {
+            var current = venueId;
+            var promptVal = prompt("Enter new 4-character Connect Code:", current);
+            if (promptVal && promptVal.toUpperCase() !== current) {
+                window.location.search = '?v=' + promptVal.toUpperCase();
+            }
+        }
+
+        var venueId = getVenueId();
+        document.getElementById('current-code-display').textContent = venueId;
+        var vRef = db.ref('venues/' + venueId);
 
         // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
