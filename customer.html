@@ -342,8 +342,13 @@
             if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
         };
 
+        // Helper to make search query safe for Firebase keys
+        function firebaseSafe(str) {
+            return str.toLowerCase().trim().replace(/[.#$[\]/g, "_");
+        }
+
         // Search
-        function doSearch() {
+        async function doSearch() {
             var input = document.getElementById('search-input');
             var query = input.value.trim();
             if (!query) return;
@@ -354,56 +359,85 @@
             errorEl.style.display = 'none';
             resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">Searching...</div>';
 
-            var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=30&key=' + YT_API_KEY;
-            
-            fetch(url)
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    if (data.error) {
-                        var originalMsg = data.error.message || 'Unknown error';
-                        var msg = originalMsg;
-                        if (data.error.code === 403) {
-                            if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
-                                msg = 'API key blocked. Add domain to allowed referrers.';
-                            } else if (originalMsg.indexOf('quota') !== -1) {
-                                msg = 'Daily search limit reached. Try searching again after 9 PM Hawaii time.';
-                            } else {
-                                msg = 'YouTube Data API v3 not enabled.';
-                            }
-                        }
-                        errorEl.textContent = "Search Error: " + msg;
-                        errorEl.style.display = 'block';
-                        resultsEl.innerHTML = '';
-                        return;
-                    }
+            // 1. Check Cache
+            const safeQuery = firebaseSafe(query);
+            const cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
 
-                    resultsEl.innerHTML = '';
-                    if (!data.items || data.items.length === 0) {
-                        resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found for: ' + query + '</div>';
-                        return;
+            try {
+                const snapshot = await cacheRef.once('value');
+                const cachedData = snapshot.val();
+
+                if (cachedData && cachedData.items) {
+                    console.log('Using cached results for:', query);
+                    renderResults(cachedData.items);
+                    return;
+                }
+
+                // 2. Fetch from YouTube
+                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=30&key=' + YT_API_KEY;
+                
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.error) {
+                    var originalMsg = data.error.message || 'Unknown error';
+                    var msg = originalMsg;
+                    if (data.error.code === 403) {
+                        if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
+                            msg = 'API key blocked. Add domain to allowed referrers.';
+                        } else if (originalMsg.indexOf('quota') !== -1) {
+                            msg = 'Daily search limit reached. Try searching again after 9 PM Hawaii time.';
+                        } else {
+                            msg = 'YouTube Data API v3 not enabled.';
+                        }
                     }
-                    data.items.forEach(function(item) {
-                        var id = item.id.videoId;
-                        var title = item.snippet.title;
-                        var channel = item.snippet.channelTitle;
-                        var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
-                        var div = document.createElement('div');
-                        div.className = 'result-item';
-                        div.innerHTML = `
-                            <img class="result-thumb" src="${thumb}">
-                            <div class="result-info">
-                                <div class="result-title">${escHtml(title)}</div>
-                                <div class="result-channel">${escHtml(channel)}</div>
-                            </div>
-                            <button class="btn-add" data-id="${id}" data-title="${escAttr(title)}" data-author="${escAttr(channel)}" data-thumb="${thumb}">+</button>
-                        `;
-                        resultsEl.appendChild(div);
-                    });
-                })
-                .catch(function(err) { 
-                    resultsEl.innerHTML = '<div style="color:red; text-align:center;">Error searching: ' + err.message + '</div>'; 
+                    errorEl.textContent = "Search Error: " + msg;
+                    errorEl.style.display = 'block';
+                    resultsEl.innerHTML = '';
+                    return;
+                }
+
+                if (!data.items || data.items.length === 0) {
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found for: ' + query + '</div>';
+                    return;
+                }
+
+                // Save to Cache
+                cacheRef.set({
+                    items: data.items,
+                    timestamp: Date.now()
                 });
+
+                renderResults(data.items);
+
+            } catch (e) {
+                console.error('Search error:', e);
+                resultsEl.innerHTML = '<div style="color:red; text-align:center;">Error searching. Check your connection.</div>';
+            }
         }
+
+        function renderResults(items) {
+            var resultsEl = document.getElementById('search-results');
+            resultsEl.innerHTML = '';
+            items.forEach(function(item) {
+                var id = item.id.videoId;
+                var title = item.snippet.title;
+                var channel = item.snippet.channelTitle;
+                var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
+                var div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <img class="result-thumb" src="${thumb}">
+                    <div class="result-info">
+                        <div class="result-title">${escHtml(title)}</div>
+                        <div class="result-channel">${escHtml(channel)}</div>
+                    </div>
+                    <button class="btn-add" data-id="${id}" data-title="${escAttr(title)}" data-author="${escAttr(channel)}" data-thumb="${thumb}">+</button>
+                `;
+                resultsEl.appendChild(div);
+            });
+        }
+
 
         // Add an explicit click listener to the button as a fallback
         document.getElementById('search-btn').onclick = function(e) {

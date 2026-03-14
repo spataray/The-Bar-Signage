@@ -782,6 +782,11 @@
         // ── Search ──
         let searchTimeout = null;
 
+        // Helper to make search query safe for Firebase keys
+        function firebaseSafe(str) {
+            return str.toLowerCase().trim().replace(/[.#$[\]/g, "_");
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('search-input').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') doSearch();
@@ -797,7 +802,7 @@
             errorEl.style.display = 'none';
             resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
 
-            // Check if it's a URL pasted into search
+            // 1. Check if it's a URL pasted into search (0 units)
             const vidId = extractVideoId(query);
             if (vidId) {
                 resultsEl.innerHTML = '';
@@ -806,7 +811,21 @@
                 return;
             }
 
+            // 2. Check Firebase Cache (0 units)
+            const safeQuery = firebaseSafe(query);
+            const cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
+            
             try {
+                const snapshot = await cacheRef.once('value');
+                const cachedData = snapshot.val();
+
+                if (cachedData && cachedData.items) {
+                    console.log('Using cached results for:', query);
+                    renderSearchResults(cachedData.items);
+                    return;
+                }
+
+                // 3. If not in cache, fetch from YouTube (100 units)
                 const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
                     encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
                 const res = await fetch(url);
@@ -830,55 +849,68 @@
                     return;
                 }
 
-                resultsEl.innerHTML = '';
                 if (!data.items || data.items.length === 0) {
                     resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
                     return;
                 }
 
-                data.items.forEach(function(item) {
-                    const id = item.id.videoId;
-                    const title = item.snippet.title;
-                    const channel = item.snippet.channelTitle;
-                    const thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
-
-                    const div = document.createElement('div');
-                    div.className = 'result-card';
-                    div.innerHTML =
-                        '<div class="result-thumb-wrap">' +
-                            '<img class="result-thumb" src="' + thumb + '" alt="">' +
-                            '<div class="result-card-actions">' +
-                                '<button class="btn-play-sm" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">&#9654; Play</button>' +
-                                '<button class="btn-queue-sm" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">+</button>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="result-card-info">' +
-                            '<div class="result-title">' + escHtml(title) + '</div>' +
-                            '<div class="result-channel">' + escHtml(channel) + '</div>' +
-                        '</div>';
-                    resultsEl.appendChild(div);
+                // Save to Cache for next time
+                cacheRef.set({
+                    items: data.items,
+                    timestamp: Date.now()
                 });
 
-                // Event delegation for result buttons
-                resultsEl.onclick = function(e) {
-                    const btn = e.target.closest('button');
-                    if (!btn) return;
-                    const id = btn.dataset.id;
-                    const title = btn.dataset.title;
-                    const author = btn.dataset.author;
-                    if (btn.classList.contains('btn-play-sm')) {
-                        playNow(id, title, author);
-                    } else if (btn.classList.contains('btn-queue-sm')) {
-                        addToQueue(id, title, author);
-                    }
-                };
+                renderSearchResults(data.items);
 
             } catch (err) {
-                errorEl.textContent = 'Network error. Check your connection.';
+                console.error('Search error:', err);
+                errorEl.textContent = 'Search failed. Check your connection.';
                 errorEl.style.display = 'block';
                 resultsEl.innerHTML = '';
             }
         }
+
+        function renderSearchResults(items) {
+            const resultsEl = document.getElementById('search-results');
+            resultsEl.innerHTML = '';
+            items.forEach(function(item) {
+                const id = item.id.videoId;
+                const title = item.snippet.title;
+                const channel = item.snippet.channelTitle;
+                const thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
+
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.innerHTML =
+                    '<div class="result-thumb-wrap">' +
+                        '<img class="result-thumb" src="' + thumb + '" alt="">' +
+                        '<div class="result-card-actions">' +
+                            '<button class="btn-play-sm" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">&#9654; Play</button>' +
+                            '<button class="btn-queue-sm" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">+</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="result-card-info">' +
+                        '<div class="result-title">' + escHtml(title) + '</div>' +
+                        '<div class="result-channel">' + escHtml(channel) + '</div>' +
+                    '</div>';
+                resultsEl.appendChild(div);
+            });
+
+            // Event delegation for result buttons
+            resultsEl.onclick = function(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const id = btn.dataset.id;
+                const title = btn.dataset.title;
+                const author = btn.dataset.author;
+                if (btn.classList.contains('btn-play-sm')) {
+                    playNow(id, title, author);
+                } else if (btn.classList.contains('btn-queue-sm')) {
+                    addToQueue(id, title, author);
+                }
+            };
+        }
+
 
         // ── Play / Queue ──
         function playNow(id, title, author) {
