@@ -1,0 +1,1328 @@
+# Top 1000 YouTube Karaoke & Music Search Songs
+
+---
+
+## American / International Karaoke Hits
+
+ - [ ] Queen — Bohemian Rhapsody
+ - [ ] Journey — Don't Stop Believin'
+ - [ ] Neil Diamond — Sweet Caroline
+ - [ ] Bon Jovi — Livin' on a Prayer
+ - [ ] Whitney Houston — I Wanna Dance With Somebody
+ - [ ] Whitney Houston — I Will Always Love You
+ - [ ] ABBA — Dancing Queen
+ - [ ] Oasis — Wonderwall
+ - [ ] Adele — Someone Like You
+ - [ ] Adele — Rolling in the Deep
+ - [ ] Taylor Swift — Love Story
+ - [ ] Taylor Swift — Shake It Off
+ - [ ] Bruno Mars — Uptown Funk
+ - [ ] Bruno Mars — Just the Way You Are
+ - [ ] Lady Gaga — Shallow
+ - [ ] Lady Gaga — Poker Face
+ - [ ] Ed Sheeran — Perfect
+ - [ ] Ed Sheeran — Shape of You
+ - [ ] Elvis Presley — Can't Help Falling in Love
+ - [ ] Elvis Presley — Suspicious Minds
+ - [ ] The Beatles — Hey Jude
+ - [ ] The Beatles — Let It Be
+ - [ ] Eagles — Hotel California
+ - [ ] Guns N' Roses — Sweet Child O' Mine
+ - [ ] Aerosmith — I Don't Want to Miss a Thing
+ - [ ] Backstreet Boys — I Want It That Way
+ - [ ] NSYNC — Bye Bye Bye
+ - [ ] Michael Jackson — Billie Jean
+ - [ ] Michael Jackson — Beat It
+ - [ ] Michael Jackson — Thriller
+ - [ ] Celine Dion — My Heart Will Go On
+ - [ ] Cyndi Lauper — Girls Just Want to Have Fun
+ - [ ] Gloria Gaynor — I Will Survive
+ - [ ] Toto — Africa
+ - [ ] Rick Astley — Never Gonna Give You Up
+ - [ ] Soft Cell — Tainted Love
+ - [ ] 4 Non Blondes — What's Up
+ - [ ] Tina Turner — What's Love Got to Do With It
+ - [ ] Kelly Clarkson — Since U Been Gone
+ - [ ] Alicia Keys — Fallin'
+ - [ ] Maroon 5 — Moves Like Jagger
+ - [ ] Miley Cyrus — Wrecking Ball
+ - [ ] Harry Styles — As It Was
+ - [ ] Billie Eilish — Bad Guy
+ - [ ] Imagine Dragons — Radioactive
+ - [ ] The Weeknd — Blinding Lights
+ - [ ] Eminem — Lose Yourself
+ - [ ] Katy Perry — Firework
+ - [ ] Rihanna — Umbrella
+ - [ ] Justin Bieber — Baby
+ - [ ] One Direction — What Makes You Beautiful
+ - [ ] Britney Spears — Toxic
+ - [ ] Avril Lavigne — Complicated
+ - [ ] Green Day — Boulevard of Broken Dreams
+ - [ ] Nirvana — Smells Like Teen Spirit
+ - [ ] Metallica — Enter Sandman
+ - [ ] AC/DC — Highway to Hell
+ - [ ] Elton John — Rocket Man
+ - [ ] Billy Joel — Piano Man
+ - [ ] Prince — Purple Rain
+ - [ ] Madonna — Like a Prayer
+ - [ ] Dolly Parton — Jolene
+ - [ ] John Denver — Take Me Home Country Roads
+ - [ ] CCR — Bad Moon Rising
+ - [ ] The Killers — Mr. Brightside
+ - [ ] Coldplay — Yellow
+ - [ ] Goo Goo Dolls — Iris
+ - [ ] Bryan Adams — Summer of '69
+ - [ ] Queen — Don't Stop Me Now
+ - [ ] Queen — We Will Rock You
+ - [ ] Queen — We Are the Champions
+
+---
+
+## Party / Viral YouTube Hits
+
+ - [ ] PSY — Gangnam Style
+ - [ ] Luis Fonsi — Despacito
+ - [ ] Lil Nas X — Old Town Road
+ - [ ] LMFAO — Party Rock Anthem
+ - [ ] Black Eyed Peas — I Gotta Feeling
+ - [ ] Pitbull — Timber
+ - [ ] Aqua — Barbie Girl
+ - [ ] Smash Mouth — All Star
+ - [ ] Lady Gaga — Bad Romance
+ - [ ] Pharrell Williams — Happy
+ - [ ] Drake — Hotline Bling
+ - [ ] Doja Cat — Say So
+ - [ ] Olivia Rodrigo — Drivers License
+ - [ ] Dua Lipa — Levitating
+ - [ ] Post Malone — Circles
+ - [ ] BTS — Dynamite
+ - [ ] BTS — Butter
+ - [ ] Blackpink — How You Like That
+ - [ ] The Weeknd — Save Your Tears
+ - [ ] Sam Smith — Stay With Me
+ - [ ] Charlie Puth — Attention
+ - [ ] Meghan Trainor — All About That Bass
+ - [ ] Flo Rida — Low
+ - [ ] Shakira — Waka Waka
+
+---
+
+## Hawaiian Karaoke Favorites
+
+ - [ ] Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+ - [ ] Israel Kamakawiwo'ole — White Sandy Beach
+ - [ ] Israel Kamakawiwo'ole — Hawai'i '78
+ - [ ] Kealiʻi Reichel — Kawaipunahele
+ - [ ] Kealiʻi Reichel — E O Mai
+ - [ ] Gabby Pahinui — Hiʻilawe
+ - [ ] Dennis Pavao — Kuʻu Home O Kahaluʻu
+ - [ ] The Makaha Sons — Ke Alaula
+ - [ ] Kapena — Masese
+ - [ ] Fiji — Sweet Darlin'
+ - [ ] Fiji — Lia
+ - [ ] J Boog — Let's Do It Again
+ - [ ] J Boog — Sunshine Girl
+ - [ ] Common Kings — Wade in Your Water
+ - [ ] Kolohe Kai — Cool Down
+ - [ ] Kolohe Kai — Ehu Girl
+ - [ ] Rebel Souljahz — The One
+ - [ ] Anuhea — Simple Love Song
+ - [ ] Anuhea — Higher Than the Clouds
+ - [ ] Kaʻau Crater Boys — Surf
+
+---
+
+## Thai Karaoke Hits
+
+ - [ ] Bird Thongchai — Too Much So Much Very Much
+ - [ ] Bird Thongchai — Sabai Sabai
+ - [ ] Sek Loso — Som Sarn
+ - [ ] Carabao — Made in Thailand
+ - [ ] Carabao — Bua Loi
+ - [ ] Palmy — Ooh!
+ - [ ] Palmy — Tick Tock
+ - [ ] Bodyslam — Khon Mee Fai
+ - [ ] Bodyslam — Saeng Sudtai
+ - [ ] Getsunova — Klai Kae Nai
+ - [ ] Lula — Rai Wela
+ - [ ] Da Endorphine — Yin Dee Tee Dai Roo Jak
+ - [ ] Potato — Tur Yang
+ - [ ] Clash — Ter Ja Yoo Kub Chun Talord Pai
+ - [ ] Paradox — Sexy
+ - [ ] Modern Dog — Busaba
+ - [ ] Tattoo Colour — Cinderella
+ - [ ] Big Ass — Len Khong Sung
+ - [ ] Joey Boy — Fun Fun Fun
+ - [ ] Instinct — Prok
+
+---
+# Top 1000 YouTube Music Video & Karaoke Hits
+
+## 1. American / International Karaoke Hits
+- [ ] Journey — Don't Stop Believin'
+- [ ] Queen — Bohemian Rhapsody
+- [ ] Neil Diamond — Sweet Caroline
+- [ ] The Killers — Mr. Brightside
+- [ ] Bon Jovi — Livin' on a Prayer
+- [ ] Whitney Houston — I Will Always Love You
+- [ ] Gloria Gaynor — I Will Survive
+- [ ] Garth Brooks — Friends in Low Places
+- [ ] Adele — Someone Like You
+- [ ] Toto — Africa
+- [ ] Backstreet Boys — I Want It That Way
+- [ ] ABBA — Dancing Queen
+- [ ] Eagles — Hotel California
+- [ ] Outkast — Hey Ya!
+- [ ] Lady Gaga — Bad Romance
+- [ ] Britney Spears — Toxic
+- [ ] Celine Dion — My Heart Will Go On
+- [ ] Alicia Keys — If I Ain't Got You
+- [ ] TLC — No Scrubs
+- [ ] Michael Jackson — Billie Jean
+- [ ] Frank Sinatra — My Way
+- [ ] Joan Jett — I Love Rock 'N Roll
+- [ ] Oasis — Wonderwall
+- [ ] Shania Twain — Man! I Feel Like A Woman!
+- [ ] Cyndi Lauper — Girls Just Want to Have Fun
+- [ ] Ed Sheeran — Thinking Out Loud
+- [ ] Bruno Mars — Uptown Funk
+- [ ] John Denver — Take Me Home, Country Roads
+- [ ] The Beatles — Let It Be
+- [ ] Fugees — Killing Me Softly With His Song
+- [ ] Elton John — Tiny Dancer
+- [ ] Fleetwood Mac — Dreams
+- [ ] Taylor Swift — Love Story
+- [ ] Carrie Underwood — Before He Cheats
+- [ ] Radiohead — Creep
+- [ ] Evanescence — Bring Me To Life
+- [ ] The B-52's — Love Shack
+- [ ] Prince — Purple Rain
+- [ ] Aretha Franklin — Respect
+- [ ] AC/DC — You Shook Me All Night Long
+- [ ] Billy Joel — Piano Man
+- [ ] Eminem — Lose Yourself
+- [ ] Katy Perry — Firework
+- [ ] Madonna — Like a Prayer
+- [ ] R.E.M. — Losing My Religion
+- [ ] Def Leppard — Pour Some Sugar On Me
+- [ ] Pink — Just Give Me A Reason
+- [ ] Kelly Clarkson — Since U Been Gone
+- [ ] Oasis — Don't Look Back In Anger
+- [ ] Aerosmith — I Don't Want to Miss a Thing
+- [ ] Guns N' Roses — Sweet Child O' Mine
+- [ ] Ricky Martin — Livin' La Vida Loca
+- [ ] Usher — Yeah!
+- [ ] Beyonce — Crazy In Love
+- [ ] Rihanna — Umbrella
+- [ ] Mariah Carey — Always Be My Baby
+- [ ] The Temptations — My Girl
+- [ ] TLC — Waterfalls
+- [ ] Lynyrd Skynyrd — Sweet Home Alabama
+- [ ] Coldplay — Yellow
+- [ ] The Proclaimers — I'm Gonna Be (500 Miles)
+- [ ] Simon & Garfunkel — The Sound of Silence
+- [ ] Alanis Morissette — You Oughta Know
+- [ ] John Legend — All of Me
+- [ ] The Cranberries — Zombie
+- [ ] Amy Winehouse — Valerie
+- [ ] Metallica — Enter Sandman
+- [ ] Red Hot Chili Peppers — Under the Bridge
+- [ ] Nirvana — Smells Like Teen Spirit
+- [ ] Green Day — Basket Case
+- [ ] No Doubt — Don't Speak
+- [ ] Christina Aguilera — Beautiful
+- [ ] Maroon 5 — This Love
+- [ ] Justin Timberlake — Cry Me a River
+- [ ] Jason Mraz — I'm Yours
+- [ ] The Black Eyed Peas — I Gotta Feeling
+- [ ] Miley Cyrus — Party In The U.S.A.
+- [ ] Snoop Dogg — Gin and Juice
+- [ ] The Notorious B.I.G. — Juicy
+- [ ] 2Pac — California Love
+- [ ] Dr. Dre — Nuthin' But A "G" Thang
+- [ ] Wu-Tang Clan — C.R.E.A.M.
+- [ ] Boyz II Men — End of the Road
+- [ ] En Vogue — Don't Let Go (Love)
+- [ ] Vanilla Ice — Ice Ice Baby
+- [ ] MC Hammer — U Can't Touch This
+- [ ] Sir Mix-A-Lot — Baby Got Back
+- [ ] Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+- [ ] The Police — Every Breath You Take
+- [ ] U2 — With Or Without You
+- [ ] David Bowie — Space Oddity
+- [ ] The Rolling Stones — (I Can't Get No) Satisfaction
+- [ ] The Clash — Should I Stay or Should I Go
+- [ ] Blondie — Heart of Glass
+- [ ] The Cure — Friday I'm In Love
+- [ ] Depeche Mode — Enjoy the Silence
+- [ ] New Order — Bizarre Love Triangle
+- [ ] A-ha — Take On Me
+- [ ] Rick Springfield — Jessie's Girl
+- [ ] Pat Benatar — Hit Me With Your Best Shot
+
+## 2. Party / Viral YouTube Hits
+- [ ] PSY — Gangnam Style
+- [ ] Luis Fonsi — Despacito
+- [ ] Rick Astley — Never Gonna Give You Up
+- [ ] Smash Mouth — All Star
+- [ ] Los del Río — Macarena
+- [ ] The Sugarhill Gang — Rapper's Delight
+- [ ] Mark Ronson ft. Bruno Mars — Uptown Funk
+- [ ] LMFAO — Party Rock Anthem
+- [ ] Pharrell Williams — Happy
+- [ ] Village People — Y.M.C.A.
+- [ ] Vengaboys — We Like to Party! (The Vengabus)
+- [ ] Eiffel 65 — Blue (Da Ba Dee)
+- [ ] O-Zone — Dragostea Din Tei
+- [ ] Aqua — Barbie Girl
+- [ ] Lou Bega — Mambo No. 5
+- [ ] Ylvis — The Fox (What Does The Fox Say?)
+- [ ] Baauer — Harlem Shake
+- [ ] Darude — Sandstorm
+- [ ] Haddaway — What Is Love
+- [ ] Scatman John — Scatman (Ski-Ba-Bop-Ba-Dop-Bop)
+- [ ] Chumbawamba — Tubthumping
+- [ ] Baha Men — Who Let The Dogs Out
+- [ ] Carly Rae Jepsen — Call Me Maybe
+- [ ] Rebecca Black — Friday
+- [ ] Tay Zonday — Chocolate Rain
+- [ ] Pinkfong — Baby Shark
+- [ ] Crazy Frog — Axel F
+- [ ] Las Ketchup — The Ketchup Song (Aserejé)
+- [ ] DJ Snake ft. Lil Jon — Turn Down for What
+- [ ] Silento — Watch Me (Whip / Nae Nae)
+- [ ] Soulja Boy — Crank That (Soulja Boy)
+- [ ] Chamillionaire — Ridin'
+- [ ] Flo Rida — Low
+- [ ] Outkast — Hey Ya!
+- [ ] Miley Cyrus — Wrecking Ball
+- [ ] Drake — Hotline Bling
+- [ ] Lil Nas X — Old Town Road
+- [ ] The Weeknd — Blinding Lights
+- [ ] Doja Cat — Say So
+- [ ] Megan Thee Stallion — Savage
+- [ ] Cardi B — Bodak Yellow
+- [ ] Migos — Bad and Boujee
+- [ ] Post Malone — Rockstar
+- [ ] Billie Eilish — Bad Guy
+- [ ] Dua Lipa — Don't Start Now
+- [ ] Olivia Rodrigo — Drivers License
+- [ ] The Kid LAROI, Justin Bieber — Stay
+- [ ] Glass Animals — Heat Waves
+- [ ] Harry Styles — As It Was
+- [ ] Imagine Dragons — Believer
+- [ ] Twenty One Pilots — Stressed Out
+- [ ] The Chainsmokers — Closer
+- [ ] Major Lazer — Lean On
+- [ ] Avicii — Wake Me Up
+- [ ] Calvin Harris — Summer
+- [ ] David Guetta — Titanium
+- [ ] Swedish House Mafia — Don't You Worry Child
+- [ ] Martin Garrix — Animals
+- [ ] Skrillex — Bangarang
+- [ ] Marshmello — Happier
+- [ ] Alan Walker — Faded
+- [ ] Zedd — Clarity
+- [ ] Tiesto — The Business
+- [ ] Alesso — Heroes (we could be)
+- [ ] Kaskade — Disarm You
+- [ ] Deadmau5 — Ghosts 'n' Stuff
+- [ ] Daft Punk — Get Lucky
+- [ ] Gorillaz — Feel Good Inc.
+- [ ] Gnarls Barkley — Crazy
+- [ ] M.I.A. — Paper Planes
+
+## 3. Hawaiian Karaoke Favorites
+- [ ] Israel Kamakawiwo'ole — Somewhere Over the Rainbow / What a Wonderful World
+- [ ] Keali'i Reichel — Kauanoeanuhea
+- [ ] Kolohe Kai — Ehu Girl
+- [ ] Fiji — Sweet Darlin'
+- [ ] The Green — Love I
+- [ ] J Boog — Let's Do It Again
+- [ ] Common Kings — Wade In Your Water
+- [ ] Rebel Souljahz — Nothing To Hide
+- [ ] Maoli — No One
+- [ ] Ka'au Crater Boys — Opihi Man
+- [ ] Three Plus — Honey Baby
+- [ ] Ten Feet — Windward Skies
+- [ ] Natural Vibrations — Put A Little Love
+- [ ] Mana'o Company — Drop Baby Drop
+- [ ] Kapena — Masese
+- [ ] Bruddah Waltah — Sweet Lady of Waiahole
+- [ ] Hui Ohana — Ulili E
+- [ ] Sunday Manoa — Kawika
+- [ ] Makaha Sons — Take A Walk In The Country
+- [ ] Cecilio & Kapono — Night Music
+- [ ] Kalapana — Naturally
+- [ ] Olomana — Ku'u Home O Kahalu'u
+- [ ] Brothers Cazimero — Destination Paradise
+- [ ] C&K — Goodtime Together
+- [ ] Sean Na'auao — Fish and Poi
+- [ ] Keahiwai — Falling
+- [ ] Na Leo Pilimehana — Local Boys
+- [ ] Anuhea — Higher Than The Clouds
+- [ ] Kimie Miner — Make Me Say
+- [ ] Eli-Mac — Dub Stop
+- [ ] Paula Fuga — Lilikoi
+- [ ] John Cruz — Island Style
+- [ ] Henry Kapono — Friends
+- [ ] Mackey Feary Band — A Million Stars
+- [ ] Tenderoni — Ku'uipo
+- [ ] B.E.T. — Trust In Me
+- [ ] Typical Hawaiians — Crazy
+- [ ] Sudden Rush — Polynesian Party
+- [ ] Ekolu — Stuck On You
+- [ ] Opihi Pickers — Victim
+- [ ] Ho'onua — Blue Light
+- [ ] Kawao — One More Try
+- [ ] Koauka — Drop Baby Drop
+- [ ] Nesian N.I.N.E. — Show Me
+- [ ] Iration — Time Bomb
+- [ ] Pepper — Kona Town
+- [ ] Ooklah The Moc — Hellfire
+- [ ] Dread Ashanti — The Rock
+- [ ] Marty Dread — No Place Like Home
+- [ ] Justin Young — Crazy Love
+- [ ] Piilani Arias — Just Another Day
+- [ ] Kawehi — The Way You Make Me Feel
+- [ ] Hapa — Ku'u Lei Awapuhi
+- [ ] Willie K — Katchi Katchi Music Makawao
+- [ ] Amy Hanaiali'i — Palehua
+- [ ] Raiatea Helm — Alika
+- [ ] Natalie Ai Kamauu — Ku'u Pua Pakalana
+- [ ] Mark Yamanaka — Kaleoonalani
+- [ ] Kuana Torres Kahele — E Ku'u Lei, My Love
+- [ ] Josh Tatofi — Melia
+- [ ] Kalani Pe'a — E Nanea
+- [ ] Kimié Miner — Sea of Love
+- [ ] Likkle Mai — Put It On
+- [ ] Sister Carol — Wild Thing
+- [ ] Sister Nancy — Bam Bam
+
+## 4. Thai Karaoke Hits
+- [ ] Bird Thongchai — Too Maht Too Mah
+- [ ] Bodyslam — Saeng Sud Tai
+- [ ] Potato — Ting Wai Nai Klang Tang
+- [ ] Palmy — Ooh!
+- [ ] Joey Boy — Rai Diang Sa
+- [ ] Labanoon — Chueak Wiset
+- [ ] Getsunova — Klai Kae Nai Kue Klai
+- [ ] Clash — Kor Chet Nam Ta
+- [ ] Big Ass — Pohn Prom Likit
+- [ ] Silly Fools — Ji Ja
+- [ ] Loso — Som San
+- [ ] Carabao — Made In Thailand
+- [ ] Asanee-Wasan — Rak Tur Samur
+- [ ] Micro — Ao Pai Loei
+- [ ] Tata Young — Dhoom Dhoom
+- [ ] Christina Aguilar — Pood Eek Tee
+- [ ] Mai Charoenpura — Klab Ma Ha Kan
+- [ ] J Jetrin — Kong Wai
+- [ ] Nuvo — Pen Yang Ngai Bang
+- [ ] Y Not 7 — Yeua
+- [ ] Moderndog — Busaba
+- [ ] Paradox — Ruedoo Ron
+- [ ] Slot Machine — Jan Jao
+- [ ] Scrubb — Tuk Yang
+- [ ] 25hours — Mai Koey
+- [ ] Cocktail — Koo Cheewit
+- [ ] Klear — Kham Yin Dee
+- [ ] Room39 — Pen Took Yang
+- [ ] The Toys — Kon Lha Chan
+- [ ] Stamp Apiwat — Khwam Khit
+- [ ] Singto Numchok — Yoo Tor Loei Dai Mai
+- [ ] Lipta — Fan
+- [ ] Nont Tanont — Fueng Fa
+- [ ] Ink Waruntorn — Diow Diow
+- [ ] Bowkylion — Long Jai
+- [ ] Violette Wautier — Smoke
+- [ ] Phum Viphurit — Lover Boy
+- [ ] Tilly Birds — Kit (But Miss)
+- [ ] Three Man Down — Fon Tok Mai
+- [ ] TaitosmitH — Pattaya
+- [ ] Youngohm — Thararat
+- [ ] Illslick — Rak Mia Teesud Nai Lok
+- [ ] UrboyTJ — Khao Kon Nhan
+- [ ] Twopee Southside — Wai Roon Sang Tua
+- [ ] F.Hero — Suea Sin Lai
+- [ ] Milli — Sud Pang
+- [ ] Sprite — Ton
+- [ ] V Lure — Khon Mai Ja Pen
+- [ ] BNK48 — Koisuru Fortune Cookie
+- [ ] 4EVE — Wat Jai
+- [ ] Trinity — Hidden Track
+- [ ] Srirajah Rockers — Don't Cry
+- [ ] T-Bone — Tur Hen Tong Fa Nan Mai
+- [ ] Job 2 Do — Doo Ter Tam
+- [ ] Zom Marie — Reward
+- [ ] Mmey — Mmey Mmey
+- [ ] Wanyai — Jeb Jon Por
+- [ ] Monik — Parn
+- [ ] Waii — Rak Dai Rak Pai Laew
+- [ ] Kamikaze — Khad Jai
+- [ ] FFK — Baby Boy
+- [ ] K-Otic — Rak Mai Dai Reu Mai Dai Rak
+- [ ] C-Quint — Ya
+- [ ] XIS — Honey, I Hate You
+- [ ] 3.2.1 — My Boo
+
+## 5. Other Popular Karaoke Hits
+- [ ] BTS — Dynamite
+- [ ] BLACKPINK — DDU-DU DDU-DU
+- [ ] TWICE — TT
+- [ ] EXO — Love Shot
+- [ ] Red Velvet — Psycho
+- [ ] BIGBANG — Fantastic Baby
+- [ ] Girls' Generation — Gee
+- [ ] Super Junior — Sorry, Sorry
+- [ ] SHINee — Ring Ding Dong
+- [ ] 2NE1 — I Am The Best
+- [ ] Stray Kids — God's Menu
+- [ ] ITZY — WANNABE
+- [ ] TXT — Blue Hour
+- [ ] ENHYPEN — Drunk-Dazed
+- [ ] aespa — Next Level
+- [ ] IVE — LOVE DIVE
+- [ ] NewJeans — Hype Boy
+- [ ] LE SSERAFIM — ANTIFRAGILE
+- [ ] SEVENTEEN — VERY NICE
+- [ ] NCT 127 — Kick It
+- [ ] YOASOBI — Yoru ni Kakeru
+- [ ] Kenshi Yonezu — Lemon
+- [ ] LiSA — Gurenge
+- [ ] Ado — Usseewa
+- [ ] Radwimps — Zenzenzense
+- [ ] Official HIGE DANdism — Pretender
+- [ ] King Gnu — Hakujitsu
+- [ ] Aimyon — Marigold
+- [ ] Hikaru Utada — First Love
+- [ ] X Japan — Endless Rain
+- [ ] Bad Bunny — Tití Me Preguntó
+- [ ] J Balvin — Mi Gente
+- [ ] Daddy Yankee — Gasolina
+- [ ] Shakira — Hips Don't Lie
+- [ ] Enrique Iglesias — Bailando
+- [ ] Marc Anthony — Vivir Mi Vida
+- [ ] Romeo Santos — Propuesta Indecente
+- [ ] Maluma — Hawái
+- [ ] Karol G — Tusa
+- [ ] Rosalía — DESPECHÁ
+- [ ] Celia Cruz — La Vida Es Un Carnaval
+- [ ] Juanes — La Camisa Negra
+- [ ] Mana — En El Muelle De San Blas
+- [ ] Selena — Como La Flor
+- [ ] Luis Miguel — La Incondicional
+- [ ] Vicente Fernández — El Rey
+- [ ] Alejandro Fernández — Me Dediqué a Perderte
+- [ ] Pepe Aguilar — Por Mujeres Como Tú
+- [ ] Christian Nodal — Adiós Amor
+- [ ] Grupo Firme — Ya Supérame
+- [ ] Edith Piaf — La Vie En Rose
+- [ ] Stromae — Alors On Danse
+- [ ] Indila — Dernière Danse
+- [ ] Zaz — Je Veux
+- [ ] Aya Nakamura — Djadja
+- [ ] Angèle — Tout Oublier
+- [ ] Gims — Sapés Comme Jamais
+- [ ] Kendji Girac — Andalouse
+- [ ] Louane — Jour 1
+- [ ] Vianney — Pas Là
+- [ ] Andrea Bocelli — Con Te Partirò
+- [ ] Eros Ramazzotti — Più Bella Cosa
+- [ ] Laura Pausini — La Solitudine
+- [ ] Tiziano Ferro — Perdono
+- [ ] Mahmood — Soldi
+- [ ] Måneskin — ZITTI E BUONI
+- [ ] Blanco — Brividi
+- [ ] Rammstein — Du Hast
+- [ ] Nena — 99 Luftballons
+- [ ] Scorpions — Wind of Change
+- [ ] Falco — Rock Me Amadeus
+- [ ] Helene Fischer — Atemlos durch die Nacht
+- [ ] Dschinghis Khan — Moskau
+- [ ] O-Zone — Dragostea Din Tei
+- [ ] Tarkan — Şımarık
+- [ ] Arash — Boro Boro
+- [ ] Panjabi MC — Mundian To Bach Ke
+- [ ] A.R. Rahman — Jai Ho
+- [ ] Daler Mehndi — Tunak Tunak Tun
+- [ ] Sonu Nigam — Kal Ho Naa Ho
+## 1. American / International Karaoke Hits (Continued)
+- [ ] Tom Petty — Free Fallin'
+- [ ] Bruce Springsteen — Born to Run
+- [ ] Janis Joplin — Me and Bobby McGee
+- [ ] Creedence Clearwater Revival — Bad Moon Rising
+- [ ] The Doobie Brothers — Listen to the Music
+- [ ] Eagles — Take It Easy
+- [ ] Marvin Gaye — Let's Get It On
+- [ ] Stevie Wonder — Superstition
+- [ ] The Jackson 5 — I Want You Back
+- [ ] Earth, Wind & Fire — September
+- [ ] Bee Gees — Stayin' Alive
+- [ ] Donna Summer — Hot Stuff
+- [ ] Chaka Khan — I'm Every Woman
+- [ ] Madonna — Material Girl
+- [ ] Michael Jackson — Beat It
+- [ ] Prince — Kiss
+- [ ] Whitney Houston — I Wanna Dance With Somebody (Who Loves Me)
+- [ ] George Michael — Faith
+- [ ] U2 — I Still Haven't Found What I'm Looking For
+- [ ] The Police — Roxanne
+- [ ] Queen — We Will Rock You
+- [ ] Guns N' Roses — Paradise City
+- [ ] Bon Jovi — Wanted Dead or Alive
+- [ ] Def Leppard — Photograph
+- [ ] Journey — Any Way You Want It
+- [ ] Boston — More Than a Feeling
+- [ ] Kansas — Dust in the Wind
+- [ ] Lynyrd Skynyrd — Free Bird
+- [ ] Meat Loaf — Paradise by the Dashboard Light
+- [ ] The B-52's — Roam
+- [ ] R.E.M. — It's the End of the World as We Know It (And I Feel Fine)
+- [ ] Nirvana — Come As You Are
+- [ ] Pearl Jam — Alive
+- [ ] Soundgarden — Black Hole Sun
+- [ ] Stone Temple Pilots — Plush
+- [ ] Alanis Morissette — Ironic
+- [ ] Sheryl Crow — All I Wanna Do
+- [ ] Shania Twain — That Don't Impress Me Much
+- [ ] Garth Brooks — The Dance
+- [ ] Tim McGraw — Live Like You Were Dying
+- [ ] The Chicks — Goodbye Earl
+- [ ] TLC — Creep
+- [ ] Destiny's Child — Say My Name
+- [ ] Boyz II Men — I'll Make Love to You
+- [ ] Mariah Carey — Hero
+- [ ] Celine Dion — It's All Coming Back to Me Now
+- [ ] Cher — Believe
+- [ ] Britney Spears — ...Baby One More Time
+- [ ] Christina Aguilera — Genie in a Bottle
+- [ ] *NSYNC — Bye Bye Bye
+- [ ] Backstreet Boys — Everybody (Backstreet's Back)
+- [ ] Spice Girls — Wannabe
+- [ ] Ricky Martin — She Bangs
+- [ ] Smash Mouth — Walkin' on the Sun
+- [ ] Blink-182 — All the Small Things
+- [ ] Green Day — Good Riddance (Time of Your Life)
+- [ ] Fall Out Boy — Sugar, We're Goin Down
+- [ ] My Chemical Romance — Welcome to the Black Parade
+- [ ] Paramore — Misery Business
+- [ ] Kelly Clarkson — Because of You
+- [ ] Carrie Underwood — Jesus, Take the Wheel
+- [ ] Taylor Swift — You Belong With Me
+- [ ] Katy Perry — Roar
+- [ ] Lady Gaga — Poker Face
+- [ ] Rihanna — Don't Stop the Music
+- [ ] Beyoncé — Single Ladies (Put a Ring on It)
+- [ ] Adele — Hello
+- [ ] Bruno Mars — Just the Way You Are
+- [ ] Ed Sheeran — Shape of You
+- [ ] Justin Bieber — Baby
+- [ ] Drake — God's Plan
+- [ ] The Weeknd — Starboy
+- [ ] Dua Lipa — Levitating
+- [ ] Olivia Rodrigo — good 4 u
+- [ ] Billie Eilish — ocean eyes
+
+## 2. Party / Viral YouTube Hits (Continued)
+- [ ] Pikotaro — PPAP (Pen Pineapple Apple Pen)
+- [ ] Big Shaq — Man's Not Hot
+- [ ] YNW Melly — Murder On My Mind
+- [ ] Zay Hilfigerrr & Zayion McCall — Juju On That Beat
+- [ ] iLoveMemphis — Hit the Quan
+- [ ] LazyTown — We Are Number One
+- [ ] Eduard Khil — Trololo Song
+- [ ] Vitas — The 7th Element
+- [ ] Günther & The Sunshine Girls — Ding Dong Song
+- [ ] DJ Casper — Cha Cha Slide
+- [ ] V.I.C. — Wobble
+- [ ] Rednex — Cotton Eye Joe
+- [ ] Marcia Griffiths — Electric Boogie (The Electric Slide)
+- [ ] The Trashmen — Surfin' Bird
+- [ ] Carl Douglas — Kung Fu Fighting
+- [ ] Village People — Macho Man
+- [ ] Dexys Midnight Runners — Come On Eileen
+- [ ] The Knack — My Sharona
+- [ ] Soft Cell — Tainted Love
+- [ ] A Flock of Seagulls — I Ran (So Far Away)
+- [ ] Dead or Alive — You Spin Me Round (Like a Record)
+- [ ] Rick Astley — Together Forever
+- [ ] Sir Mix-A-Lot — Jump On It
+- [ ] House of Pain — Jump Around
+- [ ] Tag Team — Whoomp! (There It Is)
+- [ ] Quad City DJ's — C'mon N' Ride It (The Train)
+- [ ] C+C Music Factory — Gonna Make You Sweat (Everybody Dance Now)
+- [ ] Snap! — Rhythm Is a Dancer
+- [ ] Corona — The Rhythm of the Night
+- [ ] Real McCoy — Another Night
+- [ ] La Bouche — Be My Lover
+- [ ] Cascada — Everytime We Touch
+- [ ] Basshunter — Dota
+- [ ] Alice Deejay — Better Off Alone
+- [ ] Crazy Frog — Popcorn
+- [ ] Gummibär — I Am A Gummy Bear (The Gummy Bear Song)
+- [ ] Joy Gruttmann — Schnappi, das kleine Krokodil
+- [ ] El Chombo — Chacarron
+- [ ] Parry Gripp — Raining Tacos
+- [ ] saraj00n — Nyan Cat
+- [ ] Ylvis — Stonehenge
+- [ ] The Lonely Island — I'm On A Boat
+- [ ] The Lonely Island — Dick in a Box
+- [ ] Flight of the Conchords — Business Time
+- [ ] Tenacious D — Tribute
+- [ ] Bloodhound Gang — The Bad Touch
+- [ ] Afroman — Because I Got High
+- [ ] Shaggy — It Wasn't Me
+- [ ] Outkast — B.O.B. (Bombs Over Baghdad)
+- [ ] Missy Elliott — Get Ur Freak On
+- [ ] Gwen Stefani — Hollaback Girl
+- [ ] Fergie — Fergalicious
+- [ ] Nelly — Hot In Herre
+- [ ] 50 Cent — In Da Club
+- [ ] Lil Jon & The East Side Boyz — Get Low
+- [ ] Chingy — Right Thurr
+- [ ] J-Kwon — Tipsy
+- [ ] Terror Squad — Lean Back
+
+## 3. Hawaiian Karaoke Favorites (Continued)
+- [ ] Kapena — Blue Darling
+- [ ] The Brothers Cazimero — Home in the Islands
+- [ ] Makaha Sons of Ni'ihau — I'll Remember You
+- [ ] Hui Ohana — Honolulu City Lights
+- [ ] Kalapana — The Hurt
+- [ ] Cecilio & Kapono — Highway in the Sun
+- [ ] Olomana — Like a Seabird in the Wind
+- [ ] Israel Kamakawiwo'ole — White Sandy Beach of Hawai'i
+- [ ] Keali'i Reichel — Kawaipunahele
+- [ ] Willie K — You Ku'uipo
+- [ ] Amy Hanaiali'i Gilliom — Aloha 'Oe
+- [ ] Na Leo Pilimehana — Flying With Angels
+- [ ] Robi Kahakalau — Pi'i Mai Ka Nalu
+- [ ] Fiji — Morning Ride
+- [ ] Ekolu — Just One Night
+- [ ] Three Plus — Two Person Party
+- [ ] Opihi Pickers — Old Kihei
+- [ ] Mana'o Company — 96 Degrees in the Shade
+- [ ] Koauka — Blue Hawaiian Moonlight
+- [ ] Natural Vibrations — Balls and Strikes
+- [ ] Ten Feet — Island Feeling
+- [ ] Sean Na'auao — Surf Party
+- [ ] Kolohe Kai — Cool Down
+- [ ] Iration — Falling
+- [ ] Pepper — Stone Love
+- [ ] J Boog — Sunshine Girl
+- [ ] Rebel Souljahz — The One
+- [ ] Maoli — Shoot Down
+- [ ] The Green — Alive
+- [ ] Anuhea — Simple Love Song
+- [ ] Kimié Miner — Rooted
+- [ ] Josh Tatofi — Ku'u Leo Aloha
+- [ ] Kalani Pe'a — Ku'u Poli'ahu
+- [ ] Kuana Torres Kahele — Waikahuli
+- [ ] Mark Yamanaka — Maui Under Moonlight
+- [ ] Raiatea Helm — Po La'i E
+- [ ] Justin Young — Windward Side
+- [ ] B.E.T. — Honolulu
+- [ ] Ho'aikane — Sweet Okole
+- [ ] Ka'au Crater Boys — Guava Jelly
+- [ ] Kapena — Don't Say Goodbye
+- [ ] Sudden Rush — Ea
+- [ ] Typical Hawaiians — Beautiful Girls
+- [ ] Dread Ashanti — Fly You Away
+- [ ] Marty Dread — In This Love
+- [ ] Nesian N.I.N.E. — It's All Good
+- [ ] Kawao — Let Me Be The One
+- [ ] Ho'onua — Feel Fine
+- [ ] Piilani Arias — You and Me
+
+## 4. Thai Karaoke Hits (Continued)
+- [ ] Bird Thongchai — Sabai Sabai
+- [ ] Loso — Jakkrayan See Daeng
+- [ ] Carabao — Bua Loi
+- [ ] Asanee-Wasan — Yin Yom
+- [ ] Micro — Rak Poon Poon
+- [ ] Tata Young — Oh Ma Daeng
+- [ ] Christina Aguilar — Mai Mee Kai Koh Tood
+- [ ] Mai Charoenpura — Pae Jai
+- [ ] J Jetrin — All I Wanna Do
+- [ ] Nuvo — Sood Sood Pai Loey
+- [ ] Y Not 7 — Ting Rak Long Mae Nam
+- [ ] Moderndog — Ta Sawang
+- [ ] Paradox — Sexy
+- [ ] Slot Machine — Pan
+- [ ] Scrubb — Kao Kan Dee
+- [ ] 25hours — Tam Mai
+- [ ] Cocktail — Ter
+- [ ] Klear — Ja Rak Reu Ja Rai
+- [ ] Room39 — Rak Krai Mai Dai Eek
+- [ ] The Toys — Na Nao Tee Laew
+- [ ] Stamp Apiwat — Man Kong Pen Kwam Rak
+- [ ] Singto Numchok — Ying Doo Ying Dee
+- [ ] Lipta — Yattira
+- [ ] Nont Tanont — Mee Pon To Hua Jai
+- [ ] Ink Waruntorn — Mai Yaak Ngao Laew
+- [ ] Bowkylion — Daow Hang
+- [ ] Violette Wautier — Drive
+- [ ] Phum Viphurit — Long Gone
+- [ ] Tilly Birds — Loo-zer
+- [ ] Three Man Down — Nee Keu Rak Chai Mai
+- [ ] TaitosmitH — Hello Mama
+- [ ] Youngohm — Choei Mern
+- [ ] Illslick — M-Leg
+- [ ] UrboyTJ — Rang
+- [ ] Twopee Southside — Ao La Woi
+- [ ] Milli — Phak Kon
+- [ ] Sprite — Bang Au
+- [ ] V Lure — Mai Pen Rai
+- [ ] BNK48 — Shonichi
+- [ ] 4EVE — Booty Bomb
+- [ ] Trinity — Life Ain't Over
+- [ ] Srirajah Rockers — Destroy Babylon
+- [ ] T-Bone — Krot Kong Kam
+- [ ] Job 2 Do — Do It Kamikaze
+
+## 5. Other Popular Karaoke Hits (Continued)
+- [ ] BTS — Butter
+- [ ] BLACKPINK — How You Like That
+- [ ] TWICE — Fancy
+- [ ] EXO — Growl
+- [ ] Red Velvet — Bad Boy
+- [ ] BIGBANG — Haru Haru
+- [ ] Girls' Generation — Into the New World
+- [ ] Super Junior — Mr. Simple
+- [ ] SHINee — Lucifer
+- [ ] 2NE1 — Fire
+- [ ] Stray Kids — Thunderous
+- [ ] ITZY — DALLA DALLA
+- [ ] TXT — Crown
+- [ ] ENHYPEN — Fever
+- [ ] aespa — Black Mamba
+- [ ] IVE — Eleven
+- [ ] NewJeans — OMG
+- [ ] LE SSERAFIM — FEARLESS
+- [ ] SEVENTEEN — Don't Wanna Cry
+- [ ] NCT 127 — Cherry Bomb
+- [ ] YOASOBI — Idol
+- [ ] Kenshi Yonezu — Kick Back
+- [ ] LiSA — Crossing Field
+- [ ] Ado — New Genesis
+- [ ] Radwimps — Sparkle
+- [ ] Official HIGE DANdism — Cry Baby
+- [ ] King Gnu — Ichizu
+- [ ] Aimyon — Kimi wa Rock wo Kikanai
+- [ ] Hikaru Utada — Automatic
+- [ ] X Japan — Kurenai
+- [ ] Bad Bunny — Dákiti
+- [ ] J Balvin — Ay Vamos
+- [ ] Daddy Yankee — Rompe
+- [ ] Shakira — Waka Waka (This Time for Africa)
+- [ ] Enrique Iglesias — Hero
+- [ ] Marc Anthony — Tu Amor Me Hace Bien
+- [ ] Romeo Santos — Eres Mía
+- [ ] Maluma — Felices los 4
+- [ ] Karol G — Bichota
+- [ ] Rosalía — Malamente
+- [ ] Celia Cruz — Guantanamera
+- [ ] Juanes — A Dios Le Pido
+- [ ] Maná — Rayando El Sol
+- [ ] Selena — Amor Prohibido
+- [ ] Luis Miguel — Culpable o No
+- [ ] Vicente Fernández — Volver Volver
+- [ ] Alejandro Fernández — Como Quien Pierde Una Estrella
+- [ ] Pepe Aguilar — Prometiste
+- [ ] Christian Nodal — De Los Besos Que Te Di
+- [ ] Grupo Firme — El Tóxico
+- [ ] Édith Piaf — Non, je ne regrette rien
+- [ ] Stromae — Papaoutai
+- [ ] Indila — Tourner Dans Le Vide
+- [ ] Zaz — On Ira
+- [ ] Aya Nakamura — Pookie
+- [ ] Angèle — Balance Ton Quoi
+- [ ] Gims — Bella
+## 1. American / International Karaoke Hits (Continued)
+- [ ] Aretha Franklin — (You Make Me Feel Like) A Natural Woman
+- [ ] Ben E. King — Stand By Me
+- [ ] Elvis Presley — Can't Help Falling in Love
+- [ ] The Righteous Brothers — Unchained Melody
+- [ ] Tracy Chapman — Fast Car
+- [ ] Roberta Flack — Killing Me Softly With His Song
+- [ ] Whitney Houston — Greatest Love of All
+- [ ] Stevie Nicks — Edge of Seventeen
+- [ ] Pat Benatar — Love Is a Battlefield
+- [ ] Tina Turner — What's Love Got to Do with It
+- [ ] Journey — Faithfully
+- [ ] Heart — Alone
+- [ ] Bonnie Tyler — Total Eclipse of the Heart
+- [ ] Survivor — Eye of the Tiger
+- [ ] Bryan Adams — Summer of '69
+- [ ] Aerosmith — Dream On
+- [ ] Phil Collins — In the Air Tonight
+- [ ] George Michael — Careless Whisper
+- [ ] Madonna — Vogue
+- [ ] Cyndi Lauper — Time After Time
+- [ ] The B-52's — Rock Lobster
+- [ ] The Bangles — Walk Like an Egyptian
+- [ ] Eurythmics — Sweet Dreams (Are Made of This)
+- [ ] Tears for Fears — Everybody Wants to Rule the World
+- [ ] a-ha — The Sun Always Shines on T.V.
+- [ ] Goo Goo Dolls — Iris
+- [ ] Matchbox Twenty — 3AM
+- [ ] Third Eye Blind — Semi-Charmed Life
+- [ ] Counting Crows — Mr. Jones
+- [ ] Red Hot Chili Peppers — Californication
+- [ ] Foo Fighters — Everlong
+- [ ] Oasis — Champagne Supernova
+- [ ] Coldplay — Viva La Vida
+- [ ] The Killers — Somebody Told Me
+- [ ] Kings of Leon — Sex on Fire
+- [ ] Arctic Monkeys — Do I Wanna Know?
+- [ ] Avril Lavigne — Sk8er Boi
+- [ ] Kelly Clarkson — Breakaway
+- [ ] Pink — So What
+- [ ] Lady Gaga — Shallow
+- [ ] Adele — Rolling in the Deep
+- [ ] Amy Winehouse — Rehab
+- [ ] Alicia Keys — Fallin'
+- [ ] Beyoncé — Halo
+- [ ] Rihanna — Diamonds
+- [ ] Katy Perry — I Kissed a Girl
+- [ ] Taylor Swift — Blank Space
+- [ ] Miley Cyrus — Flowers
+- [ ] SZA — Kill Bill
+- [ ] Morgan Wallen — Last Night
+- [ ] Luke Combs — Fast Car
+
+## 2. Party / Viral YouTube Hits (Continued)
+- [ ] LMFAO — Shots
+- [ ] Lil Jon — Snap Yo Fingers
+- [ ] Pitbull ft. Ne-Yo, Afrojack, Nayer — Give Me Everything
+- [ ] Don Omar — Danza Kuduro
+- [ ] Shakira — Whenever, Wherever
+- [ ] Daddy Yankee — Con Calma
+- [ ] Sean Paul — Temperature
+- [ ] Kevin Lyttle — Turn Me On
+- [ ] Rupee — Tempted to Touch
+- [ ] Nina Sky — Move Ya Body
+- [ ] Lumidee — Never Leave You (Uh Oooh, Uh Oooh)
+- [ ] DJ Snake — Magenta Riddim
+- [ ] Major Lazer — Pon de Floor
+- [ ] Dillon Francis & DJ Snake — Get Low
+- [ ] Tones and I — Dance Monkey
+- [ ] SAINt JHN — Roses (Imanbek Remix)
+- [ ] Macklemore & Ryan Lewis — Thrift Shop
+- [ ] Macklemore & Ryan Lewis — Can't Hold Us
+- [ ] Iggy Azalea — Fancy
+- [ ] Nicki Minaj — Super Bass
+- [ ] Nicki Minaj — Starships
+- [ ] Cardi B — I Like It
+- [ ] Megan Thee Stallion — WAP
+- [ ] Doja Cat — Kiss Me More
+- [ ] Lil Nas X — Montero (Call Me By Your Name)
+- [ ] DaBaby — Rockstar
+- [ ] Roddy Ricch — The Box
+- [ ] Future — Mask Off
+- [ ] Kendrick Lamar — HUMBLE.
+- [ ] Travis Scott — SICKO MODE
+- [ ] Pop Smoke — Dior
+- [ ] Sheck Wes — Mo Bamba
+- [ ] Jack Harlow — WHATS POPPIN
+- [ ] Benson Boone — Beautiful Things
+- [ ] Teddy Swims — Lose Control
+- [ ] Tommy Tutone — 867-5309 / Jenny
+- [ ] Jagged Edge — Let's Get Married
+- [ ] Los Lobos — La Bamba
+- [ ] Chubby Checker — The Twist
+- [ ] The Isley Brothers — Shout
+- [ ] Outkast — Roses
+- [ ] Crazy Town — Butterfly
+- [ ] Wheatus — Teenage Dirtbag
+
+## 3. Hawaiian Karaoke Favorites (Continued)
+- [ ] Kalapana — Nightbird
+- [ ] C&K (Cecilio & Kapono) — About You
+- [ ] Kapena — Talofa Teine
+- [ ] Fiji — Smokin' Session
+- [ ] Makaha Sons — Ke Ala
+- [ ] Dennis Pavao — Ipo Lei Momi
+- [ ] Pahinui Brothers — Panini Pua Kea
+- [ ] Genoa Keawe — Papalina Lahilahi
+- [ ] Ho'okena — Ulupalakua
+- [ ] Keali'i Reichel — Maunaleo
+- [ ] Willie K — Waterfall
+- [ ] Hapa — Lei Pikake
+- [ ] Bruddah Waltah — Keep Hawaiian Lands
+- [ ] Kalaeloa — Koke'e
+- [ ] Peter Moon Band — Flying
+- [ ] Pandanus Club — E Pili Mai
+- [ ] Teresa Bright — Poliahu
+- [ ] Na Leo Pilimehana — Poetry Man
+- [ ] Sean Na'auao — Hawaiian Superman
+- [ ] Ten Feet — Just My Imagination
+- [ ] Natural Vibrations — Shawty
+- [ ] Three Plus — Drive Me Crazy
+- [ ] Ka'au Crater Boys — Surf
+- [ ] Opihi Pickers — You're All I Need
+- [ ] Ekolu — Down In The Valley
+- [ ] Kolohe Kai — Dream Girl
+- [ ] The Green — Wake Up
+- [ ] J Boog — Waiting On The Rain
+- [ ] Rebel Souljahz — Slow Down
+- [ ] Maoli — In Case You Didn't Know
+- [ ] PeniDean — Sunshine
+- [ ] Siaosi — I'm Leaving
+- [ ] Anuhea — Come Over Love
+- [ ] Kimié Miner — Bottom Of A Teacup
+- [ ] Josh Tatofi — Pua Kiele
+- [ ] Kalani Pe'a — Hanalei I Ka Pilimoe
+- [ ] Paula Fuga — Parachute
+- [ ] John Cruz — Shine On
+- [ ] Brothers Cazimero — Waika
+- [ ] Don Ho — Tiny Bubbles
+
+## 4. Thai Karaoke Hits (Continued)
+- [ ] Loserpop — Khoei Rak (Used to Love)
+- [ ] Zom Marie — Rueang Jing (The Truth)
+- [ ] UrboyTJ — Pii Chai (Brother)
+- [ ] Wanyai — Pai Dai Dee
+- [ ] Polycat — Phop Kan Mai (See You Again)
+- [ ] Atom Chanakan — Please
+- [ ] Oat Pramote — Tid Talok
+- [ ] Pop Pongkool — Paap Jum (Remember)
+- [ ] Num Kala — Ploy Mue (Let Go)
+- [ ] Endorphine — Puen Sanit (Best Friend)
+- [ ] Bodyslam — Khwam Chuea (Belief)
+- [ ] Potato — Rak Tae Sa-Laeng Mue
+- [ ] Clash — Faen Phan Tae (True Fan)
+- [ ] Silly Fools — Pid Tee Wai Jai (Wrong to Trust)
+- [ ] Loso — 14 Eek Krang
+- [ ] Carabao — Mon Pleng Carabao
+- [ ] Asanee-Wasan — Kor Kon Tee Roo Jai
+- [ ] Palmy — Khit Mak (Think Too Much)
+- [ ] Tata Young — Sexy Naughty Bitchy
+- [ ] Christina Aguilar — Prawat Sart (History)
+- [ ] Nat Myria — Rak Mai Chuay Arai
+- [ ] Nicole Theriault — Busaba
+- [ ] China Dolls — Muai Nee Kah
+- [ ] Neko Jump — Poo
+- [ ] Four-Mod — Dek Mee Panha
+- [ ] Gancore Club — Gancore Club
+- [ ] Thaitanium — Ta Loeeng
+- [ ] Dajim — 711
+- [ ] Joey Boy — Rak Ter Mai Mee Mod
+- [ ] Mai Charoenpura — Sia Jai Daai Yin Mai
+- [ ] Bird Thongchai — Prik Kee Noo
+- [ ] Stamp Apiwat — Hai Tai Si Phom Raeng
+- [ ] Singto Numchok — I Just Wanna Pen Fan You Dai Mai
+- [ ] Violette Wautier — I'd Do It Again
+- [ ] Tilly Birds — Peuan Len Mai Len Peuan
+
+## 5. Other Popular Karaoke Hits (Continued)
+- [ ] BTS — Boy With Luv
+- [ ] BLACKPINK — Kill This Love
+- [ ] TWICE — Feel Special
+- [ ] EXO — Ko Ko Bop
+- [ ] Red Velvet — Peek-A-Boo
+- [ ] BIGBANG — Bang Bang Bang
+- [ ] Girls' Generation — Genie
+- [ ] Super Junior — Bonamana
+- [ ] SHINee — View
+- [ ] 2NE1 — Lonely
+- [ ] Stray Kids — MANIAC
+- [ ] ITZY — Not Shy
+- [ ] TXT — Run Away
+- [ ] ENHYPEN — Polaroid Love
+- [ ] aespa — Savage
+- [ ] IVE — After LIKE
+- [ ] NewJeans — Ditto
+- [ ] LE SSERAFIM — UNFORGIVEN
+- [ ] SEVENTEEN — HOT
+- [ ] NCT DREAM — Hot Sauce
+- [ ] YOASOBI — Kaibutsu
+- [ ] Kenshi Yonezu — Peace Sign
+- [ ] LiSA — unlasting
+- [ ] Ado — Odo
+- [ ] Radwimps — Nandemonaiya
+- [ ] Official HIGE DANdism — 115 Kilo no Film
+- [ ] King Gnu — Sorane
+- [ ] Aimyon — Haru no Hi
+- [ ] Hikaru Utada — Flavor Of Life
+- [ ] X Japan — Tears
+- [ ] Bad Bunny — Yo Perreo Sola
+- [ ] J Balvin — Ginza
+- [ ] Daddy Yankee — Limbo
+- [ ] Shakira — Chantaje
+- [ ] Enrique Iglesias — El Perdedor
+- [ ] Marc Anthony — Ahora Quien
+- [ ] Romeo Santos — Obsesión
+- [ ] Maluma — Corazón
+- [ ] Karol G — PROVENZA
+- [ ] Rosalía — Con Altura
+- [ ] Celia Cruz — Quimbara
+- [ ] Juanes — Me Enamora
+- [ ] Maná — Labios Compartidos
+- [ ] Selena — Bidi Bidi Bom Bom
+- [ ] Luis Miguel — La Bikina
+- [ ] Vicente Fernández — Por Tu Maldito Amor
+- [ ] Alejandro Fernández — Nube Viajera
+- [ ] Pepe Aguilar — Miedo
+- [ ] Christian Nodal — Botella Tras Botella
+- [ ] Grupo Firme — En Tu Perra Vida
+## 1. American / International Karaoke Hits (Continued)
+- [ ] Frank Sinatra — Fly Me To The Moon
+- [ ] Michael Bublé — Haven't Met You Yet
+- [ ] Norah Jones — Don't Know Why
+- [ ] Lady A — Need You Now
+- [ ] Blake Shelton — God's Country
+- [ ] Luke Bryan — Play It Again
+- [ ] Florida Georgia Line — Cruise
+- [ ] Zac Brown Band — Chicken Fried
+- [ ] Darius Rucker — Wagon Wheel
+- [ ] Toby Keith — Courtesy of the Red, White and Blue
+- [ ] Alan Jackson — Chattahoochee
+- [ ] Brooks & Dunn — Boot Scootin' Boogie
+- [ ] George Strait — Amarillo By Morning
+- [ ] Johnny Cash — Folsom Prison Blues
+- [ ] Johnny Cash — Ring of Fire
+- [ ] Dolly Parton — Jolene
+- [ ] Dolly Parton — 9 to 5
+- [ ] Kenny Rogers — The Gambler
+- [ ] John Denver — Annie's Song
+- [ ] James Taylor — Fire and Rain
+- [ ] Elton John — Rocket Man
+- [ ] Elton John — Bennie and the Jets
+- [ ] Billy Joel — Uptown Girl
+- [ ] Billy Joel — We Didn't Start the Fire
+- [ ] Paul Simon — You Can Call Me Al
+- [ ] Fleetwood Mac — Go Your Own Way
+- [ ] Fleetwood Mac — The Chain
+- [ ] Eagles — Desperado
+- [ ] The Beatles — Hey Jude
+- [ ] The Beatles — Come Together
+- [ ] The Beatles — Here Comes The Sun
+- [ ] The Rolling Stones — Paint It Black
+- [ ] David Bowie — Heroes
+- [ ] David Bowie — Starman
+- [ ] Queen — Don't Stop Me Now
+- [ ] Queen — Somebody to Love
+- [ ] Pink Floyd — Another Brick in the Wall, Pt. 2
+- [ ] Led Zeppelin — Stairway to Heaven
+- [ ] Black Sabbath — Paranoid
+- [ ] Motörhead — Ace of Spades
+- [ ] Judas Priest — Breaking the Law
+- [ ] Iron Maiden — Run to the Hills
+- [ ] Metallica — Nothing Else Matters
+- [ ] Guns N' Roses — Welcome to the Jungle
+- [ ] AC/DC — Back in Black
+- [ ] AC/DC — Highway to Hell
+- [ ] Aerosmith — Walk This Way
+- [ ] The Who — Baba O'Riley
+- [ ] The Doors — Light My Fire
+- [ ] Jimi Hendrix — All Along the Watchtower
+
+## 2. Party / Viral YouTube Hits (Continued)
+- [ ] Far East Movement — Like A G6
+- [ ] Taio Cruz — Dynamite
+- [ ] Jay Sean — Down
+- [ ] Sean Kingston — Beautiful Girls
+- [ ] Iyaz — Replay
+- [ ] Jason Derulo — Whatcha Say
+- [ ] Jason Derulo — Talk Dirty
+- [ ] Kesha — TiK ToK
+- [ ] Kesha — Die Young
+- [ ] Pitbull — Fireball
+- [ ] Pitbull — Timber
+- [ ] Flo Rida — Club Can't Handle Me
+- [ ] Flo Rida — Right Round
+- [ ] The Black Eyed Peas — Boom Boom Pow
+- [ ] The Black Eyed Peas — My Humps
+- [ ] T-Pain — Buy U A Drank (Shawty Snappin')
+- [ ] Akon — Smack That
+- [ ] Akon — Don't Matter
+- [ ] Nelly — Ride Wit Me
+- [ ] Nelly Furtado — Promiscuous
+- [ ] Timbaland — The Way I Are
+- [ ] Justin Timberlake — SexyBack
+- [ ] Gwen Stefani — The Sweet Escape
+- [ ] The Pussycat Dolls — Don't Cha
+- [ ] Rihanna — Pon de Replay
+- [ ] Sean Paul — Get Busy
+- [ ] Shaggy — Boombastic
+- [ ] Snow — Informer
+- [ ] Inner Circle — Sweat (A La La La La Long)
+- [ ] Chaka Demus & Pliers — Murder She Wrote
+- [ ] Wayne Wonder — No Letting Go
+- [ ] Serani — No Games
+- [ ] Gyptian — Hold You
+- [ ] Popcaan — Only Man She Want
+- [ ] Kranium — Nobody Has To Know
+- [ ] Konshens — Bruk Off Yuh Back
+- [ ] Charly Black — Gyal You A Party Animal
+- [ ] Bizarrap & Quevedo — Bzrp Music Sessions, Vol. 52
+- [ ] Eslabon Armado & Peso Pluma — Ella Baila Sola
+- [ ] Grupo Frontera & Bad Bunny — un x100to
+- [ ] Rauw Alejandro — Todo De Ti
+- [ ] Sebastián Yatra — Tacones Rojos
+- [ ] Camilo — Vida de Rico
+- [ ] Pedro Capó, Farruko — Calma (Remix)
+- [ ] Ricky Martin — La Mordidita
+- [ ] Enrique Iglesias — El Perdón
+- [ ] Nicky Jam — Hasta el Amanecer
+- [ ] Jhay Cortez, Bad Bunny — No Me Conoce (Remix)
+- [ ] Nio Garcia, Casper Magico, Darell — Te Boté (Remix)
+- [ ] Bad Bunny, Drake — MIA
+
+## 3. Hawaiian Karaoke Favorites (Continued)
+- [ ] Brother Noland — Coconut Girl
+- [ ] Brother Noland — Big Ship
+- [ ] Kalapana — Black Sand
+- [ ] C&K (Cecilio & Kapono) — Sailin'
+- [ ] Na Leo Pilimehana — I Miss You, My Hawaii
+- [ ] Na Leo Pilimehana — Rest Of Your Life
+- [ ] Kapena — Reggae Train
+- [ ] Kapena — Masese
+- [ ] Fiji — Come On Over
+- [ ] Fiji — Jowenna
+- [ ] Ekolu — Strictly Motsy
+- [ ] Ekolu — Shoots Pass
+- [ ] Kolohe Kai — First True Love
+- [ ] Kolohe Kai — Kiss You Good Morning
+- [ ] The Green — Love & Affection
+- [ ] The Green — Decisions
+- [ ] J Boog — Let Me Know
+- [ ] J Boog — Love Season
+- [ ] Rebel Souljahz — Skankin'
+- [ ] Maoli — Write Me A Letter
+- [ ] Maoli — Somebody Saves
+- [ ] PeniDean — She's Mine
+- [ ] Siaosi — Everything Is Everything
+- [ ] Anuhea — Big Deal
+- [ ] Kimié Miner — Bamboo
+- [ ] Josh Tatofi — Don't Break My Heart
+- [ ] Paula Fuga — Country Road
+- [ ] John Cruz — Sitting In My Room
+- [ ] Brothers Cazimero — Haleakala
+- [ ] Makaha Sons — Hawaii '78
+- [ ] Teresa Bright — Hula Heaven
+- [ ] Genoa Keawe — Alika
+- [ ] Dennis Pavao — Lahainaluna
+- [ ] Palani Vaughan — Ka Mamakakaua
+- [ ] Hui Ohana — Sweet Lei Mokihana
+- [ ] Sunday Manoa — Maunaloa
+- [ ] Peter Moon Band — Guava Jelly
+- [ ] Ka'au Crater Boys — Carly Rose
+- [ ] Natural Vibrations — Green Harvest
+- [ ] Ten Feet — Blue Flame
+- [ ] Sean Na'auao — Punani Patrol
+- [ ] B.E.T. — Words
+- [ ] Typical Hawaiians — Hawaiian Lands
+- [ ] Sudden Rush — Paradise Lost
+- [ ] Ho'aikane — Sweet Lady
+- [ ] Kawao — Secret Lover
+- [ ] Ho'onua — Pride
+- [ ] Pure Heart — Bring Me Your Cup
+- [ ] Justin Young — My Eyes Adore You
+
+## 4. Thai Karaoke Hits (Continued)
+- [ ] Mild — Unlovable
+- [ ] Mild — Sayonara
+- [ ] Lipta — Fan Deuan Pheng
+- [ ] Stamp Apiwat — Man Koey
+- [ ] Scrubb — Roy Yim
+- [ ] 25hours — Sukhapap Dee
+- [ ] Bodyslam — Ruea Lek Kuan Oog Fang
+- [ ] Potato — Kla Pho Mai
+- [ ] Clash — Khao Cheu Arai
+- [ ] Big Ass — Len Khong Soong
+- [ ] Silly Fools — Nam Lai
+- [ ] Loso — Jao Choo
+- [ ] Carabao — Khon Jon Phuying
+- [ ] Asanee-Wasan — Rak Ter Samer
+- [ ] Nuvo — Pen Yang Ngai
+- [ ] Micro — Som Wa
+- [ ] F.Hero — Sleep Now
+- [ ] UrboyTJ — Rueng Tee Koh
+- [ ] Twopee Southside — Yai Ya
+- [ ] Ink Waruntorn — Snap
+- [ ] Bowkylion — Sab
+- [ ] Violette Wautier — Brassac
+- [ ] Zom Marie — Boke Wa Rak
+- [ ] Palmy — Tik Tok
+- [ ] Da Endorphine — Nam Tem Kaew
+- [ ] Punch — Kham Kho Rong
+- [ ] Bird Thongchai — Fan Ja
+- [ ] Tata Young — El Nin-YO!
+- [ ] Christina Aguilar — Nin Ja
+- [ ] Mai Charoenpura — Phae Jai
+- [ ] F.Hero — Suea Sin Lai
+- [ ] Joey Boy — Sawasdee Krab
+- [ ] Thaitanium — Yak Dai Yin Hai Lae
+- [ ] Dajim — 7-11
+- [ ] China Dolls — Oh Oh Oh
+- [ ] Neko Jump — Joob Joob
+- [ ] Four-Mod — La Lai
+- [ ] K-Otic — Blacklist
+- [ ] 3.2.1 — Me Too
+- [ ] Kamikaze — KamiKaze
+- [ ] FFK — Kham Tham My
+- [ ] Waii — Yorm Cho Hai Tai
+- [ ] Kanom Jean — Tarm Jai Tuar Aeng
+- [ ] Milli — Mirror Mirror
+- [ ] Youngohm — Doo Wai
+- [ ] TaitosmitH — Nak Leng Kao
+- [ ] Three Man Down — Tha Ter Rak Chan Jing
+- [ ] Tilly Birds — Kid Thaung
+- [ ] Getsunova — Khon Mai Jam Pen
+- [ ] Labanoon — Yark Pen Khon Samkan Kong Ter
+
+## 5. Other Popular Karaoke Hits (Continued)
+- [ ] BTS — Fake Love
+- [ ] BLACKPINK — Boombayah
+- [ ] TWICE — Cheer Up
+- [ ] EXO — Call Me Baby
+- [ ] Red Velvet — Russian Roulette
+- [ ] BIGBANG — Loser
+- [ ] Girls' Generation — The Boys
+- [ ] Super Junior — U
+- [ ] SHINee — Replay
+- [ ] 2NE1 — Come Back Home
+- [ ] Stray Kids — Back Door
+- [ ] ITZY — LOCO
+- [ ] TXT — Good Boy Gone Bad
+- [ ] ENHYPEN — Bite Me
+- [ ] aespa — Girls
+- [ ] IVE — Kitsch
+- [ ] NewJeans — Super Shy
+- [ ] LE SSERAFIM — Eve, Psyche & The Bluebeard's wife
+- [ ] SEVENTEEN — Super
+- [ ] NCT 127 — 2 Baddies
+- [ ] YOASOBI — Tabun
+- [ ] Kenshi Yonezu — Paprika
+- [ ] LiSA — Catch the Moment
+- [ ] Ado — Show
+- [ ] Radwimps — Suzume
+- [ ] Official HIGE DANdism — Mixed Nuts
+- [ ] King Gnu — SPECIALZ
+- [ ] Aimyon — Ai wo Tsutaetaida Toka
+- [ ] Hikaru Utada — Sakura Drops
+- [ ] L'Arc-en-Ciel — Driver's High
+- [ ] Bad Bunny — Me Porto Bonito
+- [ ] J Balvin — Safari
+- [ ] Daddy Yankee — Shaky Shaky
+- [ ] Shakira — La Tortura
+- [ ] Enrique Iglesias — Duele El Corazon
+- [ ] Marc Anthony — Valió la Pena
+- [ ] Romeo Santos — Propuesta Indecente
+- [ ] Maluma — Borro Cassette
+- [ ] Karol G — TQG
+- [ ] Rosalía — Saoko
+- [ ] Celia Cruz — Oye Como Va
+- [ ] Juanes — Volverte a Ver
+- [ ] Maná — Oye Mi Amor
+- [ ] Selena — Baila Esta Cumbia
+- [ ] Luis Miguel — Sabor a Mí
+- [ ] Vicente Fernández — Hermoso Cariño
+- [ ] Alejandro Fernández — Mátalas
+- [ ] Pepe Aguilar — Por Una Mujer Bonita
+- [ ] Christian Nodal — Probablemente
+- [ ] Grupo Firme — El Amor No Fue Pa' Mí
+
