@@ -700,16 +700,7 @@
     <script src="config.js"></script>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js');
-            });
-        }
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // ── VENUE ISOLATION ──
+        // Standardized Venue ID Logic
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
             var v = urlParams.get('v');
@@ -731,19 +722,52 @@
             }
         }
 
-        var venueId = getVenueId();
-        document.getElementById('current-code-display').textContent = venueId;
-        var vRef = db.ref('venues/' + venueId);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        const venueId = getVenueId();
+        const vRef = db.ref('venues/' + venueId);
+
+        // Auth Logic (Staff PIN)
+        const authKey = 'TA_STATION_AUTH_' + venueId;
+        function checkAuth() {
+            if (localStorage.getItem(authKey)) return true;
+            const pin = prompt('Enter Staff PIN (e.g. 0168):');
+            if (pin === '0168' || pin === '9999') {
+                localStorage.setItem(authKey, 'true');
+                return true;
+            }
+            alert('Access Denied');
+            return false;
+        }
+
+        if (!checkAuth()) {
+            document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; font-family:sans-serif;">' +
+                '<h1 style="color:var(--bar-gold);">Access Denied</h1>' +
+                '<p>Invalid PIN. Refresh to try again.</p></div>';
+            // Stop execution
+            throw new Error("Authentication failed");
+        }
+
+        // Update UI with connection status
+        document.addEventListener('DOMContentLoaded', function() {
+            const displayEl = document.getElementById('current-code-display');
+            if (displayEl) displayEl.textContent = venueId;
+        });
 
         // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
             const banner = document.getElementById('offline-banner');
-            if (snap.val() === true) {
-                banner.style.display = 'none';
-            } else {
-                banner.style.display = 'block';
-            }
+            if (banner) banner.style.display = snap.val() ? 'none' : 'block';
         });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js');
+            });
+        }
+
 
         // YouTube Data API key is now in config.js
         // If search fails, enable "YouTube Data API v3" at:
