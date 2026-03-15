@@ -618,22 +618,18 @@ body.ticker-right #ticker-text { white-space: normal; }
 
 /* The "thought" clouds */
 #fact-bubble::before {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     bottom: -15px;
-    right: 50px;
-    box-shadow: 
-        -30px 10px 0 -5px white,
-        20px -10px 0 5px white,
-        -60px -20px 0 10px white;
+    right: 80px;
 }
 
 #fact-bubble::after {
     width: 20px;
     height: 20px;
     bottom: -35px;
-    right: 30px;
-    box-shadow: -15px 10px 0 -2px white;
+    right: 45px;
+    box-shadow: 22px 18px 0 -4px white;
 }
 
 #fact-bubble-text {
