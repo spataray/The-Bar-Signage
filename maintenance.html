@@ -705,16 +705,36 @@
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
             var v = urlParams.get('v');
-            if (!v || v === 'DEFAULT') {
-                var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
-                if (promptVal) {
-                    v = promptVal.toUpperCase().trim();
-                    if (v.length === 4) {
-                        window.location.search = '?v=' + v;
-                    }
+            
+            // If we have a valid code in URL, use it
+            if (v && v !== 'DEFAULT' && v.trim().length === 4) {
+                return v.toUpperCase().trim();
+            }
+
+            // Otherwise, prompt for it
+            var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+            if (promptVal) {
+                var code = promptVal.toUpperCase().trim();
+                if (code.length === 4) {
+                    window.location.search = '?v=' + code;
+                    // The page will reload now
+                } else {
+                    alert("Invalid Connect Code. Must be exactly 4 characters.");
                 }
             }
-            return (v && v.length === 4) ? v.toUpperCase() : 'DEFAULT';
+            return 'DEFAULT';
+        }
+
+        function switchVenue() {
+            var promptVal = prompt("Enter new 4-character Connect Code:");
+            if (promptVal) {
+                var code = promptVal.toUpperCase().trim();
+                if (code.length === 4) {
+                    window.location.search = '?v=' + code;
+                } else {
+                    alert("Invalid code.");
+                }
+            }
         }
 
         const venueId = getVenueId();
