@@ -6,6 +6,7 @@
     <title>T.A. Station - Staff Remote</title>
     <link rel="manifest" href="manifest-remote.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -808,7 +809,7 @@
 
         // Helper to make search query safe for Firebase keys
         function firebaseSafe(str) {
-            return str.toLowerCase().trim().replace(/[.#$[\]/g, "_");
+            return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_");
         }
 
         document.addEventListener('DOMContentLoaded', function() {
