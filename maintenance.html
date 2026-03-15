@@ -754,8 +754,8 @@
         const authKey = 'TA_STATION_AUTH_' + venueId;
         function checkAuth() {
             if (localStorage.getItem(authKey)) return true;
-            const pin = prompt('Enter Staff PIN (e.g. 0168):');
-            if (pin === '0168' || pin === '9999') {
+            const pin = prompt('Enter Staff PIN (e.g. 1218):');
+            if (pin === '1218' || pin === '9999') {
                 localStorage.setItem(authKey, 'true');
                 return true;
             }
