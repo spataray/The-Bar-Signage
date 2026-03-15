@@ -708,26 +708,26 @@
             if (!v || v === 'DEFAULT') {
                 var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
                 if (promptVal) {
-                    v = promptVal.toUpperCase();
-                    window.location.search = '?v=' + v;
+                    v = promptVal.toUpperCase().trim();
+                    if (v.length === 4) {
+                        window.location.search = '?v=' + v;
+                    }
                 }
             }
-            return v || 'DEFAULT';
+            return (v && v.length === 4) ? v.toUpperCase() : 'DEFAULT';
         }
 
-        function switchVenue() {
-            var current = venueId;
-            var promptVal = prompt("Enter new 4-character Connect Code:", current);
-            if (promptVal && promptVal.toUpperCase() !== current) {
-                window.location.search = '?v=' + promptVal.toUpperCase();
-            }
+        const venueId = getVenueId();
+        if (venueId === 'DEFAULT') {
+            document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding: 20px;">' +
+                '<h1 style="color:var(--bar-gold);">Welcome to Staff Remote</h1>' +
+                '<p>Please refresh and enter a valid Connect Code to begin.</p></div>';
+            throw new Error("Connect Code required");
         }
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        
-        const venueId = getVenueId();
         const vRef = db.ref('venues/' + venueId);
 
         // Auth Logic (Staff PIN)
@@ -739,15 +739,14 @@
                 localStorage.setItem(authKey, 'true');
                 return true;
             }
-            alert('Access Denied');
+            if (pin !== null) alert('Access Denied');
             return false;
         }
 
         if (!checkAuth()) {
-            document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; font-family:sans-serif;">' +
+            document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding: 20px;">' +
                 '<h1 style="color:var(--bar-gold);">Access Denied</h1>' +
                 '<p>Invalid PIN. Refresh to try again.</p></div>';
-            // Stop execution
             throw new Error("Authentication failed");
         }
 
