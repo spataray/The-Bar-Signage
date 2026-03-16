@@ -266,6 +266,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         
+        // YouTube API Key fallback
+        if (typeof YT_API_KEY === 'undefined') {
+            window.YT_API_KEY = firebaseConfig.apiKey;
+        }
+
         const venueId = getVenueId();
         const vRef = db.ref('venues/' + venueId);
 
@@ -273,6 +278,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             const displayEl = document.getElementById('current-code-display');
             if (displayEl) displayEl.textContent = venueId;
+
+            // Search input Enter key
+            document.getElementById('search-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    doSearch();
+                }
+            });
         });
 
         db.ref(".info/connected").on("value", function(snap) {
