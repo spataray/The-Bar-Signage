@@ -155,10 +155,57 @@
         #status-msg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: var(--bar-gold); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--bar-gold); z-index: 1000; display: none; pointer-events: none; }
 
         @media (max-width: 600px) {
-            .main-layout { grid-template-columns: 1fr; display: flex; flex-direction: column; }
-            #now-playing-card { min-height: auto; order: -1; }
-            .left-col, .right-col { height: auto; overflow: visible; }
-            .search-card, .queue-card { height: 400px; }
+            .main-layout { 
+                grid-template-columns: 1fr; 
+                display: flex; 
+                flex-direction: column; 
+                gap: 8px; 
+                padding: 8px;
+                height: calc(100vh - 50px);
+            }
+            
+            #now-playing-card { 
+                min-height: auto; 
+                order: -1; 
+                padding: 8px;
+            }
+            
+            #np-container {
+                flex-direction: row;
+                gap: 10px;
+                align-items: center;
+            }
+            
+            #np-thumb {
+                width: 80px;
+                max-width: 80px;
+                aspect-ratio: 16/9;
+            }
+            
+            .np-info-wrap {
+                text-align: left;
+            }
+            
+            #np-title {
+                font-size: 0.9rem;
+            }
+
+            .left-col, .right-col { 
+                height: auto; 
+                overflow: visible;
+                flex: 1;
+                min-height: 0;
+            }
+            
+            .search-card, .queue-card { 
+                height: 100%; 
+                flex: 1;
+                min-height: 250px;
+            }
+
+            .scroll-content {
+                max-height: 350px;
+            }
         }
     </style>
 </head>
@@ -182,7 +229,7 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.1 (2026-03-15 16:30 HST)</div>
+            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.2 (2026-03-15 16:45 HST)</div>
         </div>
     </div>
 
