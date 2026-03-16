@@ -88,7 +88,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.2.3 (2026-03-15 17:05 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.2.4 (2026-03-15 17:25 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -661,11 +661,18 @@
 
         vRef.child('settings/adConfig').on('value', function(snap) {
             const ad = snap.val();
+            const flyerImg = document.getElementById('ad-flyer');
             if (ad) {
                 document.getElementById('ad-title').innerText = ad.title || window._currentVenueName || "T.A. Station";
                 document.getElementById('ad-desc').innerText = ad.desc || "";
                 if (ad.flyer) {
-                    document.getElementById('ad-flyer').src = normalizeFlyerUrl(ad.flyer);
+                    flyerImg.src = normalizeFlyerUrl(ad.flyer);
+                    flyerImg.style.display = 'block';
+                    flyerImg.onerror = function() { 
+                        this.style.display = 'none'; 
+                    };
+                } else {
+                    flyerImg.style.display = 'none';
                 }
             }
         });
