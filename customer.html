@@ -153,7 +153,7 @@
         #offline-banner { display: none; background: var(--bar-red); color: white; text-align: center; padding: 5px; font-size: 0.7rem; font-weight: bold; }
         #status-msg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: var(--bar-gold); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--bar-gold); z-index: 1000; display: none; pointer-events: none; }
 
-        /* Restructured Mobile Portrait Layout: Queue (Top), Search (Mid), NP (Bottom) */
+        /* Updated Mobile Portrait Layout: NP (Top), Queue (Mid), Search (Bottom) */
         @media (max-width: 600px) {
             .main-layout { 
                 grid-template-columns: 1fr; 
@@ -164,9 +164,11 @@
                 height: calc(100vh - 50px);
             }
             
-            .left-col { order: 2; flex: 1.5; } /* Search Mid */
-            .right-col { order: 1; flex: 1; }  /* Queue Top */
-            #now-playing-card { order: 3; flex: 0 0 auto; margin-top: auto; padding: 8px; } /* NP Bottom */
+            .right-col { order: 1; flex: 1; }  /* NP + Queue Container */
+            .left-col { order: 2; flex: 1.2; } /* Search Bottom */
+            
+            #now-playing-card { order: -1; padding: 8px; margin-bottom: 8px; } /* NP within Right-col stays top */
+            .queue-card { order: 1; } /* Queue below NP */
 
             #np-container {
                 flex-direction: row;
@@ -224,33 +226,35 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.4 (2026-03-15 17:25 HST)</div>
+            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.5 (2026-03-15 17:40 HST)</div>
         </div>
     </div>
 
     <div class="main-layout">
-        <!-- LEFT ON DESKTOP: NOW PLAYING & QUEUE -->
+        <!-- LEFT ON DESKTOP (Now Playing & Queue) -->
         <div class="right-col">
-            <div class="card queue-card">
-                <h3>Queue <span id="queue-count" style="opacity:0.5; font-size:0.7rem;"></span></h3>
-                <div class="scroll-content" id="queue-list">
-                    <div style="text-align:center; padding:20px; opacity:0.2;">Loading queue...</div>
-                </div>
-            </div>
-
+            <!-- NOW PLAYING AT TOP -->
             <div class="card" id="now-playing-card">
                 <h3>Now Playing</h3>
                 <div id="np-container">
-                    <img id="np-thumb" src="" alt="">
+                    <img id="np-thumb" src="images/TAStation-1.JPG" alt="">
                     <div class="np-info-wrap">
                         <div id="np-title">Nothing playing</div>
                         <div id="np-author">--</div>
                     </div>
                 </div>
             </div>
+
+            <!-- QUEUE IN MIDDLE -->
+            <div class="card queue-card">
+                <h3>Queue <span id="queue-count" style="opacity:0.5; font-size:0.7rem;"></span></h3>
+                <div class="scroll-content" id="queue-list">
+                    <div style="text-align:center; padding:20px; opacity:0.2;">Loading queue...</div>
+                </div>
+            </div>
         </div>
 
-        <!-- RIGHT ON DESKTOP: SEARCH -->
+        <!-- RIGHT ON DESKTOP (Search) -->
         <div class="left-col">
             <div class="card search-card">
                 <h3>🔍 FIND MUSIC</h3>
