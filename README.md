@@ -1,9 +1,27 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
 Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
 
-### T.A. Station - Digital Signage System v1.1.0
+### T.A. Station - Digital Signage System v1.2.0
 
 A professional digital signage system for T.A. Station (Honolulu, HI). Features real-time YouTube playback, automated ad rotation, and staff remote control.
+
+### 🔑 Staff Credentials
+
+To access the staff remote (`maintenance.html`), you will need:
+- **Connect Code:** A 4-character code shown on the top-left of the TV screen.
+- **Staff PIN:** **1218** (or the administrative override **9999**).
+
+*Note: Once entered, these credentials are saved in your browser's local storage.*
+
+---
+
+### 🌟 New in v1.2.0
+
+- **PIP Ad Layout**: When ads appear, the YouTube video now smoothly transitions into a "Picture-in-Picture" (PIP) inset window with a gold border. This ensures the video remains fully visible and professional-looking while ads are displayed.
+- **Enhanced Authentication**: A two-step login process (Connect Code then Staff PIN) ensures secure and reliable connection between the remote and the TV.
+- **Improved Mobile Compatibility**: Fully updated meta tags for a better "App Mode" experience on both iOS and Android.
+
+---
 
 ### 📱 "App Mode" & Installation
 
