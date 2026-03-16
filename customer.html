@@ -48,11 +48,11 @@
         .venue-name-display { margin: 0; font-size: 0.9rem; color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
         .cc-wrap { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; font-weight: bold; opacity: 0.8; }
 
-        /* Dashboard Grid */
+        /* Dashboard Grid - Swapped for Desktop (NP+Queue Left, Search Right) */
         .main-layout {
             flex: 1;
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-columns: 0.8fr 1.2fr;
             gap: 10px;
             padding: 10px;
             overflow: hidden;
@@ -103,7 +103,6 @@
         /* Preview Area */
         #now-playing-card {
             flex: 0 0 auto;
-            min-height: 45vh;
             justify-content: center;
             background: linear-gradient(180deg, #1e1e1e 0%, #000 100%);
             margin-bottom: 10px;
@@ -154,6 +153,7 @@
         #offline-banner { display: none; background: var(--bar-red); color: white; text-align: center; padding: 5px; font-size: 0.7rem; font-weight: bold; }
         #status-msg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: var(--bar-gold); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--bar-gold); z-index: 1000; display: none; pointer-events: none; }
 
+        /* Restructured Mobile Portrait Layout: Queue (Top), Search (Mid), NP (Bottom) */
         @media (max-width: 600px) {
             .main-layout { 
                 grid-template-columns: 1fr; 
@@ -164,12 +164,10 @@
                 height: calc(100vh - 50px);
             }
             
-            #now-playing-card { 
-                min-height: auto; 
-                order: -1; 
-                padding: 8px;
-            }
-            
+            .left-col { order: 2; flex: 1.5; } /* Search Mid */
+            .right-col { order: 1; flex: 1; }  /* Queue Top */
+            #now-playing-card { order: 3; flex: 0 0 auto; margin-top: auto; padding: 8px; } /* NP Bottom */
+
             #np-container {
                 flex-direction: row;
                 gap: 10px;
@@ -177,8 +175,8 @@
             }
             
             #np-thumb {
-                width: 80px;
-                max-width: 80px;
+                width: 60px;
+                max-width: 60px;
                 aspect-ratio: 16/9;
             }
             
@@ -187,24 +185,21 @@
             }
             
             #np-title {
-                font-size: 0.9rem;
+                font-size: 0.8rem;
             }
+            #np-author { font-size: 0.7rem; }
 
             .left-col, .right-col { 
                 height: auto; 
                 overflow: visible;
-                flex: 1;
                 min-height: 0;
             }
             
-            .search-card, .queue-card { 
-                height: 100%; 
-                flex: 1;
-                min-height: 250px;
-            }
+            .search-card { height: 100%; min-height: 200px; }
+            .queue-card { height: 100%; min-height: 150px; }
 
             .scroll-content {
-                max-height: 350px;
+                max-height: 250px;
             }
         }
     </style>
@@ -229,12 +224,33 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.2 (2026-03-15 16:45 HST)</div>
+            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.3 (2026-03-15 17:05 HST)</div>
         </div>
     </div>
 
     <div class="main-layout">
-        <!-- LEFT: SEARCH -->
+        <!-- LEFT ON DESKTOP: NOW PLAYING & QUEUE -->
+        <div class="right-col">
+            <div class="card queue-card">
+                <h3>Queue <span id="queue-count" style="opacity:0.5; font-size:0.7rem;"></span></h3>
+                <div class="scroll-content" id="queue-list">
+                    <div style="text-align:center; padding:20px; opacity:0.2;">Loading queue...</div>
+                </div>
+            </div>
+
+            <div class="card" id="now-playing-card">
+                <h3>Now Playing</h3>
+                <div id="np-container">
+                    <img id="np-thumb" src="" alt="">
+                    <div class="np-info-wrap">
+                        <div id="np-title">Nothing playing</div>
+                        <div id="np-author">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT ON DESKTOP: SEARCH -->
         <div class="left-col">
             <div class="card search-card">
                 <h3>🔍 FIND MUSIC</h3>
@@ -247,25 +263,6 @@
                 <div class="scroll-content" id="search-results">
                     <div style="text-align:center; padding:40px; opacity:0.2;">Search for a song to begin!</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- RIGHT: NOW PLAYING & QUEUE -->
-        <div class="right-col">
-            <div class="card" id="now-playing-card">
-                <h3>Now Playing</h3>
-                <div id="np-container">
-                    <img id="np-thumb" src="" alt="">
-                    <div class="np-info-wrap">
-                        <div id="np-title">Nothing playing</div>
-                        <div id="np-author">--</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card queue-card" style="margin-top:10px;">
-                <h3>Queue <span id="queue-count" style="opacity:0.5; font-size:0.7rem;"></span></h3>
-                <div class="scroll-content" id="queue-list"></div>
             </div>
         </div>
     </div>
