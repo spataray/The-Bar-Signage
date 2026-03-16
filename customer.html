@@ -148,15 +148,13 @@
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .toggle-slider { position: absolute; inset: 0; background: #444; border-radius: 20px; cursor: pointer; transition: 0.2s; }
         .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s; }
-        input:checked + .toggle-slider { background: var(--bar-gold); }
+        input:checked + .toggle-slider { background: var(--bar-green); }
         input:checked + .toggle-slider::before { transform: translateX(18px); }
 
-        /* Overlays */
-        #lock-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; padding: 40px; }
-        #status-msg { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bar-gold); color: black; padding: 10px 20px; border-radius: 30px; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.6); display: none; z-index: 2000; }
-        #offline-banner { background: var(--bar-red); color: white; text-align: center; padding: 4px; font-size: 0.7rem; font-weight: bold; display: none; }
+        #offline-banner { display: none; background: var(--bar-red); color: white; text-align: center; padding: 5px; font-size: 0.7rem; font-weight: bold; }
+        #status-msg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: var(--bar-gold); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--bar-gold); z-index: 1000; display: none; pointer-events: none; }
 
-        @media (max-width: 850px) {
+        @media (max-width: 600px) {
             .main-layout { grid-template-columns: 1fr; display: flex; flex-direction: column; }
             #now-playing-card { min-height: auto; order: -1; }
             .left-col, .right-col { height: auto; overflow: visible; }
@@ -184,7 +182,7 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.0 (2026-03-15 16:14)</div>
+            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.2.1 (2026-03-15 16:30 HST)</div>
         </div>
     </div>
 
@@ -205,10 +203,10 @@
             </div>
         </div>
 
-        <!-- RIGHT: PREVIEW & QUEUE -->
+        <!-- RIGHT: NOW PLAYING & QUEUE -->
         <div class="right-col">
             <div class="card" id="now-playing-card">
-                <h3>🎵 NOW PLAYING</h3>
+                <h3>Now Playing</h3>
                 <div id="np-container">
                     <img id="np-thumb" src="" alt="">
                     <div class="np-info-wrap">
@@ -218,66 +216,62 @@
                 </div>
             </div>
 
-            <div class="card queue-card">
-                <h3>📋 UP NEXT <span id="queue-count" style="opacity:0.5;"></span></h3>
-                <div class="scroll-content" id="queue-list">
-                    <div class="queue-empty" style="text-align:center; padding:20px; opacity:0.3; font-style:italic;">Queue is empty</div>
-                </div>
+            <div class="card queue-card" style="margin-top:10px;">
+                <h3>Queue <span id="queue-count" style="opacity:0.5; font-size:0.7rem;"></span></h3>
+                <div class="scroll-content" id="queue-list"></div>
             </div>
         </div>
-    </div>
-
-    <div id="lock-overlay">
-        <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
-        <h2 id="lock-title">QUEUE LOCKED</h2>
-        <p id="lock-message">The queue is currently closed by staff.</p>
     </div>
 
     <div id="status-msg"></div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <!-- CONFIGURATION -->
     <script src="config.js"></script>
 
     <script>
-        // Standardized Venue ID Logic
+        // 1. Core Logic
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
             var v = urlParams.get('v');
-            if (!v || v === 'DEFAULT') {
-                var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
-                if (promptVal) {
-                    v = promptVal.toUpperCase();
-                    window.location.search = '?v=' + v;
+            if (v && v !== 'DEFAULT' && v.trim().length === 4) {
+                return v.toUpperCase().trim();
+            }
+            var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+            if (promptVal) {
+                var code = promptVal.toUpperCase().trim();
+                if (code.length === 4) {
+                    window.location.search = '?v=' + code;
+                } else {
+                    alert("Invalid Connect Code.");
                 }
             }
-            return v || 'DEFAULT';
+            return 'DEFAULT';
         }
 
         function switchVenue() {
-            var current = venueId;
-            var promptVal = prompt("Enter new 4-character Connect Code:", current);
-            if (promptVal && promptVal.toUpperCase() !== current) {
-                window.location.search = '?v=' + promptVal.toUpperCase();
+            var promptVal = prompt("Enter new 4-character Connect Code:");
+            if (promptVal) {
+                var code = promptVal.toUpperCase().trim();
+                if (code.length === 4) {
+                    window.location.search = '?v=' + code;
+                } else {
+                    alert("Invalid code.");
+                }
             }
         }
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        
-        // YouTube API Key fallback
-        if (typeof YT_API_KEY === 'undefined') {
-            window.YT_API_KEY = firebaseConfig.apiKey;
-        }
+        if (typeof YT_API_KEY === 'undefined') { window.YT_API_KEY = firebaseConfig.apiKey; }
 
         const venueId = getVenueId();
         const vRef = db.ref('venues/' + venueId);
 
-        // Update UI with connection status
+        // UI & Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
             const displayEl = document.getElementById('current-code-display');
             if (displayEl) displayEl.textContent = venueId;
@@ -289,33 +283,27 @@
                     doSearch();
                 }
             });
+
+            // Search button click
+            document.getElementById('search-btn').onclick = function(e) {
+                e.preventDefault();
+                doSearch();
+            };
+
+            // Result listener (delegation)
+            document.getElementById('search-results').onclick = e => {
+                const btn = e.target.closest('.btn-add');
+                if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
+            };
         });
 
+        // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
             const banner = document.getElementById('offline-banner');
             if (banner) banner.style.display = snap.val() ? 'none' : 'block';
         });
 
-
-
-        let karaokeLocked = false;
-        let lastCallActive = false;
-
-        function updateLockState() {
-            const overlay = document.getElementById('lock-overlay');
-            const lockTitle = document.getElementById('lock-title');
-            const lockMsg = document.getElementById('lock-message');
-            if (lastCallActive) {
-                overlay.style.display = 'flex';
-                lockTitle.textContent = "LAST CALL";
-                lockMsg.innerHTML = "The queue is closed for the night!";
-            } else {
-                overlay.style.display = 'none';
-            }
-        }
-
-        vRef.child('settings/lastCallActive').on('value', snap => { lastCallActive = !!snap.val(); updateLockState(); });
-
+        // State Listeners
         vRef.child('settings/nowPlaying').on('value', snap => {
             const data = snap.val();
             const thumb = document.getElementById('np-thumb');
@@ -339,162 +327,7 @@
             document.title = name + " - Requests";
         });
 
-        function setCaptions(status) {
-            vRef.child('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
-            vRef.child('settings/captionsEnabled').set(status);
-        }
-
-        // Suggestions logic
-        let suggestionTimeout;
-        function updateSuggestions(query) {
-            clearTimeout(suggestionTimeout);
-            if (query.length < 2) return;
-            suggestionTimeout = setTimeout(async () => {
-                try {
-                    const res = await fetch(`https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}`);
-                    const text = await res.text();
-                    const match = text.match(/\["(.*?)",\[(.*?)\]\]/);
-                    if (match && match[2]) {
-                        const items = JSON.parse(`[${match[2]}]`).map(i => i[0]);
-                        const datalist = document.getElementById('search-suggestions');
-                        datalist.innerHTML = items.map(i => `<option value="${escAttr(i)}">`).join('');
-                    }
-                } catch (e) {}
-            }, 300);
-        }
-
-        // Persistent Search Result Listener
-        document.getElementById('search-results').onclick = e => {
-            const btn = e.target.closest('.btn-add');
-            if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
-        };
-
-        // Helper to make search query safe for Firebase keys
-        function firebaseSafe(str) {
-            return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_");
-        }
-
-        // Search
-        async function doSearch() {
-            var input = document.getElementById('search-input');
-            var query = input.value.trim();
-            if (!query) return;
-            input.blur();
-
-            var resultsEl = document.getElementById('search-results');
-            var errorEl = document.getElementById('search-error');
-            errorEl.style.display = 'none';
-            resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">Searching...</div>';
-
-            // 1. Check Cache
-            const safeQuery = firebaseSafe(query);
-            const cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
-
-            try {
-                const snapshot = await cacheRef.once('value');
-                const cachedData = snapshot.val();
-
-                if (cachedData && cachedData.items) {
-                    console.log('Using cached results for:', query);
-                    renderResults(cachedData.items);
-                    return;
-                }
-
-                // 2. Fetch from YouTube
-                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=30&key=' + YT_API_KEY;
-                
-                const res = await fetch(url);
-                const data = await res.json();
-
-                if (data.error) {
-                    var originalMsg = data.error.message || 'Unknown error';
-                    var msg = originalMsg;
-                    if (data.error.code === 403) {
-                        if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
-                            msg = 'API key blocked. Add domain to allowed referrers.';
-                        } else if (originalMsg.indexOf('quota') !== -1) {
-                            msg = 'Daily search limit reached. Try searching again after 9 PM Hawaii time.';
-                        } else {
-                            msg = 'YouTube Data API v3 not enabled.';
-                        }
-                    }
-                    errorEl.textContent = "Search Error: " + msg;
-                    errorEl.style.display = 'block';
-                    resultsEl.innerHTML = '';
-                    return;
-                }
-
-                if (!data.items || data.items.length === 0) {
-                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found for: ' + query + '</div>';
-                    return;
-                }
-
-                // Save to Cache
-                cacheRef.set({
-                    items: data.items,
-                    timestamp: Date.now()
-                });
-
-                renderResults(data.items);
-
-            } catch (e) {
-                console.error('Search error:', e);
-                resultsEl.innerHTML = '<div style="color:red; text-align:center;">Error searching. Check your connection.</div>';
-            }
-        }
-
-        function renderResults(items) {
-            var resultsEl = document.getElementById('search-results');
-            resultsEl.innerHTML = '';
-            items.forEach(function(item) {
-                var id = item.id.videoId;
-                var title = item.snippet.title;
-                var channel = item.snippet.channelTitle;
-                var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
-                var div = document.createElement('div');
-                div.className = 'result-item';
-                div.innerHTML = `
-                    <img class="result-thumb" src="${thumb}">
-                    <div class="result-info">
-                        <div class="result-title">${escHtml(title)}</div>
-                        <div class="result-channel">${escHtml(channel)}</div>
-                    </div>
-                    <button class="btn-add" data-id="${id}" data-title="${escAttr(title)}" data-author="${escAttr(channel)}" data-thumb="${thumb}">+</button>
-                `;
-                resultsEl.appendChild(div);
-            });
-        }
-
-
-        // Add an explicit click listener to the button as a fallback
-        document.getElementById('search-btn').onclick = function(e) {
-            e.preventDefault();
-            doSearch();
-        };
-
-        function addToQueue(id, title, author, thumb) {
-            vRef.child('settings/queue').once('value', snap => {
-                const queue = snap.val() || [];
-                queue.push({ id, title, author, thumb });
-                vRef.child('settings/queue').set(queue);
-                showStatus('Added to queue!');
-            });
-        }
-
-        function playNow(id, title, author) {
-            vRef.child('settings/currentVideoId').set(id);
-            vRef.child('settings/nowPlaying').set({ videoId: id, title: title || '', author: author || '' });
-            showStatus('Playing now...');
-        }
-
-        function removeFromQueue(index) {
-            vRef.child('settings/queue').once('value', snap => {
-                const queue = snap.val() || [];
-                queue.splice(index, 1);
-                vRef.child('settings/queue').set(queue);
-            });
-        }
-
+        // Queue logic
         vRef.child('settings/queue').on('value', snap => {
             const queue = snap.val() || [];
             const listEl = document.getElementById('queue-list');
@@ -534,6 +367,107 @@
             rebuildSortable(listEl, queue);
         });
 
+        // ── Actions ──
+        function setCaptions(status) {
+            vRef.child('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
+            vRef.child('settings/captionsEnabled').set(status);
+        }
+
+        async function doSearch() {
+            var input = document.getElementById('search-input');
+            var query = input.value.trim();
+            if (!query) return;
+            input.blur();
+
+            var resultsEl = document.getElementById('search-results');
+            var errorEl = document.getElementById('search-error');
+            errorEl.style.display = 'none';
+            resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">Searching...</div>';
+
+            const safeQuery = firebaseSafe(query);
+            const cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
+
+            try {
+                const snapshot = await cacheRef.once('value');
+                const cachedData = snapshot.val();
+                if (cachedData && cachedData.items) {
+                    renderResults(cachedData.items);
+                    return;
+                }
+
+                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=25&key=' + YT_API_KEY;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.error) {
+                    var msg = data.error.message || 'Unknown error';
+                    if (data.error.code === 403) msg = 'API key blocked or quota reached. Try again later.';
+                    errorEl.textContent = "Search Error: " + msg;
+                    errorEl.style.display = 'block';
+                    resultsEl.innerHTML = '';
+                    return;
+                }
+
+                if (!data.items || data.items.length === 0) {
+                    resultsEl.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No results found</div>';
+                    return;
+                }
+
+                cacheRef.set({ items: data.items, timestamp: Date.now() });
+                renderResults(data.items);
+            } catch (e) {
+                errorEl.textContent = "Search failed. Check your connection.";
+                errorEl.style.display = 'block';
+                resultsEl.innerHTML = '';
+            }
+        }
+
+        function renderResults(items) {
+            var resultsEl = document.getElementById('search-results');
+            resultsEl.innerHTML = '';
+            items.forEach(function(item) {
+                var id = item.id.videoId;
+                if (!id) return;
+                var title = item.snippet.title;
+                var channel = item.snippet.channelTitle;
+                var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
+                var div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <img class="result-thumb" src="${thumb}">
+                    <div class="result-info">
+                        <div class="result-title">${escHtml(title)}</div>
+                        <div class="result-channel">${escHtml(channel)}</div>
+                    </div>
+                    <button class="btn-add" data-id="${id}" data-title="${escAttr(title)}" data-author="${escAttr(channel)}" data-thumb="${thumb}">+</button>
+                `;
+                resultsEl.appendChild(div);
+            });
+        }
+
+        function addToQueue(id, title, author, thumb) {
+            vRef.child('settings/queue').once('value', snap => {
+                const queue = snap.val() || [];
+                queue.push({ id, title, author, thumb });
+                vRef.child('settings/queue').set(queue);
+                showStatus('Added to queue!');
+            });
+        }
+
+        function playNow(id, title, author) {
+            vRef.child('settings/currentVideoId').set(id);
+            vRef.child('settings/nowPlaying').set({ videoId: id, title: title || '', author: author || '' });
+            showStatus('Playing now...');
+        }
+
+        function removeFromQueue(index) {
+            vRef.child('settings/queue').once('value', snap => {
+                const queue = snap.val() || [];
+                queue.splice(index, 1);
+                vRef.child('settings/queue').set(queue);
+            });
+        }
+
         function rebuildSortable(listEl, currentQueue) {
             if (window._sortable) window._sortable.destroy();
             Array.from(listEl.children).forEach((child, i) => child.dataset.originalIndex = i);
@@ -543,8 +477,7 @@
                 ghostClass: 'sortable-ghost',
                 onEnd: function() {
                     const newIndices = Array.from(listEl.children).map(el => parseInt(el.dataset.originalIndex));
-                    const validIndices = newIndices.filter(n => !isNaN(n));
-                    const newQueue = validIndices.map(idx => currentQueue[idx]);
+                    const newQueue = newIndices.filter(n => !isNaN(n)).map(idx => currentQueue[idx]);
                     vRef.child('settings/queue').set(newQueue);
                 }
             });
@@ -557,15 +490,25 @@
             setTimeout(() => { el.style.display = 'none'; }, 2000);
         }
 
-        function escHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
-
-        function escAttr(str) {
-            if (!str) return "";
-            return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        function firebaseSafe(str) { return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_"); }
+        function escHtml(str) { const div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
+        function escAttr(str) { if (!str) return ""; return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;"); }
+        let suggestionTimeout;
+        function updateSuggestions(query) {
+            clearTimeout(suggestionTimeout);
+            if (query.length < 2) return;
+            suggestionTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}`);
+                    const text = await res.text();
+                    const match = text.match(/\["(.*?)",\[(.*?)\]\]/);
+                    if (match && match[2]) {
+                        const items = JSON.parse(`[${match[2]}]`).map(i => i[0]);
+                        const datalist = document.getElementById('search-suggestions');
+                        datalist.innerHTML = items.map(i => `<option value="${escAttr(i)}">`).join('');
+                    }
+                } catch (e) {}
+            }, 300);
         }
     </script>
 </body>
