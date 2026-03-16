@@ -35,6 +35,20 @@ body, html {
 #video-section { 
     position: relative; 
     background: #000; 
+    transition: padding var(--transition-speed) ease-in-out;
+}
+
+#video-section.pip-active {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#video-section.pip-active #player,
+#video-section.pip-active #idle-screen {
+    border: 3px solid var(--bar-gold);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
 
 iframe { 

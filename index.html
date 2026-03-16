@@ -799,6 +799,7 @@
             hideSongFact();
             const sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.add('ad-active');
+            document.getElementById('video-section').classList.add('pip-active');
             if (forceFlyer || !adCycleShowMenu) {
                 sidebar.classList.add('show-flyer');
                 sidebar.classList.remove('show-menu');
@@ -816,6 +817,7 @@
         function hideAd() {
             const sidebar = document.getElementById('ad-sidebar');
             document.getElementById('app-container').classList.remove('ad-active');
+            document.getElementById('video-section').classList.remove('pip-active');
             sidebar.classList.remove('show-flyer');
             sidebar.classList.remove('show-menu');
         }
