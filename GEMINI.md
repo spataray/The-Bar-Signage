@@ -26,6 +26,7 @@ T.A. Station Digital Signage is a real-time, web-based display system for a Thai
 - **No Build System**: This is a pure static project. There are no bundlers (Webpack/Vite) or package managers (NPM/Yarn). JS and CSS are mostly inline or linked directly.
 - **Direct Injection**: The `update_facts.py` script uses regex to replace content between `// AUTO-GENERATED-FACTS-START` and `// AUTO-GENERATED-FACTS-END` markers in `index.html`.
 - **CSS Transitions**: The ad sidebar visibility is controlled via a CSS grid transition on the `--sidebar-width` variable.
+- **Version Tracking**: Always update the `v1.x.x (Date Time)` version tag at the bottom of `index.html`, `maintenance.html`, and `customer.html` whenever making a functional change or fix. This helps verify that the latest update is live.
 
 ## Setup & Running
 - **Local Development**: Open `index.html` or `maintenance.html` directly in any modern web browser. An internet connection is required for Firebase and YouTube APIs.
