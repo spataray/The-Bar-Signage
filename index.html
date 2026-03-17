@@ -87,8 +87,13 @@
         <div id="fact-bubble-text"></div>
     </div>
 
+    <!-- Debug Status Bar -->
+    <div id="debug-status" style="position: fixed; bottom: 0; left: 0; background: rgba(0,0,0,0.7); color: #0f0; font-family: monospace; font-size: 9px; padding: 2px 5px; z-index: 1000; pointer-events: none; opacity: 0.5;">
+        AUTH: ... | DB: ... | VID: ...
+    </div>
+
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.3 (2026-03-16 20:30 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.4 (2026-03-16 21:00 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -148,9 +153,12 @@
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                 console.log("Authenticated as:", user.uid);
+                setDebug("AUTH", "OK");
                 initFirebaseListeners();
             } else {
+                setDebug("AUTH", "PENDING");
                 firebase.auth().signInAnonymously().catch(function(error) {
+                    setDebug("AUTH", "ERR");
                     console.error("Firebase Anonymous Auth Error:", error.code, error.message);
                 });
             }
@@ -161,8 +169,10 @@
             var overlay = document.getElementById("disconnect-overlay");
             if (snap.val() === true) {
                 overlay.style.display = "none";
+                setDebug("DB", "OK");
             } else {
                 overlay.style.display = "flex";
+                setDebug("DB", "LOST");
             }
         });
 
@@ -347,6 +357,15 @@
             factsTimer = setTimeout(showFunFact, 60000);
         }
 
+        function setDebug(key, val) {
+            var el = document.getElementById("debug-status");
+            if (!el) return;
+            var current = el.innerText;
+            if (key === "AUTH") el.innerText = current.replace(/AUTH: [^|]+/, "AUTH: " + val);
+            if (key === "DB") el.innerText = current.replace(/DB: [^|]+/, "DB: " + val);
+            if (key === "VID") el.innerText = current.replace(/VID: [^|]+/, "VID: " + val);
+        }
+
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
@@ -355,8 +374,7 @@
                     controls: 1, 
                     rel: 0, 
                     enablejsapi: 1,
-                    iv_load_policy: 3,
-                    origin: window.location.origin
+                    iv_load_policy: 3
                 },
                 events: {
                     onReady: onPlayerReady,
@@ -737,6 +755,7 @@
                 if (typeof vid !== "string") return;
 
                 console.log("Loading video:", vid);
+                setDebug("VID", vid);
                 stopIdle();
                 if (playerReady && player && player.loadVideoById) {
                     player.loadVideoById(vid);
