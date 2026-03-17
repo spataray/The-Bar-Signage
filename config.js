@@ -1,5 +1,5 @@
 // Centralized Configuration for T.A. Station Signage
-const firebaseConfig = {
+var firebaseConfig = {
     apiKey: "AIzaSyAJ6XE866VF-8VKn7iMtVQjMZTS_LPB9l4",
     authDomain: "ta-station-remote.firebaseapp.com",
     databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
@@ -10,4 +10,4 @@ const firebaseConfig = {
 };
 
 // Global YouTube API Key (shared with Firebase)
-const YT_API_KEY = firebaseConfig.apiKey;
+var YT_API_KEY = firebaseConfig.apiKey;
