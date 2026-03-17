@@ -74,12 +74,12 @@
     </div>
 
     <!-- Request Song QR Code -->
-    <div id="request-qr-container" style="position: fixed; bottom: 105px; right: 20px; z-index: 90; background: rgba(0,0,0,0.85); padding: 12px; border-radius: 15px; border: 2px solid var(--bar-gold); text-align: center; width: 120px; display: none; flex-direction: column; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: opacity 0.5s ease;">
-        <div style="font-size: 0.65rem; color: var(--bar-gold); font-weight: 900; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase;">Request a Song</div>
+    <div id="request-qr-container" style="position: fixed; bottom: 105px; right: 20px; z-index: 90; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 15px; border: 2px solid var(--bar-gold); text-align: center; width: 140px; display: none; flex-direction: column; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: opacity 0.5s ease;">
+        <div style="font-size: 0.9rem; color: var(--bar-gold); font-weight: 900; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase;">Request a Song</div>
         <div id="qr-wrapper" style="background: white; padding: 5px; border-radius: 8px; line-height: 0;">
-            <img id="request-qr-img" src="" style="width: 100px; height: 100px; display: block;" alt="QR Code">
+            <img id="request-qr-img" src="" style="width: 120px; height: 120px; display: block;" alt="QR Code">
         </div>
-        <div style="font-size: 0.6rem; margin-top: 8px; opacity: 0.7;">Scan with Phone</div>
+        <div style="font-size: 0.75rem; margin-top: 10px; opacity: 0.9; font-weight: bold;">Scan with Phone</div>
     </div>
 
     <!-- Song Fact Bubble -->
@@ -88,7 +88,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.2.5 (2026-03-15 17:40 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.2.7 (2026-03-15 18:35 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -104,6 +104,7 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -124,6 +125,9 @@
 
         // 2. FIREBASE SETUP
         firebase.initializeApp(firebaseConfig);
+        firebase.auth().signInAnonymously().catch(function(error) {
+            console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+        });
         const db = firebase.database();
 
         // ── VENUE ISOLATION ──

@@ -694,6 +694,7 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
@@ -747,6 +748,9 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+        firebase.auth().signInAnonymously().catch(function(error) {
+            console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+        });
         const db = firebase.database();
         const vRef = db.ref('venues/' + venueId);
 
@@ -838,7 +842,7 @@
         });
 
         async function doSearch() {
-            const query = document.getElementById('search-input').value.trim();
+            let query = document.getElementById('search-input').value.trim();
             if (!query) return;
 
             const errorEl = document.getElementById('search-error');
@@ -855,7 +859,26 @@
                 return;
             }
 
-            // 2. Check Firebase Cache (0 units)
+            // 2. Refine query to prefer Video over Album Cover
+            // If it's not karaoke/instrumental/live/etc, add "official music video"
+            const lowerQuery = query.toLowerCase();
+            let refinedQuery = query;
+            const isSpecialVersion = 
+                lowerQuery.includes('karaoke') || 
+                lowerQuery.includes('instrumental') || 
+                lowerQuery.includes('backing') || 
+                lowerQuery.includes('live') || 
+                lowerQuery.includes('remix') || 
+                lowerQuery.includes('lyrics') || 
+                lowerQuery.includes('official') || 
+                lowerQuery.includes('video');
+            
+            if (!isSpecialVersion) {
+                refinedQuery += " official music video";
+            }
+
+            // 3. Check Firebase Cache (0 units)
+            // We cache based on the ORIGINAL query to preserve user intent
             const safeQuery = firebaseSafe(query);
             const cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
             
@@ -869,9 +892,10 @@
                     return;
                 }
 
-                // 3. If not in cache, fetch from YouTube (100 units)
+                // 4. If not in cache, fetch from YouTube (100 units)
+                // Use refinedQuery for the actual YouTube API call
                 const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
-                    encodeURIComponent(query) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
+                    encodeURIComponent(refinedQuery) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
                 const res = await fetch(url);
                 const data = await res.json();
 
@@ -1406,6 +1430,6 @@
             document.title = name + " - Staff Remote";
         });
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.2.5 (2026-03-15 17:40 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.2.7 (2026-03-15 18:35 HST)</div>
 </body>
 </html>
