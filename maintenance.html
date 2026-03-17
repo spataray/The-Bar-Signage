@@ -423,7 +423,7 @@
         <button onclick="switchVenue()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; cursor:pointer;">SWITCH</button>
     </div>
     <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
-    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.3.2</span></div>
+    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.3.3</span></div>
 
     <!-- NOW PLAYING -->
     <div class="card" id="now-playing-card">
@@ -738,7 +738,7 @@
             }
         }
 
-        const venueId = getVenueId();
+        var venueId = getVenueId();
         if (venueId === 'DEFAULT') {
             document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding: 20px;">' +
                 '<h1 style="color:var(--bar-gold);">Welcome to Staff Remote</h1>' +
@@ -748,8 +748,8 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const vRef = db.ref('venues/' + venueId);
+        var db = firebase.database();
+        var vRef = db.ref('venues/' + venueId);
 
         // AUTH & INITIALIZATION
         firebase.auth().onAuthStateChanged(function(user) {
@@ -764,10 +764,10 @@
         });
 
         // Auth Logic (Staff PIN)
-        const authKey = 'TA_STATION_AUTH_' + venueId;
+        var authKey = 'TA_STATION_AUTH_' + venueId;
         function checkAuth() {
             if (localStorage.getItem(authKey)) return true;
-            const pin = prompt('Enter Staff PIN (e.g. 1218):');
+            var pin = prompt('Enter Staff PIN (e.g. 1218):');
             if (pin === '1218' || pin === '9999') {
                 localStorage.setItem(authKey, 'true');
                 return true;
@@ -785,13 +785,13 @@
 
         // Update UI with connection status
         document.addEventListener('DOMContentLoaded', function() {
-            const displayEl = document.getElementById('current-code-display');
+            var displayEl = document.getElementById('current-code-display');
             if (displayEl) displayEl.textContent = venueId;
         });
 
         // Connection Monitor
         db.ref(".info/connected").on("value", function(snap) {
-            const banner = document.getElementById('offline-banner');
+            var banner = document.getElementById('offline-banner');
             if (banner) banner.style.display = snap.val() ? 'none' : 'block';
         });
 
@@ -801,45 +801,40 @@
             });
         }
 
-
-        // YouTube Data API key is now in config.js
-        // If search fails, enable "YouTube Data API v3" at:
-        // https://console.cloud.google.com/apis/library/youtube.googleapis.com
-
-
-        let currentPlayerState = null;
+        var currentPlayerState = null;
 
         // ── Tabs ──
         function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(function(b) {
-                const isMatch = (tab === 'search' && b.innerText === 'Search') || 
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < btns.length; i++) {
+                var b = btns[i];
+                var isMatch = (tab === 'search' && b.innerText === 'Search') || 
                                 (tab === 'url' && b.innerText === 'Paste URL') || 
                                 (tab === 'menu' && b.innerText === 'Menu') ||
                                 (tab === 'ticker' && b.innerText === 'Ads & Ticker');
-                b.classList.toggle('active', isMatch);
-            });
-            document.getElementById('tab-search').classList.toggle('active', tab === 'search');
-            document.getElementById('tab-url').classList.toggle('active', tab === 'url');
-            document.getElementById('tab-menu').classList.toggle('active', tab === 'menu');
-            document.getElementById('tab-ticker').classList.toggle('active', tab === 'ticker');
+                b.className = isMatch ? 'tab-btn active' : 'tab-btn';
+            }
+            document.getElementById('tab-search').className = tab === 'search' ? 'tab-content active' : 'tab-content';
+            document.getElementById('tab-url').className = tab === 'url' ? 'tab-content active' : 'tab-content';
+            document.getElementById('tab-menu').className = tab === 'menu' ? 'tab-content active' : 'tab-content';
+            document.getElementById('tab-ticker').className = tab === 'ticker' ? 'tab-content active' : 'tab-content';
         }
 
         // ── YouTube URL Helpers ──
         function extractVideoId(url) {
-            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            const match = url.match(regex);
+            var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            var match = url.match(regex);
             return match ? match[1] : null;
         }
 
         function extractPlaylistId(url) {
-            const match = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+            var match = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
             return match ? match[1] : null;
         }
 
         // ── Search ──
-        let searchTimeout = null;
+        var searchTimeout = null;
 
-        // Helper to make search query safe for Firebase keys
         function firebaseSafe(str) {
             return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_");
         }
@@ -850,17 +845,16 @@
             });
         });
 
-        async function doSearch() {
-            let query = document.getElementById('search-input').value.trim();
+        function doSearch() {
+            var query = document.getElementById('search-input').value.trim();
             if (!query) return;
 
-            const errorEl = document.getElementById('search-error');
-            const resultsEl = document.getElementById('search-results');
+            var errorEl = document.getElementById('search-error');
+            var resultsEl = document.getElementById('search-results');
             errorEl.style.display = 'none';
             resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
 
-            // 1. Check if it's a URL pasted into search (0 units)
-            const vidId = extractVideoId(query);
+            var vidId = extractVideoId(query);
             if (vidId) {
                 resultsEl.innerHTML = '';
                 playNow(vidId, query, '');
@@ -868,95 +862,83 @@
                 return;
             }
 
-            // 2. Refine query to prefer Video over Album Cover
-            // If it's not karaoke/instrumental/live/etc, add "official music video"
-            const lowerQuery = query.toLowerCase();
-            let refinedQuery = query;
-            const isSpecialVersion = 
-                lowerQuery.includes('karaoke') || 
-                lowerQuery.includes('instrumental') || 
-                lowerQuery.includes('backing') || 
-                lowerQuery.includes('live') || 
-                lowerQuery.includes('remix') || 
-                lowerQuery.includes('lyrics') || 
-                lowerQuery.includes('official') || 
-                lowerQuery.includes('video');
+            var lowerQuery = query.toLowerCase();
+            var refinedQuery = query;
+            var isSpecialVersion = 
+                lowerQuery.indexOf('karaoke') !== -1 || 
+                lowerQuery.indexOf('instrumental') !== -1 || 
+                lowerQuery.indexOf('backing') !== -1 || 
+                lowerQuery.indexOf('live') !== -1 || 
+                lowerQuery.indexOf('remix') !== -1 || 
+                lowerQuery.indexOf('lyrics') !== -1 || 
+                lowerQuery.indexOf('official') !== -1 || 
+                lowerQuery.indexOf('video') !== -1;
             
             if (!isSpecialVersion) {
                 refinedQuery += " official music video";
             }
 
-            // 3. Check Firebase Cache (0 units)
-            // We cache based on the ORIGINAL query to preserve user intent
-            const safeQuery = firebaseSafe(query);
-            const cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
+            var safeQuery = firebaseSafe(query);
+            var cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
             
-            try {
-                const snapshot = await cacheRef.once('value');
-                const cachedData = snapshot.val();
+            cacheRef.once('value').then(function(snapshot) {
+                var cachedData = snapshot.val();
 
                 if (cachedData && cachedData.items) {
-                    console.log('Using cached results for:', query);
                     renderSearchResults(cachedData.items);
                     return;
                 }
 
-                // 4. If not in cache, fetch from YouTube (100 units)
-                // Use refinedQuery for the actual YouTube API call
-                const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
+                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
                     encodeURIComponent(refinedQuery) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
-                const res = await fetch(url);
-                const data = await res.json();
-
-                if (data.error) {
-                    const originalMsg = data.error.message || 'Unknown error';
-                    let msg = originalMsg;
-                    if (data.error.code === 403) {
-                        if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
-                            msg = 'API key blocked. Add "spataray.github.io/*" to your API key\'s allowed HTTP referrers in Google Cloud Console.';
-                        } else if (originalMsg.indexOf('quota') !== -1) {
-                            msg = 'Daily search limit reached. Staff: Please paste a YouTube URL directly instead of searching.';
-                        } else {
-                            msg = 'YouTube API not enabled for this project.';
+                
+                return fetch(url)
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        if (data.error) {
+                            var originalMsg = data.error.message || 'Unknown error';
+                            var msg = originalMsg;
+                            if (data.error.code === 403) {
+                                if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
+                                    msg = 'API key blocked. Add domain to allowed HTTP referrers.';
+                                } else if (originalMsg.indexOf('quota') !== -1) {
+                                    msg = 'Daily search limit reached. Paste YouTube URL instead.';
+                                } else {
+                                    msg = 'YouTube API not enabled.';
+                                }
+                            }
+                            errorEl.textContent = 'Search Error: ' + msg;
+                            errorEl.style.display = 'block';
+                            resultsEl.innerHTML = '';
+                            return;
                         }
-                    }
-                    errorEl.textContent = 'Search Error: ' + msg;
-                    errorEl.style.display = 'block';
-                    resultsEl.innerHTML = '';
-                    return;
-                }
 
-                if (!data.items || data.items.length === 0) {
-                    resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
-                    return;
-                }
+                        if (!data.items || data.items.length === 0) {
+                            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
+                            return;
+                        }
 
-                // Save to Cache for next time
-                cacheRef.set({
-                    items: data.items,
-                    timestamp: Date.now()
-                });
-
-                renderSearchResults(data.items);
-
-            } catch (err) {
-                console.error('Search error:', err);
-                errorEl.textContent = 'Search failed. Check your connection.';
+                        cacheRef.set({ items: data.items, timestamp: Date.now() });
+                        renderSearchResults(data.items);
+                    });
+            }).catch(function(err) {
+                errorEl.textContent = 'Search failed. Check connection.';
                 errorEl.style.display = 'block';
                 resultsEl.innerHTML = '';
-            }
+            });
         }
 
         function renderSearchResults(items) {
-            const resultsEl = document.getElementById('search-results');
+            var resultsEl = document.getElementById('search-results');
             resultsEl.innerHTML = '';
-            items.forEach(function(item) {
-                const id = item.id.videoId;
-                const title = item.snippet.title;
-                const channel = item.snippet.channelTitle;
-                const thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var id = item.id.videoId;
+                var title = item.snippet.title;
+                var channel = item.snippet.channelTitle;
+                var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
 
-                const div = document.createElement('div');
+                var div = document.createElement('div');
                 div.className = 'result-card';
                 div.innerHTML =
                     '<div class="result-thumb-wrap">' +
@@ -971,25 +953,22 @@
                         '<div class="result-channel">' + escHtml(channel) + '</div>' +
                     '</div>';
                 resultsEl.appendChild(div);
-            });
+            }
 
-            // Event delegation for result buttons
             resultsEl.onclick = function(e) {
-                const btn = e.target.closest('button');
+                var btn = e.target.closest('button');
                 if (!btn) return;
-                const id = btn.dataset.id;
-                const title = btn.dataset.title;
-                const author = btn.dataset.author;
-                if (btn.classList.contains('btn-play-sm')) {
+                var id = btn.dataset.id;
+                var title = btn.dataset.title;
+                var author = btn.dataset.author;
+                if (btn.className === 'btn-play-sm') {
                     playNow(id, title, author);
-                } else if (btn.classList.contains('btn-queue-sm')) {
+                } else if (btn.className === 'btn-queue-sm') {
                     addToQueue(id, title, author);
                 }
             };
         }
 
-
-        // ── Play / Queue ──
         function playNow(id, title, author) {
             vRef.child('settings/currentVideoId').set(id);
             showStatus('Playing: ' + title);
@@ -997,7 +976,7 @@
 
         function addToQueue(id, title, author) {
             vRef.child('settings/queue').once('value', function(snap) {
-                const queue = snap.val() || [];
+                var queue = snap.val() || [];
                 queue.push({
                     id: id,
                     title: title || '',
@@ -1010,31 +989,30 @@
         }
 
         function clearQueue() {
-            vRef.child('settings/queue').set([]);
-            showStatus('Queue cleared');
+            if (confirm('Clear the entire queue?')) {
+                vRef.child('settings/queue').set([]);
+                showStatus('Queue cleared');
+            }
         }
 
         function removeFromQueue(index) {
             vRef.child('settings/queue').once('value', function(snap) {
-                const queue = snap.val() || [];
+                var queue = snap.val() || [];
                 queue.splice(index, 1);
                 vRef.child('settings/queue').set(queue);
             });
         }
 
-        // ── URL Tab ──
         function playFromUrl() {
-            const input = document.getElementById('url-input').value.trim();
+            var input = document.getElementById('url-input').value.trim();
             if (!input) return;
-
-            const playlistId = extractPlaylistId(input);
+            var playlistId = extractPlaylistId(input);
             if (playlistId) {
                 loadPlaylist(playlistId, true);
                 document.getElementById('url-input').value = '';
                 return;
             }
-
-            const vidId = extractVideoId(input) || input.trim();
+            var vidId = extractVideoId(input) || input.trim();
             if (vidId.length === 11) {
                 playNow(vidId, '', '');
                 document.getElementById('url-input').value = '';
@@ -1042,93 +1020,90 @@
         }
 
         function queueFromUrl() {
-            const input = document.getElementById('url-input').value.trim();
+            var input = document.getElementById('url-input').value.trim();
             if (!input) return;
-
-            const playlistId = extractPlaylistId(input);
+            var playlistId = extractPlaylistId(input);
             if (playlistId) {
                 loadPlaylist(playlistId, false);
                 document.getElementById('url-input').value = '';
                 return;
             }
-
-            const vidId = extractVideoId(input) || input.trim();
+            var vidId = extractVideoId(input) || input.trim();
             if (vidId.length === 11) {
                 addToQueue(vidId, '', '');
                 document.getElementById('url-input').value = '';
             }
         }
 
-        async function loadPlaylist(playlistId, playFirst) {
+        function loadPlaylist(playlistId, playFirst) {
             showStatus('Loading playlist...');
-            try {
-                const items = [];
-                let nextPageToken = '';
-                // Fetch up to 100 items (2 pages)
-                for (let page = 0; page < 2; page++) {
-                    let url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=' +
-                        playlistId + '&key=' + YT_API_KEY;
-                    if (nextPageToken) url += '&pageToken=' + nextPageToken;
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    if (data.error) {
-                        showStatus('Playlist error: ' + data.error.message);
-                        return;
-                    }
-                    if (data.items) {
-                        data.items.forEach(function(item) {
-                            const vid = item.snippet.resourceId.videoId;
-                            items.push({
-                                id: vid,
-                                title: item.snippet.title || '',
-                                author: item.snippet.videoOwnerChannelTitle || '',
-                                thumb: 'https://img.youtube.com/vi/' + vid + '/default.jpg'
-                            });
-                        });
-                    }
-                    nextPageToken = data.nextPageToken;
-                    if (!nextPageToken) break;
-                }
+            var items = [];
+            var nextPageToken = '';
+            
+            function fetchPage(page) {
+                var url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=' +
+                    playlistId + '&key=' + YT_API_KEY;
+                if (nextPageToken) url += '&pageToken=' + nextPageToken;
+                
+                return fetch(url)
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        if (data.error) {
+                            showStatus('Playlist error: ' + data.error.message);
+                            return;
+                        }
+                        if (data.items) {
+                            for (var i = 0; i < data.items.length; i++) {
+                                var item = data.items[i];
+                                var vid = item.snippet.resourceId.videoId;
+                                items.push({
+                                    id: vid,
+                                    title: item.snippet.title || '',
+                                    author: item.snippet.videoOwnerChannelTitle || '',
+                                    thumb: 'https://img.youtube.com/vi/' + vid + '/default.jpg'
+                                });
+                            }
+                        }
+                        nextPageToken = data.nextPageToken;
+                        if (nextPageToken && page < 1) {
+                            return fetchPage(page + 1);
+                        }
+                    });
+            }
 
+            fetchPage(0).then(function() {
                 if (items.length === 0) {
-                    showStatus('Playlist is empty');
+                    showStatus('Playlist empty');
                     return;
                 }
-
                 if (playFirst) {
-                    // Play the first track, queue the rest
-                    const first = items.shift();
+                    var first = items.shift();
                     playNow(first.id, first.title, first.author);
                     if (items.length > 0) {
                         vRef.child('settings/queue').once('value', function(snap) {
-                            const queue = snap.val() || [];
+                            var queue = snap.val() || [];
                             vRef.child('settings/queue').set(queue.concat(items));
                         });
                     }
-                    showStatus('Playing playlist (' + (items.length + 1) + ' songs)');
                 } else {
                     vRef.child('settings/queue').once('value', function(snap) {
-                        const queue = snap.val() || [];
+                        var queue = snap.val() || [];
                         vRef.child('settings/queue').set(queue.concat(items));
-                        showStatus('Queued ' + items.length + ' songs from playlist');
+                        showStatus('Queued ' + items.length + ' songs');
                     });
                 }
-            } catch (err) {
-                showStatus('Failed to load playlist');
-            }
+            }).catch(function() { showStatus('Failed load'); });
         }
 
-        // ── Playback Commands ──
         function sendCommand(action) {
             vRef.child('settings/playerCommand').set({ action: action, ts: Date.now() });
         }
 
         function togglePlayPause() {
-            // YT.PlayerState: 1=PLAYING, 2=PAUSED
             sendCommand(currentPlayerState === 1 ? 'pause' : 'play');
         }
 
-        let volumeTimeout = null;
+        var volumeTimeout = null;
         function sendVolume(val) {
             clearTimeout(volumeTimeout);
             volumeTimeout = setTimeout(function() {
@@ -1136,311 +1111,245 @@
             }, 200);
         }
 
-        // ── Existing Controls ──
-        function setLock(status) {
-            vRef.child('settings/karaokeLock').set(status);
-        }
-
-        function setAutoMode(status) {
-            vRef.child('settings/autoMode').set(status);
-            showStatus(status ? 'Auto Music ON' : 'Auto Music OFF');
-        }
-
-        function setPartyMode(status) {
-            vRef.child('settings/partyMode').set(status);
-            showStatus(status ? 'Party Mode ON!' : 'Party Mode OFF');
-        }
-
-        function triggerAd() {
-            vRef.child('settings/forceAd').set(Date.now());
-            showStatus('Showing flyer now');
-        }
-
-        function startSlideshow() {
-            vRef.child('settings/playerCommand').set({ action: 'slideshow', ts: Date.now() });
-            showStatus('Slideshow started');
-        }
-
-        function setTickerPos(pos) {
-            vRef.child('settings/tickerPosition').set(pos);
-            showStatus('Ticker: ' + pos);
-        }
-
-        function setAirConsole(status) {
-            vRef.child('settings/airConsole').set(status);
-            showStatus(status ? 'AirConsole ON' : 'AirConsole OFF');
-        }
-
-        function setQRMode(status) {
-            vRef.child('settings/showRequestQR').set(status);
-            showStatus(status ? 'QR Code Visible' : 'QR Code Hidden');
-        }
-
+        function setLock(status) { vRef.child('settings/karaokeLock').set(status); }
+        function setAutoMode(status) { vRef.child('settings/autoMode').set(status); }
+        function setPartyMode(status) { vRef.child('settings/partyMode').set(status); }
+        function triggerAd() { vRef.child('settings/forceAd').set(Date.now()); }
+        function startSlideshow() { sendCommand('slideshow'); }
+        function setTickerPos(pos) { vRef.child('settings/tickerPosition').set(pos); }
+        function setAirConsole(status) { vRef.child('settings/airConsole').set(status); }
+        function setQRMode(status) { vRef.child('settings/showRequestQR').set(status); }
         function setCaptions(status) {
             vRef.child('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
             vRef.child('settings/captionsEnabled').set(status);
-            showStatus(status ? 'Captions ON' : 'Captions OFF');
         }
 
         function saveVenueName() {
-            const name = document.getElementById('venue-name-input').value.trim();
+            var name = document.getElementById('venue-name-input').value.trim();
             vRef.child('settings/venueName').set(name || "T.A. Station");
-            showStatus('Venue Name Updated');
+            showStatus('Updated');
         }
 
         function initStaffQR() {
-            const qrImg = document.getElementById('staff-qr-img');
-            const staffUrl = window.location.href;
+            var qrImg = document.getElementById('staff-qr-img');
+            var staffUrl = window.location.href;
             qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(staffUrl);
         }
         initStaffQR();
 
-        function setLastCallEnabled(status) {
-            vRef.child('settings/lastCallEnabled').set(status);
-            showStatus(status ? 'Timer: ENABLED' : 'Timer: DISABLED');
-        }
+        function setLastCallEnabled(status) { vRef.child('settings/lastCallEnabled').set(status); }
 
         function addMenuItem() {
-            const name = document.getElementById('menu-item-name').value.trim();
-            const price = document.getElementById('menu-item-price').value.trim();
+            var name = document.getElementById('menu-item-name').value.trim();
+            var price = document.getElementById('menu-item-price').value.trim();
             if (!name) return;
-            
             vRef.child('settings/menu').push({ name: name, price: price });
             document.getElementById('menu-item-name').value = '';
             document.getElementById('menu-item-price').value = '';
-            showStatus('Added: ' + name);
         }
 
-        function removeMenuItem(key) {
-            vRef.child('settings/menu').child(key).remove();
-            showStatus('Item removed');
-        }
+        function removeMenuItem(key) { vRef.child('settings/menu').child(key).remove(); }
 
         function saveAd() {
-            const title = document.getElementById('ad-title-input').value.trim();
-            const desc = document.getElementById('ad-desc-input').value.trim();
-            const flyer = document.getElementById('ad-flyer-input').value.trim();
-            
-            vRef.child('settings/adConfig').set({
-                title: title,
-                desc: desc,
-                flyer: flyer
-            });
-            showStatus('Flyer Updated');
+            var title = document.getElementById('ad-title-input').value.trim();
+            var desc = document.getElementById('ad-desc-input').value.trim();
+            var flyer = document.getElementById('ad-flyer-input').value.trim();
+            vRef.child('settings/adConfig').set({ title: title, desc: desc, flyer: flyer });
         }
 
         function addTickerMsg() {
-            const msg = document.getElementById('ticker-msg-input').value.trim();
+            var msg = document.getElementById('ticker-msg-input').value.trim();
             if (!msg) return;
             vRef.child('settings/ticker').push(msg);
             document.getElementById('ticker-msg-input').value = '';
-            showStatus('Ticker message added');
         }
 
-        function removeTickerMsg(key) {
-            vRef.child('settings/ticker').child(key).remove();
-            showStatus('Message removed');
-        }
+        function removeTickerMsg(key) { vRef.child('settings/ticker').child(key).remove(); }
 
         function remoteRefresh() {
-            if (confirm('Refresh TV browser? Music will stop briefly.')) {
+            if (confirm('Refresh TV browser?')) {
                 vRef.child('settings/remoteRefresh').set(Date.now());
-                showStatus('TV refreshing...');
             }
         }
 
         function toggleLang() {
-            document.getElementById('en-instr').classList.toggle('active');
-            document.getElementById('th-instr').classList.toggle('active');
+            var en = document.getElementById('en-instr');
+            var th = document.getElementById('th-instr');
+            if (en.className === 'instr active') {
+                en.className = 'instr'; th.className = 'instr active';
+            } else {
+                en.className = 'instr active'; th.className = 'instr';
+            }
         }
 
-        // ── Status ──
         function showStatus(msg) {
-            const el = document.getElementById('status-msg');
+            var el = document.getElementById('status-msg');
             el.innerText = msg;
             setTimeout(function() { el.innerText = ''; }, 3000);
         }
 
-        // ── Helpers ──
         function escHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
+            var div = document.createElement('div');
+            div.textContent = str || '';
             return div.innerHTML;
         }
 
         function escAttr(str) {
+            if (!str) return '';
             return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // ── Firebase Listeners ──
         function initFirebaseListeners() {
-
-        // Now Playing
-        vRef.child('settings/nowPlaying').on('value', function(snap) {
-            const np = snap.val();
-            const container = document.getElementById('np-container');
-            if (np && np.videoId) {
-                container.classList.remove('np-idle');
-                document.getElementById('np-thumb').src = 'https://img.youtube.com/vi/' + np.videoId + '/mqdefault.jpg';
-                document.getElementById('np-title').textContent = np.title || 'Unknown';
-                document.getElementById('np-author').textContent = np.author || '';
-            } else {
-                container.classList.add('np-idle');
-                document.getElementById('np-thumb').src = 'images/TAStation-1.JPG';
-                document.getElementById('np-title').textContent = 'Nothing playing';
-                document.getElementById('np-author').textContent = '';
-            }
-        });
-
-        // Player State (for play/pause button)
-        vRef.child('settings/playerState').on('value', function(snap) {
-            currentPlayerState = snap.val();
-            const btn = document.getElementById('btn-playpause');
-            // 1 = playing, 2 = paused
-            btn.innerHTML = currentPlayerState === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
-        });
-
-        // Queue
-        vRef.child('settings/queue').on('value', function(snap) {
-            const queue = snap.val() || [];
-            const listEl = document.getElementById('queue-list');
-            const countEl = document.getElementById('queue-count');
-            countEl.textContent = queue.length > 0 ? '(' + queue.length + ')' : '';
-
-            if (queue.length === 0) {
-                listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>';
-                return;
-            }
-
-            listEl.innerHTML = '';
-            queue.forEach(function(item, i) {
-                const div = document.createElement('div');
-                div.className = 'queue-item';
-                div.dataset.index = i;
-                const thumb = item.thumb || ('https://img.youtube.com/vi/' + (item.id || '') + '/default.jpg');
-                const title = item.title || item.id || 'Unknown';
-                div.innerHTML =
-                    '<span class="queue-num">' + (i + 1) + '</span>' +
-                    '<img class="queue-thumb" src="' + thumb + '" style="cursor:grab;" alt="">' +
-                    '<div class="queue-info"><div class="queue-title">' + escHtml(title) + '</div></div>' +
-                    '<button class="queue-remove" data-index="' + i + '" title="Remove">&times;</button>';
-                listEl.appendChild(div);
-            });
-
-            // Re-init sortable
-            if (window._queueSortable) window._queueSortable.destroy();
-            window._queueSortable = new Sortable(listEl, {
-                animation: 150,
-                handle: '.queue-thumb',
-                onEnd: function(evt) {
-                    if (evt.oldIndex === evt.newIndex) return;
-                    vRef.child('settings/queue').once('value', function(snap) {
-                        const q = snap.val() || [];
-                        const item = q.splice(evt.oldIndex, 1)[0];
-                        q.splice(evt.newIndex, 0, item);
-                        vRef.child('settings/queue').set(q);
-                    });
+            vRef.child('settings/nowPlaying').on('value', function(snap) {
+                var np = snap.val();
+                var container = document.getElementById('np-container');
+                if (np && np.videoId) {
+                    container.className = 'np-active';
+                    document.getElementById('np-thumb').src = 'https://img.youtube.com/vi/' + np.videoId + '/mqdefault.jpg';
+                    document.getElementById('np-title').textContent = np.title || 'Unknown';
+                    document.getElementById('np-author').textContent = np.author || '';
+                } else {
+                    container.className = 'np-idle';
+                    document.getElementById('np-thumb').src = 'images/TAStation-1.JPG';
+                    document.getElementById('np-title').textContent = 'Nothing playing';
+                    document.getElementById('np-author').textContent = '';
                 }
             });
 
-            listEl.onclick = function(e) {
-                const btn = e.target.closest('.queue-remove');
-                if (btn) removeFromQueue(parseInt(btn.dataset.index));
-            };
-        });
-
-        vRef.child('settings/karaokeLock').on('value', function(snap) {
-            document.getElementById('toggle-karaoke').checked = !!snap.val();
-        });
-
-        vRef.child('settings/autoMode').on('value', function(snap) {
-            document.getElementById('toggle-auto').checked = !!snap.val();
-        });
-
-        vRef.child('settings/partyMode').on('value', function(snap) {
-            document.getElementById('toggle-party').checked = !!snap.val();
-        });
-
-        vRef.child('settings/airConsole').on('value', function(snap) {
-            document.getElementById('toggle-airconsole').checked = !!snap.val();
-        });
-
-        vRef.child('settings/lastCallEnabled').on('value', function(snap) {
-            document.getElementById('toggle-lastcall').checked = !!snap.val();
-        });
-
-        vRef.child('settings/showRequestQR').on('value', function(snap) {
-            document.getElementById('toggle-qr').checked = snap.val() !== false;
-        });
-
-        vRef.child('settings/menu').on('value', function(snap) {
-            const menu = snap.val();
-            const listEl = document.getElementById('staff-menu-list');
-            
-            if (!menu) {
-                listEl.innerHTML = '<div style="opacity: 0.5; text-align: center; padding: 10px;">Menu is empty</div>';
-                return;
-            }
-
-            let html = '';
-            for (let key in menu) {
-                const item = menu[key];
-                html += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #222; border-radius: 8px; margin-bottom: 5px; border: 1px solid #333;">
-                        <div style="flex: 1; min-width: 0;">
-                            <div style="font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escHtml(item.name)}</div>
-                            <div style="font-size: 0.8rem; color: var(--bar-gold);">${escHtml(item.price || '')}</div>
-                        </div>
-                        <button onclick="removeMenuItem('${key}')" style="background: none; border: none; color: var(--bar-red); font-size: 1.2rem; cursor: pointer; padding: 5px;">&times;</button>
-                    </div>
-                `;
-            }
-            listEl.innerHTML = html;
-        });
-
-        vRef.child('settings/adConfig').on('value', function(snap) {
-            const config = snap.val() || {};
-            document.getElementById('ad-title-input').value = config.title || '';
-            document.getElementById('ad-desc-input').value = config.desc || '';
-            document.getElementById('ad-flyer-input').value = config.flyer || '';
-        });
-
-        vRef.child('settings/ticker').on('value', function(snap) {
-            const msgs = snap.val() || {};
-            const listEl = document.getElementById('staff-ticker-list');
-            let html = '';
-            for (let key in msgs) {
-                html += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #222; border-radius: 6px; margin-bottom: 5px;">
-                        <div style="font-size: 0.85rem; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escHtml(msgs[key])}</div>
-                        <button onclick="removeTickerMsg('${key}')" style="background: none; border: none; color: var(--bar-red); padding: 0 5px; cursor: pointer;">&times;</button>
-                    </div>
-                `;
-            }
-            listEl.innerHTML = html || '<div style="opacity:0.3; font-size:0.8rem; text-align:center;">No messages</div>';
-        });
-
-        vRef.child('settings/captionsEnabled').on('value', function(snap) {
-            document.getElementById('toggle-cc').checked = !!snap.val();
-        });
-
-        vRef.child('settings/tickerPosition').on('value', function(snap) {
-            const pos = snap.val() || 'top';
-            ['top','bottom','left','right'].forEach(function(p) {
-                document.getElementById('tpos-' + p).classList.toggle('active', p === pos);
+            vRef.child('settings/playerState').on('value', function(snap) {
+                currentPlayerState = snap.val();
+                var btn = document.getElementById('btn-playpause');
+                btn.innerHTML = currentPlayerState === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
             });
-        });
 
-        vRef.child('settings/venueName').on('value', function(snap) {
-            const name = snap.val() || "T.A. STATION";
-            document.getElementById('venue-name-input').value = snap.val() ? name : "";
-            document.querySelectorAll('.venue-name-display').forEach(el => {
-                el.textContent = name.toUpperCase();
+            vRef.child('settings/queue').on('value', function(snap) {
+                var queue = snap.val() || [];
+                var listEl = document.getElementById('queue-list');
+                var countEl = document.getElementById('queue-count');
+                countEl.textContent = queue.length > 0 ? '(' + queue.length + ')' : '';
+
+                if (queue.length === 0) {
+                    listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>';
+                    return;
+                }
+
+                listEl.innerHTML = '';
+                for (var i = 0; i < queue.length; i++) {
+                    var item = queue[i];
+                    var div = document.createElement('div');
+                    div.className = 'queue-item';
+                    var thumb = item.thumb || ('https://img.youtube.com/vi/' + (item.id || '') + '/default.jpg');
+                    var title = item.title || item.id || 'Unknown';
+                    div.innerHTML =
+                        '<span class="queue-num">' + (i + 1) + '</span>' +
+                        '<img class="queue-thumb" src="' + thumb + '" style="cursor:grab;">' +
+                        '<div class="queue-info"><div class="queue-title">' + escHtml(title) + '</div></div>' +
+                        '<button class="queue-remove" data-index="' + i + '">&times;</button>';
+                    listEl.appendChild(div);
+                }
+
+                if (window._queueSortable) window._queueSortable.destroy();
+                window._queueSortable = new Sortable(listEl, {
+                    animation: 150,
+                    handle: '.queue-thumb',
+                    onEnd: function(evt) {
+                        if (evt.oldIndex === evt.newIndex) return;
+                        vRef.child('settings/queue').once('value', function(s) {
+                            var q = s.val() || [];
+                            var itm = q.splice(evt.oldIndex, 1)[0];
+                            q.splice(evt.newIndex, 0, itm);
+                            vRef.child('settings/queue').set(q);
+                        });
+                    }
+                });
+
+                listEl.onclick = function(e) {
+                    var btn = e.target.closest('.queue-remove');
+                    if (btn) removeFromQueue(parseInt(btn.dataset.index));
+                };
             });
-            document.title = name + " - Staff Remote";
-        });
-    }
+
+            vRef.child('settings/karaokeLock').on('value', function(snap) {
+                document.getElementById('toggle-karaoke').checked = !!snap.val();
+            });
+
+            vRef.child('settings/autoMode').on('value', function(snap) {
+                document.getElementById('toggle-auto').checked = !!snap.val();
+            });
+
+            vRef.child('settings/partyMode').on('value', function(snap) {
+                document.getElementById('toggle-party').checked = !!snap.val();
+            });
+
+            vRef.child('settings/airConsole').on('value', function(snap) {
+                document.getElementById('toggle-airconsole').checked = !!snap.val();
+            });
+
+            vRef.child('settings/lastCallEnabled').on('value', function(snap) {
+                document.getElementById('toggle-lastcall').checked = !!snap.val();
+            });
+
+            vRef.child('settings/showRequestQR').on('value', function(snap) {
+                document.getElementById('toggle-qr').checked = snap.val() !== false;
+            });
+
+            vRef.child('settings/menu').on('value', function(snap) {
+                var menu = snap.val();
+                var listEl = document.getElementById('staff-menu-list');
+                if (!menu) { listEl.innerHTML = '<div style="opacity:0.5;text-align:center;">Empty</div>'; return; }
+                var html = '';
+                for (var key in menu) {
+                    var item = menu[key];
+                    html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#222; border-radius:8px; margin-bottom:5px; border:1px solid #333;">' +
+                        '<div style="flex:1; min-width:0;">' +
+                        '<div style="font-size:0.9rem; font-weight:bold; overflow:hidden; text-overflow:ellipsis;">' + escHtml(item.name) + '</div>' +
+                        '<div style="font-size:0.8rem; color:var(--bar-gold);">' + escHtml(item.price || '') + '</div></div>' +
+                        '<button onclick="removeMenuItem(\'' + key + '\')" style="background:none; border:none; color:var(--bar-red); font-size:1.2rem; cursor:pointer;">&times;</button></div>';
+                }
+                listEl.innerHTML = html;
+            });
+
+            vRef.child('settings/adConfig').on('value', function(snap) {
+                var config = snap.val() || {};
+                document.getElementById('ad-title-input').value = config.title || '';
+                document.getElementById('ad-desc-input').value = config.desc || '';
+                document.getElementById('ad-flyer-input').value = config.flyer || '';
+            });
+
+            vRef.child('settings/ticker').on('value', function(snap) {
+                var msgs = snap.val() || {};
+                var listEl = document.getElementById('staff-ticker-list');
+                var html = '';
+                for (var key in msgs) {
+                    html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px; background:#222; border-radius:6px; margin-bottom:5px;">' +
+                        '<div style="font-size:0.85rem; flex:1; overflow:hidden; text-overflow:ellipsis;">' + escHtml(msgs[key]) + '</div>' +
+                        '<button onclick="removeTickerMsg(\'' + key + '\')" style="background:none; border:none; color:var(--bar-red); padding:0 5px; cursor:pointer;">&times;</button></div>';
+                }
+                listEl.innerHTML = html || '<div style="opacity:0.3;text-align:center;">No messages</div>';
+            });
+
+            vRef.child('settings/captionsEnabled').on('value', function(snap) {
+                document.getElementById('toggle-cc').checked = !!snap.val();
+            });
+
+            vRef.child('settings/tickerPosition').on('value', function(snap) {
+                var pos = snap.val() || 'top';
+                var pArr = ['top','bottom','left','right'];
+                for (var i = 0; i < pArr.length; i++) {
+                    var el = document.getElementById('tpos-' + pArr[i]);
+                    if (el) el.className = (pArr[i] === pos) ? 'btn btn-sm ticker-pos-btn active' : 'btn btn-sm ticker-pos-btn';
+                }
+            });
+
+            vRef.child('settings/venueName').on('value', function(snap) {
+                var name = snap.val() || "T.A. STATION";
+                document.getElementById('venue-name-input').value = snap.val() ? name : "";
+                var d = document.querySelectorAll('.venue-name-display');
+                for (var i = 0; i < d.length; i++) d[i].textContent = name.toUpperCase();
+                document.title = name + " - Staff Remote";
+            });
+        }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.3.2 (2026-03-16 20:05 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.3.3 (2026-03-16 20:30 HST)</div>
 </body>
 </html>

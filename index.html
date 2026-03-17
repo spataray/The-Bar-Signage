@@ -88,7 +88,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.2 (2026-03-16 20:05 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.3 (2026-03-16 20:30 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -119,30 +119,30 @@
         }
 
         // 1. DATA SOURCES (DEPRECATED: Now using Firebase)
-        const URL_ADS = "";
-        const URL_MENU = "";
-        const URL_TICKER = "";
+        var URL_ADS = "";
+        var URL_MENU = "";
+        var URL_TICKER = "";
 
         // 2. FIREBASE SETUP
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        var db = firebase.database();
 
         // ── VENUE ISOLATION ──
         function getVenueId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            let v = urlParams.get('v');
+            var urlParams = new URLSearchParams(window.location.search);
+            var v = urlParams.get('v');
             if (!v) {
                 // Generate a random 4-char code for new setups
                 v = Math.random().toString(36).substring(2, 6).toUpperCase();
                 // Update URL without reload so staff can see it
-                const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?v=' + v;
-                window.history.pushState({path:newurl},'',newurl);
+                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?v=" + v;
+                window.history.pushState({path:newurl},"",newurl);
             }
             return v;
         }
-        const venueId = getVenueId();
-        const vRef = db.ref('venues/' + venueId);
-        document.getElementById('display-venue-id').textContent = venueId;
+        var venueId = getVenueId();
+        var vRef = db.ref("venues/" + venueId);
+        document.getElementById("display-venue-id").textContent = venueId;
 
         // AUTH & INITIALIZATION
         firebase.auth().onAuthStateChanged(function(user) {
@@ -158,32 +158,32 @@
 
         // Connection Monitor (Publicly accessible under .info)
         db.ref(".info/connected").on("value", function(snap) {
-            const overlay = document.getElementById('disconnect-overlay');
+            var overlay = document.getElementById("disconnect-overlay");
             if (snap.val() === true) {
-                overlay.style.display = 'none';
+                overlay.style.display = "none";
             } else {
-                overlay.style.display = 'flex';
+                overlay.style.display = "flex";
             }
         });
 
-        let player;
-        let playerReady = false;
-        let pendingVideoId = null;
-        let isLocked = false;
-        let isPartyMode = false;
-        let adCycleShowMenu = false;
+        var player;
+        var playerReady = false;
+        var pendingVideoId = null;
+        var isLocked = false;
+        var isPartyMode = false;
+        var adCycleShowMenu = false;
 
         // TV Remote Navigation
-        window.addEventListener('keydown', function(e) {
+        window.addEventListener("keydown", function(e) {
             switch(e.keyCode) {
                 case 403: // RED
-                    vRef.child('settings/karaokeLock').set(!isLocked);
+                    vRef.child("settings/karaokeLock").set(!isLocked);
                     break;
                 case 404: // GREEN
-                    vRef.child('settings/forceAd').set(true);
+                    vRef.child("settings/forceAd").set(true);
                     break;
                 case 405: // YELLOW
-                    vRef.child('settings/partyMode').set(!isPartyMode);
+                    vRef.child("settings/partyMode").set(!isPartyMode);
                     break;
                 case 406: // BLUE
                     location.reload();
@@ -195,19 +195,19 @@
         });
 
         // Auto music mode — fetch playlists from channel, fall back to hardcoded
-        let AUTO_PLAYLISTS = ['RDAMVMDy_eP-mqWow', 'RDAMVM77pb0WXAz-Q'];
-        let autoMode = false;
+        var AUTO_PLAYLISTS = ["RDAMVMDy_eP-mqWow", "RDAMVM77pb0WXAz-Q"];
+        var autoMode = false;
 
         function fetchChannelPlaylists(handle) {
-            const channelUrl = 'https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=' +
-                encodeURIComponent(handle) + '&key=' + YT_API_KEY;
+            var channelUrl = "https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=" +
+                encodeURIComponent(handle) + "&key=" + YT_API_KEY;
             fetch(channelUrl)
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    const channelId = data.items && data.items[0] && data.items[0].id;
+                    var channelId = data.items && data.items[0] && data.items[0].id;
                     if (!channelId) return;
-                    const playlistUrl = 'https://www.googleapis.com/youtube/v3/playlists?part=id&channelId=' +
-                        channelId + '&maxResults=50&key=' + YT_API_KEY;
+                    var playlistUrl = "https://www.googleapis.com/youtube/v3/playlists?part=id&channelId=" +
+                        channelId + "&maxResults=50&key=" + YT_API_KEY;
                     return fetch(playlistUrl).then(function(r) { return r.json(); });
                 })
                 .then(function(data) {
@@ -219,7 +219,7 @@
         fetchChannelPlaylists('infinityvideohub');
 
         // Idle slideshow
-        const idlePhotos = [
+        var idlePhotos = [
             'images/TAStation-1.JPG',
             'images/TAStation-2.JPG',
             'images/TAStation-3.JPG',
@@ -243,52 +243,52 @@
             'images/TAStation-21.JPG',
             'images/TAStation-22.JPG'
         ];
-        let idleShuffled = [];
-        let idleIndex = 0;
-        let idleTimer = null;
-        let overlayTimer = null;
+        var idleShuffled = [];
+        var idleIndex = 0;
+        var idleTimer = null;
+        var overlayTimer = null;
 
         function shuffleIdlePhotos() {
             idleShuffled = idlePhotos.slice();
-            for (let i = idleShuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                const tmp = idleShuffled[i]; idleShuffled[i] = idleShuffled[j]; idleShuffled[j] = tmp;
+            for (var i = idleShuffled.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = idleShuffled[i]; idleShuffled[i] = idleShuffled[j]; idleShuffled[j] = tmp;
             }
             idleIndex = 0;
         }
 
         // Ticker state
-        let tickerMessages = [];
-        let tickerIndex = 0;
-        let tickerTimer = null;
+        var tickerMessages = [];
+        var tickerIndex = 0;
+        var tickerTimer = null;
 
         // 3. Connect QR Code
         function initConnectQR() {
-            const qrImg = document.getElementById('request-qr-img');
-            const container = document.getElementById('request-qr-container');
+            var qrImg = document.getElementById("request-qr-img");
+            var container = document.getElementById("request-qr-container");
             
             // Generate URL for customer interface
-            let customerUrl = window.location.href.split('?')[0].split('#')[0];
-            if (customerUrl.endsWith('index.html')) {
-                customerUrl = customerUrl.replace('index.html', 'customer.html');
-            } else if (customerUrl.endsWith('/')) {
-                customerUrl += 'customer.html';
+            var customerUrl = window.location.href.split("?")[0].split("#")[0];
+            if (customerUrl.endsWith("index.html")) {
+                customerUrl = customerUrl.replace("index.html", "customer.html");
+            } else if (customerUrl.endsWith("/")) {
+                customerUrl += "customer.html";
             } else {
-                customerUrl += '/customer.html';
+                customerUrl += "/customer.html";
             }
-            customerUrl += '?v=' + venueId;
+            customerUrl += "?v=" + venueId;
             
-            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(customerUrl);
+            qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(customerUrl);
             
-            vRef.child('settings/showRequestQR').on('value', function(snap) {
-                const show = snap.val() !== false; // Default to true if not set
-                container.style.display = show ? 'flex' : 'none';
+            vRef.child("settings/showRequestQR").on("value", function(snap) {
+                var show = snap.val() !== false; // Default to true if not set
+                container.style.display = show ? "flex" : "none";
             });
         }
         initConnectQR();
 
         // Fun facts mixed into the ticker
-        const funFacts = [
+        var funFacts = [
             // AUTO-GENERATED-FACTS-START
             "🌍 Fun Fact: Japan has over 5 million vending machines—one for every 23 people!",
             "🌍 Fun Fact: Italy's Trevi Fountain gets about €3,000 in coins every single day.",
@@ -317,31 +317,31 @@
             return sheetMessages.slice();
         }
 
-        let factsShuffled = [];
-        let factIndex = 0;
-        let factsTimer = null;
+        var factsShuffled = [];
+        var factIndex = 0;
+        var factsTimer = null;
 
         function showFunFact() {
             if (factsShuffled.length === 0) {
                 factsShuffled = funFacts.slice();
-                for (let i = factsShuffled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    const t = factsShuffled[i]; factsShuffled[i] = factsShuffled[j]; factsShuffled[j] = t;
+                for (var i = factsShuffled.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = factsShuffled[i]; factsShuffled[i] = factsShuffled[j]; factsShuffled[j] = t;
                 }
                 factIndex = 0;
             }
-            const el = document.getElementById('facts-text');
-            el.classList.remove('ticker-visible');
-            el.classList.add('ticker-hidden');
+            var el = document.getElementById("facts-text");
+            el.classList.remove("ticker-visible");
+            el.classList.add("ticker-hidden");
             setTimeout(function() {
                 el.innerText = factsShuffled[factIndex];
                 factIndex = (factIndex + 1) % factsShuffled.length;
                 if (factIndex === 0) factsShuffled = [];
-                el.classList.remove('ticker-hidden');
-                el.classList.add('ticker-visible');
+                el.classList.remove("ticker-hidden");
+                el.classList.add("ticker-visible");
                 setTimeout(function() {
-                    el.classList.remove('ticker-visible');
-                    el.classList.add('ticker-hidden');
+                    el.classList.remove("ticker-visible");
+                    el.classList.add("ticker-hidden");
                 }, 15000);
             }, 800);
             factsTimer = setTimeout(showFunFact, 60000);
@@ -409,73 +409,70 @@
             vRef.child('settings/playerState').set(event.data);
         }
 
-        let factTimer = null;
-        async function showSongFact() {
+        var factTimer = null;
+        function showSongFact() {
             hideSongFact();
             if (!player || !player.getVideoData) return;
-            const data = player.getVideoData();
-            const rawTitle = data.title || "";
-            const author = data.author || "";
+            var data = player.getVideoData();
+            var rawTitle = data.title || "";
+            var author = data.author || "";
             
             // Skip if it looks like karaoke
-            const lowerTitle = rawTitle.toLowerCase();
-            if (lowerTitle.includes('karaoke') || lowerTitle.includes('instrumental') || lowerTitle.includes('backing track') || lowerTitle.includes('no vocal')) {
+            var lowerTitle = rawTitle.toLowerCase();
+            if (lowerTitle.includes("karaoke") || lowerTitle.includes("instrumental") || lowerTitle.includes("backing track") || lowerTitle.includes("no vocal")) {
                 return;
             }
 
             // Wait 10 seconds before showing
-            factTimer = setTimeout(async () => {
-                try {
-                    // 1. Better title cleaning
-                    // Remove (Official...), [Official...], (feat...), (Lyrics), etc.
-                    let cleanQuery = rawTitle
-                        .replace(/\(.*?\)|\[.*?\]/g, '') // Remove everything in brackets/parens
-                        .replace(/official (video|audio|music video|lyric video|lyrics)/gi, '')
-                        .replace(/ft\.|feat\./gi, '')
-                        .replace(/video/gi, '')
-                        .replace(/lyrics/gi, '')
-                        .replace(/HD|4K|HQ/g, '')
-                        .trim();
+            factTimer = setTimeout(function() {
+                // 1. Better title cleaning
+                var cleanQuery = rawTitle
+                    .replace(/\(.*?\)|\[.*?\]/g, "")
+                    .replace(/official (video|audio|music video|lyric video|lyrics)/gi, "")
+                    .replace(/ft\.|feat\./gi, "")
+                    .replace(/video/gi, "")
+                    .replace(/lyrics/gi, "")
+                    .replace(/HD|4K|HQ/g, "")
+                    .trim();
 
-                    // 2. Use Wikipedia SEARCH API to find the best page title
-                    // This is much more reliable than guessing the URL
-                    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*&srlimit=1`;
-                    const sRes = await fetch(searchUrl);
-                    const sData = await sRes.json();
-                    
-                    if (!sData.query || !sData.query.search || sData.query.search.length === 0) {
-                        // Try again with just the author + title parts if it was "Artist - Title"
-                        if (cleanQuery.includes('-')) {
-                            const parts = cleanQuery.split('-');
-                            cleanQuery = parts[parts.length-1].trim(); // try just the song title part
-                            const sRes2 = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*&srlimit=1`);
-                            const sData2 = await sRes2.json();
-                            if (!sData2.query || sData2.query.search.length === 0) return;
-                            sData.query.search[0] = sData2.query.search[0];
-                        } else return;
-                    }
+                // 2. Use Wikipedia SEARCH API
+                var searchUrl = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
+                fetch(searchUrl)
+                    .then(function(sRes) { return sRes.json(); })
+                    .then(function(sData) {
+                        if (!sData.query || !sData.query.search || sData.query.search.length === 0) {
+                            if (cleanQuery.includes("-")) {
+                                var parts = cleanQuery.split("-");
+                                cleanQuery = parts[parts.length - 1].trim();
+                                var searchUrl2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
+                                return fetch(searchUrl2).then(function(sRes2) { return sRes2.json(); });
+                            }
+                            return null;
+                        }
+                        return sData;
+                    })
+                    .then(function(sData) {
+                        if (!sData || !sData.query || !sData.query.search || sData.query.search.length === 0) return;
 
-                    const pageTitle = sData.query.search[0].title;
-
-                    // 3. Get the SUMMARY for that specific page title
-                    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageTitle.replace(/ /g, '_'))}`;
-                    const res = await fetch(summaryUrl);
-                    if (!res.ok) return;
-                    
-                    const info = await res.json();
-                    if (info.extract && info.extract.length > 40) {
-                        const el = document.getElementById('fact-bubble');
-                        const text = document.getElementById('fact-bubble-text');
+                        var pageTitle = sData.query.search[0].title;
+                        var summaryUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(pageTitle.replace(/ /g, "_"));
                         
-                        // Smart Truncation:
-                        // 1. Prefer the short description if it's good
-                        // 2. Otherwise take the first 2 sentences of the extract
-                        // 3. Max character limit of 240
-                        let displayInfo = info.description || info.extract;
+                        return fetch(summaryUrl);
+                    })
+                    .then(function(res) {
+                        if (!res || !res.ok) return;
+                        return res.json();
+                    })
+                    .then(function(info) {
+                        if (!info || !info.extract || info.extract.length <= 40) return;
+
+                        var el = document.getElementById("fact-bubble");
+                        var text = document.getElementById("fact-bubble-text");
                         
-                        if (displayInfo.includes('.') && displayInfo.length > 150) {
-                            // Split by period but keep the period, take first 2 sentences
-                            const sentences = displayInfo.match(/[^.!?]+[.!?]+/g);
+                        var displayInfo = info.description || info.extract;
+                        
+                        if (displayInfo.includes(".") && displayInfo.length > 150) {
+                            var sentences = displayInfo.match(/[^.!?]+[.!?]+/g);
                             if (sentences && sentences.length >= 2) {
                                 displayInfo = sentences[0] + " " + sentences[1];
                             }
@@ -486,15 +483,14 @@
                         }
 
                         text.innerText = displayInfo;
-                        el.classList.add('visible');
+                        el.classList.add("visible");
                         
-                        // Hide after 18 seconds
                         factTimer = setTimeout(hideSongFact, 18000);
-                    }
-                } catch (e) {
-                    console.warn("Song fact error:", e);
-                }
-            }, 8000); // Trigger a bit faster
+                    })
+                    .catch(function(e) {
+                        console.warn("Song fact error:", e);
+                    });
+            }, 8000);
         }
 
         function hideSongFact() {
@@ -504,7 +500,7 @@
 
         function reportNowPlaying() {
             if (!player || !player.getVideoData) return;
-            const data = player.getVideoData();
+            var data = player.getVideoData();
             if (data.video_id) {
                 vRef.child('settings/nowPlaying').set({
                     videoId: data.video_id,
@@ -516,16 +512,16 @@
 
         function startAutoPlaylist() {
             stopIdle();
-            const pick = AUTO_PLAYLISTS[Math.floor(Math.random() * AUTO_PLAYLISTS.length)];
+            var pick = AUTO_PLAYLISTS[Math.floor(Math.random() * AUTO_PLAYLISTS.length)];
             player.loadPlaylist({ list: pick, listType: 'playlist' });
         }
 
         function playNext() {
             vRef.child('settings/queue').once('value', function(snap) {
-                const queue = snap.val() || [];
+                var queue = snap.val() || [];
                 if (queue.length > 0) {
-                    const next = queue[0];
-                    const remaining = queue.slice(1);
+                    var next = queue[0];
+                    var remaining = queue.slice(1);
                     vRef.child('settings/queue').set(remaining);
                     stopIdle();
                     player.loadVideoById(next.id);
@@ -540,7 +536,7 @@
         function startIdle() {
             clearTimeout(idleTimer);
             idleTimer = null;
-            const screen = document.getElementById('idle-screen');
+            var screen = document.getElementById('idle-screen');
             screen.classList.add('active');
             showAd(true);
             vRef.child('settings/nowPlaying').set(null);
@@ -551,11 +547,11 @@
 
         function stopIdle() {
             hideSongFact();
-            const screen = document.getElementById('idle-screen');
+            var screen = document.getElementById('idle-screen');
             screen.classList.remove('active');
             clearTimeout(idleTimer);
             idleTimer = null;
-            const vid = document.getElementById('idle-video');
+            var vid = document.getElementById('idle-video');
             vid.onended = null;
             vid.pause();
             vid.src = '';
@@ -565,21 +561,21 @@
         }
 
         function animateOverlay() {
-            const screen = document.getElementById('idle-screen');
+            var screen = document.getElementById('idle-screen');
             if (!screen.classList.contains('active')) return;
-            const overlay = document.getElementById('idle-overlay');
+            var overlay = document.getElementById('idle-overlay');
 
             // Give browser 150ms to render idle screen before reading layout
             overlayTimer = setTimeout(function() {
                 if (!document.getElementById('idle-screen').classList.contains('active')) return;
 
-                const screenW = screen.offsetWidth || Math.round(window.innerWidth * 0.7);
-                const screenH = screen.offsetHeight || window.innerHeight;
-                const overlayW = overlay.offsetWidth || 350;
-                const overlayH = overlay.offsetHeight || 130;
+                var screenW = screen.offsetWidth || Math.round(window.innerWidth * 0.7);
+                var screenH = screen.offsetHeight || window.innerHeight;
+                var overlayW = overlay.offsetWidth || 350;
+                var overlayH = overlay.offsetHeight || 130;
 
-                const maxX = Math.max(screenW - overlayW - 40, 20);
-                const maxY = Math.max(screenH - overlayH - 80, 20);
+                var maxX = Math.max(screenW - overlayW - 40, 20);
+                var maxY = Math.max(screenH - overlayH - 80, 20);
 
                 // Position while invisible
                 overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
@@ -600,10 +596,10 @@
         }
 
         function showIdleItem() {
-            const src = idleShuffled[idleIndex];
-            const isVideo = /\.mp4$/i.test(src);
-            const photo = document.getElementById('idle-photo');
-            const vid = document.getElementById('idle-video');
+            var src = idleShuffled[idleIndex];
+            var isVideo = /\.mp4$/i.test(src);
+            var photo = document.getElementById('idle-photo');
+            var vid = document.getElementById('idle-video');
 
             if (isVideo) {
                 photo.style.display = 'none';
@@ -678,42 +674,43 @@
 
         // 5. FIREBASE LISTENERS
         function initFirebaseListeners() {
-            vRef.child('settings/menu').on('value', function(snap) {
-                const menu = snap.val();
+            vRef.child("settings/menu").on("value", function(snap) {
+                var menu = snap.val();
                 if (menu) {
-                    let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
-                    for (let key in menu) {
-                        const item = menu[key];
-                        menuHtml += `<div class="menu-item"><span>${item.name}</span><span>${item.price || ''}</span></div>`;
+                    var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
+                    for (var key in menu) {
+                        var item = menu[key];
+                        menuHtml += "<div class=\"menu-item\"><span>" + item.name + "</span><span>" + (item.price || "") + "</span></div>";
                     }
-                    document.getElementById('menu-content').innerHTML = menuHtml;
+                    document.getElementById("menu-content").innerHTML = menuHtml;
                 } else {
-                    document.getElementById('menu-content').innerHTML = "<h3>MENU</h3><div style='opacity:0.3;text-align:center;'>Set menu in remote</div>";
+                    document.getElementById("menu-content").innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
                 }
             });
 
-            vRef.child('settings/adConfig').on('value', function(snap) {
-                const ad = snap.val();
-                const flyerImg = document.getElementById('ad-flyer');
+            vRef.child("settings/adConfig").on("value", function(snap) {
+                var ad = snap.val();
+                var flyerImg = document.getElementById("ad-flyer");
                 if (ad) {
-                    document.getElementById('ad-title').innerText = ad.title || window._currentVenueName || "T.A. Station";
-                    document.getElementById('ad-desc').innerText = ad.desc || "";
+                    document.getElementById("ad-title").innerText = ad.title || window._currentVenueName || "T.A. Station";
+                    document.getElementById("ad-desc").innerText = ad.desc || "";
                     if (ad.flyer) {
                         flyerImg.src = normalizeFlyerUrl(ad.flyer);
-                        flyerImg.style.display = 'block';
+                        flyerImg.style.display = "block";
                         flyerImg.onerror = function() { 
-                            this.style.display = 'none'; 
+                            this.style.display = "none"; 
                         };
                     } else {
-                        flyerImg.style.display = 'none';
+                        flyerImg.style.display = "none";
                     }
                 }
             });
 
-            vRef.child('settings/ticker').on('value', function(snap) {
-                const msgs = snap.val();
+            vRef.child("settings/ticker").on("value", function(snap) {
+                var msgs = snap.val();
                 if (msgs) {
-                    const sheetMessages = Object.values(msgs);
+                    var sheetMessages = [];
+                    for (var k in msgs) sheetMessages.push(msgs[k]);
                     tickerMessages = buildTickerMessages(sheetMessages);
                     if (!tickerTimer && tickerMessages.length > 0) {
                         showTickerMessage();
@@ -723,7 +720,7 @@
                 }
             });
 
-            vRef.child('settings/lastCallEnabled').on('value', function(snap) {
+            vRef.child("settings/lastCallEnabled").on("value", function(snap) {
                 lastCallEnabled = !!snap.val();
                 // If disabled, reset any active last call state immediately
                 if (!lastCallEnabled) {
@@ -731,13 +728,13 @@
                 }
             });
 
-            vRef.child('settings/currentVideoId').on('value', function(snap) {
-                let vid = snap.val();
+            vRef.child("settings/currentVideoId").on("value", function(snap) {
+                var vid = snap.val();
                 if (!vid) return;
                 
                 // Robustness: handle if vid is an object {id: '...'} instead of a string
-                if (typeof vid === 'object' && vid.id) vid = vid.id;
-                if (typeof vid !== 'string') return;
+                if (typeof vid === "object" && vid.id) vid = vid.id;
+                if (typeof vid !== "string") return;
 
                 console.log("Loading video:", vid);
                 stopIdle();
@@ -749,124 +746,126 @@
             });
 
             // Auto-play when queue is no longer empty and we are idle
-            vRef.child('settings/queue').on('value', function(snap) {
-                const queue = snap.val() || [];
-                const idleActive = document.getElementById('idle-screen').classList.contains('active');
+            vRef.child("settings/queue").on("value", function(snap) {
+                var queue = snap.val() || [];
+                var idleActive = document.getElementById("idle-screen").classList.contains("active");
                 if (queue.length > 0 && idleActive) {
                     console.log("Queue detected while idle, playing next...");
                     playNext();
                 }
             });
 
-            vRef.child('settings/playerCommand').on('value', function(snap) {
-                const cmd = snap.val();
+            vRef.child("settings/playerCommand").on("value", function(snap) {
+                var cmd = snap.val();
                 if (!cmd || !player) return;
                 switch (cmd.action) {
-                    case 'pause': player.pauseVideo(); break;
-                    case 'play': player.playVideo(); break;
-                    case 'next': playNext(); break;
-                    case 'prev': player.seekTo(0); player.playVideo(); break;
-                    case 'volume': player.setVolume(cmd.value); break;
-                    case 'slideshow': player.stopVideo(); startIdle(); break;
-                    case 'previewLastCall': previewLastCall(); break;
-                    case 'previewClosed': previewClosed(); break;
-                    case 'resetLastCall': resetLastCall(); break;
-                    case 'fixDisplay': 
+                    case "pause": player.pauseVideo(); break;
+                    case "play": player.playVideo(); break;
+                    case "next": playNext(); break;
+                    case "prev": player.seekTo(0); player.playVideo(); break;
+                    case "volume": player.setVolume(cmd.value); break;
+                    case "slideshow": player.stopVideo(); startIdle(); break;
+                    case "previewLastCall": previewLastCall(); break;
+                    case "previewClosed": previewClosed(); break;
+                    case "resetLastCall": resetLastCall(); break;
+                    case "fixDisplay": 
                         stopIdle(); 
                         if (player && player.getPlayerState() !== 1) {
                             playNext();
                         }
                         break;
-                    case 'captions':
-                        if (cmd.value) player.loadModule('captions');
-                        else player.unloadModule('captions');
+                    case "captions":
+                        if (cmd.value) player.loadModule("captions");
+                        else player.unloadModule("captions");
                         break;
                 }
-                vRef.child('settings/playerCommand').set(null);
+                vRef.child("settings/playerCommand").set(null);
             });
 
-            vRef.child('settings/autoMode').on('value', function(snap) {
+            vRef.child("settings/autoMode").on("value", function(snap) {
                 autoMode = !!snap.val();
                 if (autoMode) playNext();
             });
 
-            vRef.child('settings/partyMode').on('value', function(snap) {
+            vRef.child("settings/partyMode").on("value", function(snap) {
                 isPartyMode = !!snap.val();
-                if (isPartyMode) document.body.classList.add('party-mode');
-                else document.body.classList.remove('party-mode');
+                if (isPartyMode) document.body.classList.add("party-mode");
+                else document.body.classList.remove("party-mode");
             });
 
-            vRef.child('settings/remoteRefresh').on('value', function(snap) {
+            vRef.child("settings/remoteRefresh").on("value", function(snap) {
                 if (snap.val()) {
-                    vRef.child('settings/remoteRefresh').set(null);
+                    vRef.child("settings/remoteRefresh").set(null);
                     location.reload();
                 }
             });
 
             // Karaoke Lock — hides ads when customers are singing
-            vRef.child('settings/karaokeLock').on('value', function(snap) {
+            vRef.child("settings/karaokeLock").on("value", function(snap) {
                 isLocked = !!snap.val();
-                const indicator = document.getElementById('status-indicator');
+                var indicator = document.getElementById("status-indicator");
                 if (isLocked) {
-                    indicator.style.display = 'block';
+                    indicator.style.display = "block";
                     hideAd();
                 } else {
-                    indicator.style.display = 'none';
+                    indicator.style.display = "none";
                 }
             });
 
             // Force Ad — show flyer immediately for 25 seconds
-            vRef.child('settings/forceAd').on('value', function(snap) {
+            vRef.child("settings/forceAd").on("value", function(snap) {
                 if (snap.val() && !isLocked) {
                     showAd(true);
                 }
             });
 
             // Venue Name Sync
-            vRef.child('settings/venueName').on('value', function(snap) {
-                const name = snap.val() || "T.A. Station";
+            vRef.child("settings/venueName").on("value", function(snap) {
+                var name = snap.val() || "T.A. Station";
                 window._currentVenueName = name;
-                document.querySelectorAll('.venue-name-display').forEach(el => {
+                var displays = document.querySelectorAll(".venue-name-display");
+                for (var i = 0; i < displays.length; i++) {
+                    var el = displays[i];
                     el.textContent = name;
-                    if (el.id === 'idle-logo') {
+                    if (el.id === "idle-logo") {
                         el.textContent = name.toUpperCase();
                     }
-                });
+                }
                 document.title = name + " - Digital Signage";
                 
                 // Re-apply to ad title if empty in sheet
-                if (!document.getElementById('ad-title').dataset.hasCustomText) {
-                    document.getElementById('ad-title').innerText = name;
+                if (!document.getElementById("ad-title").dataset.hasCustomText) {
+                    document.getElementById("ad-title").innerText = name;
                 }
             });
 
             // Ticker Position
-            vRef.child('settings/tickerPosition').on('value', function(snap) {
-                const pos = snap.val() || 'top';
-                document.body.classList.remove('ticker-bottom', 'ticker-left', 'ticker-right');
-                if (pos !== 'top') document.body.classList.add('ticker-' + pos);
+            vRef.child("settings/tickerPosition").on("value", function(snap) {
+                var pos = snap.val() || "top";
+                document.body.classList.remove("ticker-bottom", "ticker-left", "ticker-right");
+                if (pos !== "top") document.body.classList.add("ticker-" + pos);
             });
 
             // AIRCONSOLE OVERLAY
-            vRef.child('settings/airConsole').on('value', function(snap) {
-                const overlay = document.getElementById('airconsole-overlay');
-                const frame = document.getElementById('airconsole-frame');
+            vRef.child("settings/airConsole").on("value", function(snap) {
+                var overlay = document.getElementById("airconsole-overlay");
+                var frame = document.getElementById("airconsole-frame");
                 if (snap.val()) {
-                    frame.src = 'https://www.airconsole.com/';
-                    overlay.classList.add('active');
+                    frame.src = "https://www.airconsole.com/";
+                    overlay.classList.add("active");
                     if (player && playerReady) player.pauseVideo();
                 } else {
-                    overlay.classList.remove('active');
-                    frame.src = '';
+                    overlay.classList.remove("active");
+                    frame.src = "";
                     if (player && playerReady) player.playVideo();
                 }
             });
         }
 
-        let lastCallEnabled = false;
+        var lastCallEnabled = false;
 
         function closeAirConsole() {
-            vRef.child('settings/airConsole').set(false);
+            vRef.child("settings/airConsole").set(false);
         }
     </script>
 
