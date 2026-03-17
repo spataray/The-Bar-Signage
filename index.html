@@ -88,12 +88,19 @@
     </div>
 
     <!-- Debug Status Bar -->
-    <div id="debug-status" style="position: fixed; bottom: 0; left: 0; background: rgba(0,0,0,0.7); color: #0f0; font-family: monospace; font-size: 9px; padding: 2px 5px; z-index: 1000; pointer-events: none; opacity: 0.5;">
-        AUTH: ... | DB: ... | VID: ... | LS: ... | FT: ... | IDB: ... | TIME: ... | UA: ...
+    <div id="debug-status" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); color: #0f0; font-family: monospace; font-size: 10px; padding: 5px; z-index: 1000; pointer-events: none; opacity: 0.8; display: flex; flex-wrap: wrap; gap: 10px; border-top: 1px solid #0f0;">
+        <span id="dbg-auth">AUTH: ...</span>
+        <span id="dbg-db">DB: ...</span>
+        <span id="dbg-vid">VID: ...</span>
+        <span id="dbg-ls">LS: ...</span>
+        <span id="dbg-ft">FT: ...</span>
+        <span id="dbg-idb">IDB: ...</span>
+        <span id="dbg-time">TIME: ...</span>
+        <span id="dbg-ua" style="color: #888;">UA: ...</span>
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.7 (2026-03-16 21:45 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.8 (2026-03-16 22:15 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -149,23 +156,47 @@
         var vRef = db.ref("venues/" + venueId);
         document.getElementById("display-venue-id").textContent = venueId;
 
+        function setDebug(key, val) {
+            var id = "dbg-" + key.toLowerCase();
+            var el = document.getElementById(id);
+            if (el) el.innerText = key + ": " + val;
+        }
+        setDebug("LS", (window.localStorage ? "OK" : "NO"));
+        setDebug("FT", (window.fetch ? "OK" : "NO"));
+        setDebug("IDB", (window.indexedDB ? "OK" : "NO"));
+        setDebug("UA", navigator.userAgent.substring(0, 30));
+        
+        function updateDebugTime() {
+            var now = new Date();
+            var timeStr = now.getHours() + ":" + (now.getMinutes() < 10 ? "0" : "") + now.getMinutes();
+            setDebug("TIME", timeStr);
+        }
+        updateDebugTime();
+        setInterval(updateDebugTime, 30000);
+
         // AUTH & INITIALIZATION
+        var authInitialised = false;
         firebase.auth().onAuthStateChanged(function(user) {
+            if (authInitialised) return; 
             if (user) {
-                console.log("Authenticated as:", user.uid);
+                authInitialised = true;
                 setDebug("AUTH", "OK");
                 initFirebaseListeners();
             } else {
                 setDebug("AUTH", "LOGIN...");
-                // Explicitly disable persistence to fix Smart TV 'internal-error'
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
                     .then(function() {
                         return firebase.auth().signInAnonymously();
                     })
                     .catch(function(error) {
-                        var shortMsg = (error.message || "").substring(0, 15);
-                        setDebug("AUTH", (error.code || "ERR") + "(" + shortMsg + ")");
-                        console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+                        authInitialised = true;
+                        var msg = error.code + " (" + (error.message || "").substring(0, 40) + ")";
+                        setDebug("AUTH", msg);
+                        console.error("Firebase Auth Error:", error.code, error.message);
+                        
+                        // FALLBACK: Try connection anyway
+                        setDebug("DB", "RETRYING (NO AUTH)...");
+                        initFirebaseListeners();
                     });
             }
         });
@@ -765,6 +796,7 @@
 
             vRef.child("settings/currentVideoId").on("value", function(snap) {
                 var vid = snap.val();
+                setDebug("VID", vid || "NONE");
                 if (!vid) return;
                 
                 // Robustness: handle if vid is an object {id: '...'} instead of a string
