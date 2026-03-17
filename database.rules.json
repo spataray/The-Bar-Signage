@@ -2,17 +2,17 @@
   "rules": {
     "venues": {
       "$venueId": {
-        // Only allow access to specific venue IDs (prevent listing all venues)
-        ".read": "true",
-        ".write": "true",
+        // Only allow authenticated users to access their venue's data
+        ".read": "auth != null",
+        ".write": "auth != null",
         // Basic validation: ensure venue ID is at least 4 characters
         ".validate": "$venueId.length >= 4"
       }
     },
     "SEARCH_CACHE": {
       // Shared YouTube search results to save API quota
-      ".read": "true",
-      ".write": "true"
+      ".read": "auth != null",
+      ".write": "auth != null"
     },
     // Explicitly deny reading/writing at the root level to prevent data leakage
     ".read": false,
