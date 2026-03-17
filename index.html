@@ -88,20 +88,23 @@
     </div>
 
     <!-- Debug Status Bar -->
-    <div id="debug-status" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); color: #0f0; font-family: monospace; font-size: 10px; padding: 5px; z-index: 1000; pointer-events: none; opacity: 0.8; display: flex; flex-wrap: wrap; gap: 10px; border-top: 1px solid #0f0;">
-        <span id="dbg-auth">AUTH: ...</span>
-        <span id="dbg-db">DB: ...</span>
-        <span id="dbg-vid">VID: ...</span>
-        <span id="dbg-ls">LS: ...</span>
-        <span id="dbg-ft">FT: ...</span>
-        <span id="dbg-idb">IDB: ...</span>
-        <span id="dbg-time">TIME: ...</span>
-        <span id="dbg-ua" style="color: #888;">UA: ...</span>
-        <a href="#" onclick="location.reload(); return false;" style="color: #0ff; text-decoration: underline; pointer-events: auto;">[RETRY]</a>
+    <div id="debug-status" style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); color: #0f0; font-family: monospace; font-size: 10px; padding: 10px; z-index: 1000; pointer-events: none; opacity: 0.9; border-top: 2px solid #0f0;">
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 5px;">
+            <span id="dbg-auth">AUTH: ...</span>
+            <span id="dbg-db">DB: ...</span>
+            <span id="dbg-vid">VID: ...</span>
+            <span id="dbg-ls">LS: ...</span>
+            <span id="dbg-ft">FT: ...</span>
+            <span id="dbg-idb">IDB: ...</span>
+            <span id="dbg-time">TIME: ...</span>
+        </div>
+        <div id="dbg-ua" style="color: #888; font-size: 8px; margin-bottom: 5px;">UA: ...</div>
+        <div id="dbg-fullerr" style="color: #ff4444; font-size: 9px; white-space: pre-wrap; word-break: break-all; border-top: 1px solid #333; padding-top: 5px;">FULL ERR: None</div>
+        <a href="#" onclick="location.reload(); return false;" style="position: absolute; top: 10px; right: 10px; color: #0ff; text-decoration: underline; pointer-events: auto;">[RETRY]</a>
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.9 (2026-03-16 22:30 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.0 (2026-03-16 22:45 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -191,15 +194,10 @@
                     })
                     .catch(function(error) {
                         authInitialised = true;
-                        var msg = error.code;
-                        if (error.message) {
-                            // Try to find a specific reason in the message string
-                            if (error.message.indexOf("API_KEY_") !== -1) msg += " (KEY_ERR)";
-                            if (error.message.indexOf("toolkit") !== -1) msg += " (ENABLE_API)";
-                            if (error.message.indexOf("domain") !== -1) msg += " (DOMAIN_ERR)";
-                            if (msg === error.code) msg += " (" + error.message.substring(0, 30) + ")";
-                        }
-                        setDebug("AUTH", msg);
+                        setDebug("AUTH", error.code || "ERR");
+                        var fullMsg = error.message || "Unknown error";
+                        var errEl = document.getElementById("dbg-fullerr");
+                        if (errEl) errEl.innerText = "FULL ERR: " + fullMsg;
                         console.error("Firebase Auth Error:", error.code, error.message);
                         
                         // FALLBACK: Try connection anyway
