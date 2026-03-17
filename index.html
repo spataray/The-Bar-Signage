@@ -97,10 +97,11 @@
         <span id="dbg-idb">IDB: ...</span>
         <span id="dbg-time">TIME: ...</span>
         <span id="dbg-ua" style="color: #888;">UA: ...</span>
+        <a href="#" onclick="location.reload(); return false;" style="color: #0ff; text-decoration: underline; pointer-events: auto;">[RETRY]</a>
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.8 (2026-03-16 22:15 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.9 (2026-03-16 22:30 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -190,7 +191,14 @@
                     })
                     .catch(function(error) {
                         authInitialised = true;
-                        var msg = error.code + " (" + (error.message || "").substring(0, 40) + ")";
+                        var msg = error.code;
+                        if (error.message) {
+                            // Try to find a specific reason in the message string
+                            if (error.message.indexOf("API_KEY_") !== -1) msg += " (KEY_ERR)";
+                            if (error.message.indexOf("toolkit") !== -1) msg += " (ENABLE_API)";
+                            if (error.message.indexOf("domain") !== -1) msg += " (DOMAIN_ERR)";
+                            if (msg === error.code) msg += " (" + error.message.substring(0, 30) + ")";
+                        }
                         setDebug("AUTH", msg);
                         console.error("Firebase Auth Error:", error.code, error.message);
                         
