@@ -88,7 +88,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.1 (2026-03-16 19:47 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.3.2 (2026-03-16 20:05 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -350,7 +350,14 @@
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1 },
+                playerVars: { 
+                    autoplay: 1, 
+                    controls: 1, 
+                    rel: 0, 
+                    enablejsapi: 1,
+                    iv_load_policy: 3,
+                    origin: window.location.origin
+                },
                 events: {
                     onReady: onPlayerReady,
                     onStateChange: onPlayerStateChange,
@@ -369,12 +376,24 @@
 
         function onPlayerError(event) {
             // 101/150 = embedding disabled, 100 = not found
-            console.warn('Player error:', event.data, '— skipping to next');
-            playNext();
+            console.warn('Player error:', event.data, '— skipping to next in 2s');
+            
+            // Avoid infinite loops if everything fails
+            if (window._errorCount > 5) {
+                console.error("Too many consecutive player errors. Stopping.");
+                startIdle();
+                return;
+            }
+            window._errorCount = (window._errorCount || 0) + 1;
+
+            setTimeout(function() {
+                if (typeof playNext === 'function') playNext();
+            }, 2000);
         }
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
+                window._errorCount = 0; // Reset error count on success
                 reportNowPlaying();
                 // Re-apply captions if enabled
                 vRef.child('settings/captionsEnabled').once('value', function(snap) {
@@ -713,10 +732,16 @@
             });
 
             vRef.child('settings/currentVideoId').on('value', function(snap) {
-                const vid = snap.val();
+                let vid = snap.val();
                 if (!vid) return;
+                
+                // Robustness: handle if vid is an object {id: '...'} instead of a string
+                if (typeof vid === 'object' && vid.id) vid = vid.id;
+                if (typeof vid !== 'string') return;
+
+                console.log("Loading video:", vid);
                 stopIdle();
-                if (playerReady) {
+                if (playerReady && player && player.loadVideoById) {
                     player.loadVideoById(vid);
                 } else {
                     pendingVideoId = vid;
