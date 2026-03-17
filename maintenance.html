@@ -748,11 +748,20 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        firebase.auth().signInAnonymously().catch(function(error) {
-            console.error("Firebase Anonymous Auth Error:", error.code, error.message);
-        });
         const db = firebase.database();
         const vRef = db.ref('venues/' + venueId);
+
+        // AUTH & INITIALIZATION
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                console.log("Authenticated as:", user.uid);
+                initFirebaseListeners();
+            } else {
+                firebase.auth().signInAnonymously().catch(function(error) {
+                    console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+                });
+            }
+        });
 
         // Auth Logic (Staff PIN)
         const authKey = 'TA_STATION_AUTH_' + venueId;
@@ -1264,6 +1273,7 @@
         }
 
         // ── Firebase Listeners ──
+        function initFirebaseListeners() {
 
         // Now Playing
         vRef.child('settings/nowPlaying').on('value', function(snap) {
@@ -1429,6 +1439,7 @@
             });
             document.title = name + " - Staff Remote";
         });
+    }
     </script>
     <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.2.7 (2026-03-15 18:35 HST)</div>
 </body>

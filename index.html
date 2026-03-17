@@ -125,9 +125,6 @@
 
         // 2. FIREBASE SETUP
         firebase.initializeApp(firebaseConfig);
-        firebase.auth().signInAnonymously().catch(function(error) {
-            console.error("Firebase Anonymous Auth Error:", error.code, error.message);
-        });
         const db = firebase.database();
 
         // ── VENUE ISOLATION ──
@@ -147,7 +144,19 @@
         const vRef = db.ref('venues/' + venueId);
         document.getElementById('display-venue-id').textContent = venueId;
 
-        // Connection Monitor
+        // AUTH & INITIALIZATION
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                console.log("Authenticated as:", user.uid);
+                initFirebaseListeners();
+            } else {
+                firebase.auth().signInAnonymously().catch(function(error) {
+                    console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+                });
+            }
+        });
+
+        // Connection Monitor (Publicly accessible under .info)
         db.ref(".info/connected").on("value", function(snap) {
             const overlay = document.getElementById('disconnect-overlay');
             if (snap.val() === true) {
@@ -649,376 +658,187 @@
         }
 
         // 5. FIREBASE LISTENERS
-        vRef.child('settings/menu').on('value', function(snap) {
-            const menu = snap.val();
-            if (menu) {
-                let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
-                for (let key in menu) {
-                    const item = menu[key];
-                    menuHtml += `<div class="menu-item"><span>${item.name}</span><span>${item.price || ''}</span></div>`;
-                }
-                document.getElementById('menu-content').innerHTML = menuHtml;
-            } else {
-                document.getElementById('menu-content').innerHTML = "<h3>MENU</h3><div style='opacity:0.3;text-align:center;'>Set menu in remote</div>";
-            }
-        });
-
-        vRef.child('settings/adConfig').on('value', function(snap) {
-            const ad = snap.val();
-            const flyerImg = document.getElementById('ad-flyer');
-            if (ad) {
-                document.getElementById('ad-title').innerText = ad.title || window._currentVenueName || "T.A. Station";
-                document.getElementById('ad-desc').innerText = ad.desc || "";
-                if (ad.flyer) {
-                    flyerImg.src = normalizeFlyerUrl(ad.flyer);
-                    flyerImg.style.display = 'block';
-                    flyerImg.onerror = function() { 
-                        this.style.display = 'none'; 
-                    };
+        function initFirebaseListeners() {
+            vRef.child('settings/menu').on('value', function(snap) {
+                const menu = snap.val();
+                if (menu) {
+                    let menuHtml = `<h3>${(window._currentVenueName || "T.A. Station").toUpperCase()} MENU</h3>`;
+                    for (let key in menu) {
+                        const item = menu[key];
+                        menuHtml += `<div class="menu-item"><span>${item.name}</span><span>${item.price || ''}</span></div>`;
+                    }
+                    document.getElementById('menu-content').innerHTML = menuHtml;
                 } else {
-                    flyerImg.style.display = 'none';
+                    document.getElementById('menu-content').innerHTML = "<h3>MENU</h3><div style='opacity:0.3;text-align:center;'>Set menu in remote</div>";
                 }
-            }
-        });
+            });
 
-        vRef.child('settings/ticker').on('value', function(snap) {
-            const msgs = snap.val();
-            if (msgs) {
-                const sheetMessages = Object.values(msgs);
-                tickerMessages = buildTickerMessages(sheetMessages);
-                if (!tickerTimer && tickerMessages.length > 0) {
-                    showTickerMessage();
+            vRef.child('settings/adConfig').on('value', function(snap) {
+                const ad = snap.val();
+                const flyerImg = document.getElementById('ad-flyer');
+                if (ad) {
+                    document.getElementById('ad-title').innerText = ad.title || window._currentVenueName || "T.A. Station";
+                    document.getElementById('ad-desc').innerText = ad.desc || "";
+                    if (ad.flyer) {
+                        flyerImg.src = normalizeFlyerUrl(ad.flyer);
+                        flyerImg.style.display = 'block';
+                        flyerImg.onerror = function() { 
+                            this.style.display = 'none'; 
+                        };
+                    } else {
+                        flyerImg.style.display = 'none';
+                    }
                 }
-            } else {
-                tickerMessages = buildTickerMessages([]);
-            }
-        });
+            });
+
+            vRef.child('settings/ticker').on('value', function(snap) {
+                const msgs = snap.val();
+                if (msgs) {
+                    const sheetMessages = Object.values(msgs);
+                    tickerMessages = buildTickerMessages(sheetMessages);
+                    if (!tickerTimer && tickerMessages.length > 0) {
+                        showTickerMessage();
+                    }
+                } else {
+                    tickerMessages = buildTickerMessages([]);
+                }
+            });
+
+            vRef.child('settings/lastCallEnabled').on('value', function(snap) {
+                lastCallEnabled = !!snap.val();
+                // If disabled, reset any active last call state immediately
+                if (!lastCallEnabled) {
+                    resetLastCall();
+                }
+            });
+
+            vRef.child('settings/currentVideoId').on('value', function(snap) {
+                const vid = snap.val();
+                if (!vid) return;
+                stopIdle();
+                if (playerReady) {
+                    player.loadVideoById(vid);
+                } else {
+                    pendingVideoId = vid;
+                }
+            });
+
+            // Auto-play when queue is no longer empty and we are idle
+            vRef.child('settings/queue').on('value', function(snap) {
+                const queue = snap.val() || [];
+                const idleActive = document.getElementById('idle-screen').classList.contains('active');
+                if (queue.length > 0 && idleActive) {
+                    console.log("Queue detected while idle, playing next...");
+                    playNext();
+                }
+            });
+
+            vRef.child('settings/playerCommand').on('value', function(snap) {
+                const cmd = snap.val();
+                if (!cmd || !player) return;
+                switch (cmd.action) {
+                    case 'pause': player.pauseVideo(); break;
+                    case 'play': player.playVideo(); break;
+                    case 'next': playNext(); break;
+                    case 'prev': player.seekTo(0); player.playVideo(); break;
+                    case 'volume': player.setVolume(cmd.value); break;
+                    case 'slideshow': player.stopVideo(); startIdle(); break;
+                    case 'previewLastCall': previewLastCall(); break;
+                    case 'previewClosed': previewClosed(); break;
+                    case 'resetLastCall': resetLastCall(); break;
+                    case 'fixDisplay': 
+                        stopIdle(); 
+                        if (player && player.getPlayerState() !== 1) {
+                            playNext();
+                        }
+                        break;
+                    case 'captions':
+                        if (cmd.value) player.loadModule('captions');
+                        else player.unloadModule('captions');
+                        break;
+                }
+                vRef.child('settings/playerCommand').set(null);
+            });
+
+            vRef.child('settings/autoMode').on('value', function(snap) {
+                autoMode = !!snap.val();
+                if (autoMode) playNext();
+            });
+
+            vRef.child('settings/partyMode').on('value', function(snap) {
+                isPartyMode = !!snap.val();
+                if (isPartyMode) document.body.classList.add('party-mode');
+                else document.body.classList.remove('party-mode');
+            });
+
+            vRef.child('settings/remoteRefresh').on('value', function(snap) {
+                if (snap.val()) {
+                    vRef.child('settings/remoteRefresh').set(null);
+                    location.reload();
+                }
+            });
+
+            // Karaoke Lock — hides ads when customers are singing
+            vRef.child('settings/karaokeLock').on('value', function(snap) {
+                isLocked = !!snap.val();
+                const indicator = document.getElementById('status-indicator');
+                if (isLocked) {
+                    indicator.style.display = 'block';
+                    hideAd();
+                } else {
+                    indicator.style.display = 'none';
+                }
+            });
+
+            // Force Ad — show flyer immediately for 25 seconds
+            vRef.child('settings/forceAd').on('value', function(snap) {
+                if (snap.val() && !isLocked) {
+                    showAd(true);
+                }
+            });
+
+            // Venue Name Sync
+            vRef.child('settings/venueName').on('value', function(snap) {
+                const name = snap.val() || "T.A. Station";
+                window._currentVenueName = name;
+                document.querySelectorAll('.venue-name-display').forEach(el => {
+                    el.textContent = name;
+                    if (el.id === 'idle-logo') {
+                        el.textContent = name.toUpperCase();
+                    }
+                });
+                document.title = name + " - Digital Signage";
+                
+                // Re-apply to ad title if empty in sheet
+                if (!document.getElementById('ad-title').dataset.hasCustomText) {
+                    document.getElementById('ad-title').innerText = name;
+                }
+            });
+
+            // Ticker Position
+            vRef.child('settings/tickerPosition').on('value', function(snap) {
+                const pos = snap.val() || 'top';
+                document.body.classList.remove('ticker-bottom', 'ticker-left', 'ticker-right');
+                if (pos !== 'top') document.body.classList.add('ticker-' + pos);
+            });
+
+            // AIRCONSOLE OVERLAY
+            vRef.child('settings/airConsole').on('value', function(snap) {
+                const overlay = document.getElementById('airconsole-overlay');
+                const frame = document.getElementById('airconsole-frame');
+                if (snap.val()) {
+                    frame.src = 'https://www.airconsole.com/';
+                    overlay.classList.add('active');
+                    if (player && playerReady) player.pauseVideo();
+                } else {
+                    overlay.classList.remove('active');
+                    frame.src = '';
+                    if (player && playerReady) player.playVideo();
+                }
+            });
+        }
 
         let lastCallEnabled = false;
-        vRef.child('settings/lastCallEnabled').on('value', function(snap) {
-            lastCallEnabled = !!snap.val();
-            // If disabled, reset any active last call state immediately
-            if (!lastCallEnabled) {
-                resetLastCall();
-            }
-        });
-
-        vRef.child('settings/currentVideoId').on('value', function(snap) {
-            const vid = snap.val();
-            if (!vid) return;
-            stopIdle();
-            if (playerReady) {
-                player.loadVideoById(vid);
-            } else {
-                pendingVideoId = vid;
-            }
-        });
-
-        // Auto-play when queue is no longer empty and we are idle
-        vRef.child('settings/queue').on('value', function(snap) {
-            const queue = snap.val() || [];
-            const idleActive = document.getElementById('idle-screen').classList.contains('active');
-            if (queue.length > 0 && idleActive) {
-                console.log("Queue detected while idle, playing next...");
-                playNext();
-            }
-        });
-
-        vRef.child('settings/playerCommand').on('value', function(snap) {
-            const cmd = snap.val();
-            if (!cmd || !player) return;
-            switch (cmd.action) {
-                case 'pause': player.pauseVideo(); break;
-                case 'play': player.playVideo(); break;
-                case 'next': playNext(); break;
-                case 'prev': player.seekTo(0); player.playVideo(); break;
-                case 'volume': player.setVolume(cmd.value); break;
-                case 'slideshow': player.stopVideo(); startIdle(); break;
-                case 'previewLastCall': previewLastCall(); break;
-                case 'previewClosed': previewClosed(); break;
-                case 'resetLastCall': resetLastCall(); break;
-                case 'fixDisplay': 
-                    stopIdle(); 
-                    if (player && player.getPlayerState() !== 1) {
-                        playNext();
-                    }
-                    break;
-                case 'captions':
-                    if (cmd.value) player.loadModule('captions');
-                    else player.unloadModule('captions');
-                    break;
-            }
-            vRef.child('settings/playerCommand').set(null);
-        });
-
-        vRef.child('settings/autoMode').on('value', function(snap) {
-            autoMode = !!snap.val();
-            if (autoMode) playNext();
-        });
-
-        vRef.child('settings/partyMode').on('value', function(snap) {
-            isPartyMode = !!snap.val();
-            if (isPartyMode) document.body.classList.add('party-mode');
-            else document.body.classList.remove('party-mode');
-        });
-
-        vRef.child('settings/remoteRefresh').on('value', function(snap) {
-            if (snap.val()) {
-                vRef.child('settings/remoteRefresh').set(null);
-                location.reload();
-            }
-        });
-
-        // Karaoke Lock — hides ads when customers are singing
-        vRef.child('settings/karaokeLock').on('value', function(snap) {
-            isLocked = !!snap.val();
-            const indicator = document.getElementById('status-indicator');
-            if (isLocked) {
-                indicator.style.display = 'block';
-                hideAd();
-            } else {
-                indicator.style.display = 'none';
-            }
-        });
-
-        // Force Ad — show flyer immediately for 25 seconds
-        vRef.child('settings/forceAd').on('value', function(snap) {
-            if (snap.val() && !isLocked) {
-                showAd(true);
-            }
-        });
-
-        // Venue Name Sync
-        vRef.child('settings/venueName').on('value', function(snap) {
-            const name = snap.val() || "T.A. Station";
-            window._currentVenueName = name;
-            document.querySelectorAll('.venue-name-display').forEach(el => {
-                el.textContent = name;
-                if (el.id === 'idle-logo') {
-                    el.textContent = name.toUpperCase();
-                }
-            });
-            document.title = name + " - Digital Signage";
-            
-            // Re-apply to ad title if empty in sheet
-            if (!document.getElementById('ad-title').dataset.hasCustomText) {
-                 document.getElementById('ad-title').innerText = name;
-            }
-        });
-
-        function showAd(forceFlyer) {
-            hideSongFact();
-            const sidebar = document.getElementById('ad-sidebar');
-            document.getElementById('app-container').classList.add('ad-active');
-            document.getElementById('video-section').classList.add('pip-active');
-            if (forceFlyer || !adCycleShowMenu) {
-                sidebar.classList.add('show-flyer');
-                sidebar.classList.remove('show-menu');
-            } else {
-                sidebar.classList.add('show-menu');
-                sidebar.classList.remove('show-flyer');
-            }
-            if (!forceFlyer) {
-                adCycleShowMenu = !adCycleShowMenu;
-            }
-            clearTimeout(window._adTimer);
-            window._adTimer = setTimeout(hideAd, 25000);
-        }
-
-        function hideAd() {
-            const sidebar = document.getElementById('ad-sidebar');
-            document.getElementById('app-container').classList.remove('ad-active');
-            document.getElementById('video-section').classList.remove('pip-active');
-            sidebar.classList.remove('show-flyer');
-            sidebar.classList.remove('show-menu');
-        }
-
-        // 6. AUTO-AD ROTATION — show ads every 3 minutes for 25 seconds
-        setInterval(function() {
-            if (!isLocked) {
-                showAd();
-            }
-        }, 180000);
-
-        // 7. STARTUP
-        showFunFact();
-
-        // 8. CLOCK — updates every second, Hawaii time
-        function updateClock() {
-            const el = document.getElementById('clock-display');
-            el.innerText = new Date().toLocaleTimeString('en-US', {
-                timeZone: 'Pacific/Honolulu',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            });
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
-
-        // 9. WEATHER — Honolulu, HI via Open-Meteo (free, no API key)
-        function getWeatherIcon(code) {
-            if (code === 0) return '☀️';
-            if (code <= 2) return '🌤️';
-            if (code === 3) return '☁️';
-            if (code <= 48) return '🌫️';
-            if (code <= 67) return '🌧️';
-            if (code <= 82) return '🌦️';
-            return '⛈️';
-        }
-
-        function syncWeather() {
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583&current_weather=true&temperature_unit=fahrenheit')
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    const w = data.current_weather;
-                    document.getElementById('weather-display').innerText =
-                        getWeatherIcon(w.weathercode) + ' ' + Math.round(w.temperature) + '°F';
-                })
-                .catch(function(e) { console.warn('Weather fetch failed:', e); });
-        }
-        syncWeather();
-        setInterval(syncWeather, 600000); // every 10 minutes
-
-        function showLastCallScreen() {
-            if (player && playerReady) player.stopVideo();
-            document.getElementById('player').style.visibility = 'hidden';
-            startIdle();
-        }
-
-        function hideLastCallScreen() {
-            document.getElementById('lastcall-screen').classList.remove('active');
-            document.getElementById('player').style.visibility = 'visible';
-            stopIdle();
-            lcLastCallActive = false;
-            lcClosedActive = false;
-        }
-
-        function previewLastCall() {
-            lcIsPreview = true;
-            showLastCallScreen();
-            document.getElementById('phase-lastcall').classList.add('active');
-            document.getElementById('phase-closed').classList.remove('active');
-            document.getElementById('lc-countdown').textContent = '15:00';
-            document.getElementById('lastcall-screen').classList.add('active');
-            lcLastCallActive = true;
-            lcClosedActive = false;
-        }
-
-        function previewClosed() {
-            lcIsPreview = true;
-            showLastCallScreen();
-            const msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
-            document.getElementById('lc-goodbye').textContent = msg;
-            document.getElementById('phase-lastcall').classList.remove('active');
-            document.getElementById('phase-closed').classList.add('active');
-            document.getElementById('lastcall-screen').classList.add('active');
-            lcClosedActive = true;
-            lcLastCallActive = false;
-        }
-
-        function resetLastCall() {
-            lcIsPreview = false;
-            lcLastCallActive = false;
-            lcClosedActive = false;
-            vRef.child('settings/lastCallActive').set(false);
-            hideLastCallScreen();
-        }
-
-        // 10. LAST CALL / CLOSED SEQUENCE
-        const goodbyeMessages = [
-            "Thank you for an amazing night! Drive safe and aloha! 🤙",
-            "Khob khun mak kha! You were wonderful guests — come back soon! 🇹🇭",
-            "Mahalo for making tonight unforgettable! Safe travels home! 🌺",
-            "You were the best guests ever! Aloha until next time! 🌴",
-            "Sawadee kha! Thank you for spending your night with us! 🙏",
-            "Thanks for partying with us tonight! See you next time! 🎉",
-            "Aloha! You were amazing tonight — sleep well! 🌙",
-            "Mahalo nui loa! We'll miss you already — come back soon! 💛",
-            "What a night! Thank you for being here — safe ride home! 🚗",
-            "Khob khun! Tonight was wonderful, thanks to each and every one of you! 🇹🇭🌺"
-        ];
-
-        let lcLastCallActive = false;
-        let lcClosedActive = false;
-        let lcIsPreview = false;
-
-        function checkLastCallTime() {
-            if (!lastCallEnabled) return; 
-            const now = new Date();
-            const hawaii = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
-            const h = hawaii.getHours();
-            const m = hawaii.getMinutes();
-            const s = hawaii.getSeconds();
-            const totalSec = h * 3600 + m * 60 + s;
-
-            const LAST_CALL = 1 * 3600 + 45 * 60; // 1:45 AM
-            const CLOSING   = 2 * 3600;            // 2:00 AM
-            const RESET     = 3 * 3600;            // 3:00 AM
-
-            const screen = document.getElementById('lastcall-screen');
-
-            if (totalSec >= LAST_CALL && totalSec < CLOSING) {
-                // ── Last Call phase ──
-                if (!lcLastCallActive) {
-                    lcLastCallActive = true;
-                    lcClosedActive = false;
-                    vRef.child('settings/lastCallActive').set(true); 
-                    showLastCallScreen();
-                    document.getElementById('phase-lastcall').classList.add('active');
-                    document.getElementById('phase-closed').classList.remove('active');
-                    screen.classList.add('active');
-                }
-                const remaining = CLOSING - totalSec;
-                const mins = Math.floor(remaining / 60);
-                const secs = remaining % 60;
-                document.getElementById('lc-countdown').textContent =
-                    mins + ':' + (secs < 10 ? '0' : '') + secs;
-
-            } else if (totalSec >= CLOSING && totalSec < RESET) {
-                // ── Closed phase ──
-                if (!lcClosedActive) {
-                    lcClosedActive = true;
-                    lcLastCallActive = false;
-                    vRef.child('settings/lastCallActive').set(true); 
-                    showLastCallScreen();
-                    const msg = goodbyeMessages[Math.floor(Math.random() * goodbyeMessages.length)];
-                    document.getElementById('lc-goodbye').textContent = msg;
-                    document.getElementById('phase-lastcall').classList.remove('active');
-                    document.getElementById('phase-closed').classList.add('active');
-                    screen.classList.add('active');
-                }
-
-            } else if ((lcLastCallActive || lcClosedActive) && !lcIsPreview) {
-                // ── 3 AM reset ──
-                location.reload();
-            }
-        }
-
-        setInterval(checkLastCallTime, 1000);
-        checkLastCallTime();
-
-        // 11. TICKER POSITION
-        vRef.child('settings/tickerPosition').on('value', function(snap) {
-            const pos = snap.val() || 'top';
-            document.body.classList.remove('ticker-bottom', 'ticker-left', 'ticker-right');
-            if (pos !== 'top') document.body.classList.add('ticker-' + pos);
-        });
-
-        // 12. AIRCONSOLE OVERLAY
-        vRef.child('settings/airConsole').on('value', function(snap) {
-            const overlay = document.getElementById('airconsole-overlay');
-            const frame = document.getElementById('airconsole-frame');
-            if (snap.val()) {
-                frame.src = 'https://www.airconsole.com/';
-                overlay.classList.add('active');
-                if (player && playerReady) player.pauseVideo();
-            } else {
-                overlay.classList.remove('active');
-                frame.src = '';
-                if (player && playerReady) player.playVideo();
-            }
-        });
 
         function closeAirConsole() {
             vRef.child('settings/airConsole').set(false);

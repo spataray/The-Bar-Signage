@@ -312,16 +312,24 @@
             }
         }
 
-        // Initialize Firebase
+        // 2. Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        firebase.auth().signInAnonymously().catch(function(error) {
-            console.error("Firebase Anonymous Auth Error:", error.code, error.message);
-        });
         const db = firebase.database();
-        if (typeof YT_API_KEY === 'undefined') { window.YT_API_KEY = firebaseConfig.apiKey; }
-
         const venueId = getVenueId();
         const vRef = db.ref('venues/' + venueId);
+        if (typeof YT_API_KEY === 'undefined') { window.YT_API_KEY = firebaseConfig.apiKey; }
+
+        // AUTH & INITIALIZATION
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                console.log("Authenticated as:", user.uid);
+                initFirebaseListeners();
+            } else {
+                firebase.auth().signInAnonymously().catch(function(error) {
+                    console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+                });
+            }
+        });
 
         // UI & Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
@@ -329,24 +337,33 @@
             if (displayEl) displayEl.textContent = venueId;
 
             // Search input Enter key
-            document.getElementById('search-input').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    doSearch();
-                }
-            });
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        doSearch();
+                    }
+                });
+            }
 
             // Search button click
-            document.getElementById('search-btn').onclick = function(e) {
-                e.preventDefault();
-                doSearch();
-            };
+            const searchBtn = document.getElementById('search-btn');
+            if (searchBtn) {
+                searchBtn.onclick = function(e) {
+                    e.preventDefault();
+                    doSearch();
+                };
+            }
 
             // Result listener (delegation)
-            document.getElementById('search-results').onclick = e => {
-                const btn = e.target.closest('.btn-add');
-                if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
-            };
+            const searchResults = document.getElementById('search-results');
+            if (searchResults) {
+                searchResults.onclick = function(e) {
+                    const btn = e.target.closest('.btn-add');
+                    if (btn) addToQueue(btn.dataset.id, btn.dataset.title, btn.dataset.author, btn.dataset.thumb);
+                };
+            }
         });
 
         // Connection Monitor
@@ -356,68 +373,59 @@
         });
 
         // State Listeners
-        vRef.child('settings/nowPlaying').on('value', snap => {
-            const data = snap.val();
-            const thumb = document.getElementById('np-thumb');
-            const title = document.getElementById('np-title');
-            const author = document.getElementById('np-author');
-            if (data) {
-                thumb.src = `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
-                title.textContent = data.title || 'Unknown';
-                author.textContent = data.author || '--';
-            } else {
-                thumb.src = 'images/TAStation-1.JPG';
-                title.textContent = 'Nothing playing';
-                author.textContent = '--';
-            }
-        });
-
-        vRef.child('settings/captionsEnabled').on('value', snap => { document.getElementById('toggle-cc').checked = !!snap.val(); });
-        vRef.child('settings/venueName').on('value', snap => {
-            const name = snap.val() || "THE STATION";
-            document.querySelectorAll('.venue-name-display').forEach(el => el.textContent = name);
-            document.title = name + " - Requests";
-        });
-
-        // Queue logic
-        vRef.child('settings/queue').on('value', snap => {
-            const queue = snap.val() || [];
-            const listEl = document.getElementById('queue-list');
-            const countEl = document.getElementById('queue-count');
-            countEl.textContent = queue.length > 0 ? `(${queue.length})` : '';
-            if (queue.length === 0) {
-                listEl.innerHTML = '<div class="queue-empty" style="text-align:center; padding:20px; opacity:0.3; font-style:italic;">Queue is empty</div>';
-                return;
-            }
-            listEl.innerHTML = '';
-            queue.forEach((item, i) => {
-                const div = document.createElement('div');
-                div.className = 'queue-item';
-                div.innerHTML = `
-                    <img class="queue-thumb" src="${item.thumb}">
-                    <div class="queue-info">
-                        <div class="queue-title">${escHtml(item.title)}</div>
-                    </div>
-                    <div class="queue-actions">
-                        ${i === 0 ? `<button class="btn-q-play" data-index="${i}">Play Now</button>` : ''}
-                        <button class="queue-remove" data-index="${i}">&times;</button>
-                    </div>
-                `;
-                listEl.appendChild(div);
-            });
-            listEl.onclick = e => {
-                const removeBtn = e.target.closest('.queue-remove');
-                if (removeBtn) return removeFromQueue(parseInt(removeBtn.dataset.index));
-                const playBtn = e.target.closest('.btn-q-play');
-                if (playBtn) {
-                    const idx = parseInt(playBtn.dataset.index);
-                    const item = queue[idx];
-                    playNow(item.id, item.title, item.author);
-                    removeFromQueue(idx);
+        function initFirebaseListeners() {
+            vRef.child('settings/nowPlaying').on('value', snap => {
+                const data = snap.val();
+                const thumb = document.getElementById('np-thumb');
+                const title = document.getElementById('np-title');
+                const author = document.getElementById('np-author');
+                if (data) {
+                    thumb.src = `https://img.youtube.com/vi/${data.videoId}/hqdefault.jpg`;
+                    title.textContent = data.title || 'Unknown';
+                    author.textContent = data.author || '--';
+                } else {
+                    thumb.src = 'images/TAStation-1.JPG';
+                    title.textContent = 'Nothing playing';
+                    author.textContent = '--';
                 }
-            };
-            rebuildSortable(listEl, queue);
-        });
+            });
+
+            vRef.child('settings/captionsEnabled').on('value', snap => { document.getElementById('toggle-cc').checked = !!snap.val(); });
+            vRef.child('settings/venueName').on('value', snap => {
+                const name = snap.val() || "THE STATION";
+                document.querySelectorAll('.venue-name-display').forEach(el => el.textContent = name);
+                document.title = name + " - Requests";
+            });
+
+            // Queue logic
+            vRef.child('settings/queue').on('value', snap => {
+                const queue = snap.val() || [];
+                const listEl = document.getElementById('queue-list');
+                const countEl = document.getElementById('queue-count');
+                countEl.textContent = queue.length > 0 ? `(${queue.length})` : '';
+                if (queue.length === 0) {
+                    listEl.innerHTML = '<div class="queue-empty" style="text-align:center; padding:20px; opacity:0.3; font-style:italic;">Queue is empty</div>';
+                    return;
+                }
+                listEl.innerHTML = '';
+                queue.forEach((item, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'queue-item';
+                    div.innerHTML = `
+                        <img class="queue-thumb" src="${item.thumb}">
+                        <div class="queue-info">
+                            <div class="queue-title">${escHtml(item.title)}</div>
+                        </div>
+                        <div class="queue-actions">
+                            ${i === 0 ? `<button class="btn-q-play" data-index="${i}">Play Now</button>` : ''}
+                            <button class="queue-remove" data-index="${i}">&times;</button>
+                        </div>
+                    `;
+                    listEl.appendChild(div);
+                });
+                rebuildSortable(listEl, queue);
+            });
+        }
 
         // ── Actions ──
         function setCaptions(status) {
