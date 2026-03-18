@@ -90,7 +90,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.4 (2026-03-16 23:45 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.5 (2026-03-16 23:55 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -911,7 +911,7 @@
                 var overlay = document.getElementById("airconsole-overlay");
                 var frame = document.getElementById("airconsole-frame");
                 if (snap.val()) {
-                    frame.src = "https://www.airconsole.com/";
+                    frame.src = "https://www.airconsole.com/tv/";
                     overlay.classList.add("active");
                     if (player && playerReady) player.pauseVideo();
                 } else {
