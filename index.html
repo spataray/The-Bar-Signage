@@ -22,7 +22,7 @@
         <div id="display-venue-id" style="font-size: 1.2rem; font-weight: 900; color: var(--bar-gold); letter-spacing: 2px;">----</div>
     </div>
 
-    <div id="disconnect-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); color: #ff4444; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-family: sans-serif;">
+    <div id="disconnect-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); color: #ff4444; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-family: sans-serif;">
         <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
         <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">CONNECTION LOST</div>
         <div style="margin-top: 10px; opacity: 0.7;">Reconnecting to <span class="venue-name-display">T.A. Station</span>...</div>
@@ -42,10 +42,12 @@
         </div>
 
         <div id="ad-sidebar">
-            <h2 id="ad-title">T.A. Station</h2>
-            <p id="ad-desc"></p>
-            <img id="ad-flyer" alt="Event Flyer">
-            <div class="menu-section" id="menu-content"></div>
+            <div class="sidebar-inner">
+                <h2 id="ad-title">T.A. Station</h2>
+                <p id="ad-desc"></p>
+                <img id="ad-flyer" alt="Event Flyer">
+                <div class="menu-section" id="menu-content"></div>
+            </div>
         </div>
     </div>
 
@@ -88,7 +90,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.1 (2026-03-16 23:00 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.2 (2026-03-16 23:15 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -919,6 +921,47 @@
                 }
             });
         }
+
+        var adCycleShowMenu = false;
+        function showAd(forceFlyer) {
+            hideSongFact();
+            var sidebar = document.getElementById("ad-sidebar");
+            var container = document.getElementById("app-container");
+            var videoSection = document.getElementById("video-section");
+            
+            container.classList.add("ad-active");
+            videoSection.classList.add("pip-active");
+            
+            if (forceFlyer || !adCycleShowMenu) {
+                sidebar.className = "show-flyer";
+            } else {
+                sidebar.className = "show-menu";
+            }
+            
+            if (!forceFlyer) {
+                adCycleShowMenu = !adCycleShowMenu;
+            }
+            
+            clearTimeout(window._adTimer);
+            window._adTimer = setTimeout(hideAd, 25000);
+        }
+
+        function hideAd() {
+            var sidebar = document.getElementById("ad-sidebar");
+            var container = document.getElementById("app-container");
+            var videoSection = document.getElementById("video-section");
+            
+            container.classList.remove("ad-active");
+            videoSection.classList.remove("pip-active");
+            sidebar.className = "";
+        }
+
+        // 6. AUTO-AD ROTATION — show ads every 3 minutes for 25 seconds
+        setInterval(function() {
+            if (!isLocked) {
+                showAd();
+            }
+        }, 180000);
 
         var lastCallEnabled = false;
 

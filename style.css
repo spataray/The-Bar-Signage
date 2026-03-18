@@ -17,24 +17,35 @@ body, html {
     overflow: hidden; 
 }
 
-/* The Layout Grid */
+/* The Layout Container */
 #app-container {
-    display: grid;
-    grid-template-columns: 1fr var(--sidebar-width);
-    width: 100vw;
-    height: calc(100vh - 90px);
-    margin-top: 90px;
-    transition: grid-template-columns var(--transition-speed) ease-in-out;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    
+    position: absolute;
+    top: 90px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    
+    transition: all var(--transition-speed) ease-in-out;
+    overflow: hidden;
 }
 
 #app-container.ad-active { 
-    --sidebar-width: 30%; 
+    /* Sidebar will be shown via flex properties below */
 }
 
 /* Video Section */
 #video-section { 
     position: relative; 
     background: #000; 
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    height: 100%;
     transition: padding var(--transition-speed) ease-in-out;
 }
 
@@ -60,19 +71,35 @@ iframe {
 /* Sidebar Ads & Menu */
 #ad-sidebar {
     position: relative;
-    display: flex;
-    flex-direction: column;
+    width: 0;
+    -webkit-flex-basis: 0;
+    flex-basis: 0;
+    height: 100%;
+    overflow: hidden;
+    background: url('images/TAStation-1.JPG') center/cover no-repeat;
+    transition: flex-basis var(--transition-speed) ease-in-out, width var(--transition-speed) ease-in-out;
+}
+
+#app-container.ad-active #ad-sidebar {
+    width: 30%;
+    -webkit-flex-basis: 30%;
+    flex-basis: 30%;
+}
+
+/* Inner padding for sidebar so it doesn't show when width is 0 */
+.sidebar-inner {
     padding: 25px;
+    width: 100%;
+    height: 100%;
     box-sizing: border-box;
     overflow-y: auto;
-    background: url('images/TAStation-1.JPG') center/cover no-repeat;
-    border-left: none;
+    position: relative;
 }
 
 #ad-sidebar::before {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0.7) 0%,
@@ -82,7 +109,7 @@ iframe {
     z-index: 0;
 }
 
-#ad-sidebar > * {
+#ad-sidebar .sidebar-inner > * {
     position: relative;
     z-index: 1;
 }
@@ -150,7 +177,7 @@ iframe {
 /* Idle Screen — shown when no video is playing */
 #idle-screen {
     position: absolute;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     z-index: 5;
     display: none;
     background: #000;
@@ -174,7 +201,7 @@ iframe {
 
 #idle-video {
     position: absolute;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -346,7 +373,7 @@ body.party-mode #ticker-container {
 #lastcall-screen {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     z-index: 500;
     background: rgba(0, 0, 0, 0.78);
     align-items: center;
@@ -560,7 +587,7 @@ body.ticker-right #ticker-text { white-space: normal; }
 #airconsole-overlay {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     z-index: 2000;
     background: #000;
 }
