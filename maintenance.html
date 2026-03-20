@@ -423,7 +423,7 @@
         <button onclick="switchVenue()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; cursor:pointer;">SWITCH</button>
     </div>
     <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
-    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.4.5</span></div>
+    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.4.6</span></div>
 
     <!-- NOW PLAYING -->
     <div class="card" id="now-playing-card">
@@ -460,6 +460,10 @@
         <div id="tab-search" class="tab-content active">
             <div class="search-row">
                 <input type="search" id="search-input" placeholder="Search songs, artists..." enterkeyhint="search">
+                <select id="search-type" style="background: #333; color: white; border: 1px solid #444; border-radius: 8px; padding: 0 5px; font-size: 0.8rem; margin-left: 5px;">
+                    <option value="video">Videos</option>
+                    <option value="playlist">Playlists</option>
+                </select>
                 <button onclick="doSearch()">&#128270;</button>
             </div>
             <div id="search-error"></div>
@@ -847,6 +851,7 @@
 
         function doSearch() {
             var query = document.getElementById('search-input').value.trim();
+            var searchType = document.getElementById('search-type').value;
             if (!query) return;
 
             var errorEl = document.getElementById('search-error');
@@ -862,23 +867,25 @@
                 return;
             }
 
-            var lowerQuery = query.toLowerCase();
             var refinedQuery = query;
-            var isSpecialVersion = 
-                lowerQuery.indexOf('karaoke') !== -1 || 
-                lowerQuery.indexOf('instrumental') !== -1 || 
-                lowerQuery.indexOf('backing') !== -1 || 
-                lowerQuery.indexOf('live') !== -1 || 
-                lowerQuery.indexOf('remix') !== -1 || 
-                lowerQuery.indexOf('lyrics') !== -1 || 
-                lowerQuery.indexOf('official') !== -1 || 
-                lowerQuery.indexOf('video') !== -1;
-            
-            if (!isSpecialVersion) {
-                refinedQuery += " official music video";
+            if (searchType === 'video') {
+                var lowerQuery = query.toLowerCase();
+                var isSpecialVersion = 
+                    lowerQuery.indexOf('karaoke') !== -1 || 
+                    lowerQuery.indexOf('instrumental') !== -1 || 
+                    lowerQuery.indexOf('backing') !== -1 || 
+                    lowerQuery.indexOf('live') !== -1 || 
+                    lowerQuery.indexOf('remix') !== -1 || 
+                    lowerQuery.indexOf('lyrics') !== -1 || 
+                    lowerQuery.indexOf('official') !== -1 || 
+                    lowerQuery.indexOf('video') !== -1;
+                
+                if (!isSpecialVersion) {
+                    refinedQuery += " official music video";
+                }
             }
 
-            var safeQuery = firebaseSafe(query);
+            var safeQuery = firebaseSafe(query) + "_" + searchType;
             var cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
             
             cacheRef.once('value').then(function(snapshot) {
@@ -890,7 +897,8 @@
                 }
 
                 var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
-                    encodeURIComponent(refinedQuery) + '&type=video&videoEmbeddable=true&maxResults=15&key=' + YT_API_KEY;
+                    encodeURIComponent(refinedQuery) + '&type=' + searchType + '&maxResults=15&key=' + YT_API_KEY;
+                if (searchType === 'video') url += '&videoEmbeddable=true';
                 
                 return fetch(url)
                     .then(function(res) { return res.json(); })
@@ -933,7 +941,8 @@
             resultsEl.innerHTML = '';
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
-                var id = item.id.videoId;
+                var isPlaylist = item.id.kind === 'youtube#playlist';
+                var id = isPlaylist ? item.id.playlistId : item.id.videoId;
                 var title = item.snippet.title;
                 var channel = item.snippet.channelTitle;
                 var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
@@ -944,12 +953,12 @@
                     '<div class="result-thumb-wrap">' +
                         '<img class="result-thumb" src="' + thumb + '" alt="">' +
                         '<div class="result-card-actions">' +
-                            '<button class="btn-play-sm" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">&#9654; Play</button>' +
-                            '<button class="btn-queue-sm" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">+</button>' +
+                            '<button class="' + (isPlaylist ? 'btn-play-pl' : 'btn-play-sm') + '" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">&#9654; ' + (isPlaylist ? 'Play Set' : 'Play') + '</button>' +
+                            '<button class="' + (isPlaylist ? 'btn-queue-pl' : 'btn-queue-sm') + '" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">+</button>' +
                         '</div>' +
                     '</div>' +
                     '<div class="result-card-info">' +
-                        '<div class="result-title">' + escHtml(title) + '</div>' +
+                        '<div class="result-title">' + (isPlaylist ? '[PLAYLIST] ' : '') + escHtml(title) + '</div>' +
                         '<div class="result-channel">' + escHtml(channel) + '</div>' +
                     '</div>';
                 resultsEl.appendChild(div);
@@ -965,6 +974,10 @@
                     playNow(id, title, author);
                 } else if (btn.className === 'btn-queue-sm') {
                     addToQueue(id, title, author);
+                } else if (btn.className === 'btn-play-pl') {
+                    loadPlaylist(id, true);
+                } else if (btn.className === 'btn-queue-pl') {
+                    loadPlaylist(id, false);
                 }
             };
         }
@@ -1350,6 +1363,6 @@
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.4.5 (2026-03-16 23:55 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.4.6 (2026-03-17 00:15 HST)</div>
 </body>
 </html>
