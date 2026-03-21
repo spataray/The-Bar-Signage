@@ -47,6 +47,19 @@
                 <p id="ad-desc"></p>
                 <img id="ad-flyer" alt="Event Flyer">
                 <div class="menu-section" id="menu-content"></div>
+                
+                <!-- NEW: Up Next Info -->
+                <div id="up-next-section" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,204,0,0.3); display: none;">
+                    <h3 style="color: var(--bar-gold); font-size: 0.9rem; margin-bottom: 10px; letter-spacing: 2px;">COMING UP NEXT</h3>
+                    <div id="up-next-info" style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                        <img id="up-next-thumb" src="" style="width: 100px; aspect-ratio: 16/9; border-radius: 8px; object-fit: cover; border: 1px solid #444;">
+                        <div style="flex: 1; min-width: 0;">
+                            <div id="up-next-title" style="font-weight: 900; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white;"></div>
+                            <div id="up-next-author" style="font-size: 0.8rem; opacity: 0.6; color: var(--bar-gold);"></div>
+                        </div>
+                    </div>
+                    <div id="up-next-history" style="font-size: 0.85rem; line-height: 1.4; opacity: 0.9; color: #eee; font-family: sans-serif; font-style: italic;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -90,7 +103,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.8 (2026-03-19 22:15 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.4.9 (2026-03-19 22:30 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -466,88 +479,78 @@
             vRef.child('settings/playerState').set(event.data);
         }
 
+        function fetchWikipediaSummary(query, callback) {
+            var cleanQuery = query
+                .replace(/\(.*?\)|\[.*?\]/g, "")
+                .replace(/official (video|audio|music video|lyric video|lyrics)/gi, "")
+                .replace(/ft\.|feat\./gi, "")
+                .replace(/video/gi, "")
+                .replace(/lyrics/gi, "")
+                .replace(/HD|4K|HQ/g, "")
+                .trim();
+
+            var searchUrl = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
+            fetch(searchUrl)
+                .then(function(sRes) { return sRes.json(); })
+                .then(function(sData) {
+                    if (!sData.query || !sData.query.search || sData.query.search.length === 0) {
+                        if (cleanQuery.includes("-")) {
+                            var parts = cleanQuery.split("-");
+                            cleanQuery = parts[parts.length - 1].trim();
+                            var searchUrl2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
+                            return fetch(searchUrl2).then(function(sRes2) { return sRes2.json(); });
+                        }
+                        return null;
+                    }
+                    return sData;
+                })
+                .then(function(sData) {
+                    if (!sData || !sData.query || !sData.query.search || sData.query.search.length === 0) return;
+                    var pageTitle = sData.query.search[0].title;
+                    var summaryUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(pageTitle.replace(/ /g, "_"));
+                    return fetch(summaryUrl);
+                })
+                .then(function(res) {
+                    if (!res || !res.ok) return;
+                    return res.json();
+                })
+                .then(function(info) {
+                    if (!info || !info.extract) return;
+                    var displayInfo = info.description || info.extract;
+                    if (displayInfo.includes(".") && displayInfo.length > 150) {
+                        var sentences = displayInfo.match(/[^.!?]+[.!?]+/g);
+                        if (sentences && sentences.length >= 2) {
+                            displayInfo = sentences[0] + " " + sentences[1];
+                        }
+                    }
+                    if (displayInfo.length > 240) displayInfo = displayInfo.substring(0, 237) + "...";
+                    callback(displayInfo);
+                })
+                .catch(function(e) { console.warn("Wikipedia fetch error:", e); });
+        }
+
         var factTimer = null;
         function showSongFact() {
             hideSongFact();
             if (!player || !player.getVideoData) return;
             var data = player.getVideoData();
             var rawTitle = data.title || "";
-            var author = data.author || "";
             
-            // Skip if it looks like karaoke
             var lowerTitle = rawTitle.toLowerCase();
             if (lowerTitle.includes("karaoke") || lowerTitle.includes("instrumental") || lowerTitle.includes("backing track") || lowerTitle.includes("no vocal")) {
                 return;
             }
 
-            // Wait 10 seconds before showing
             factTimer = setTimeout(function() {
-                // 1. Better title cleaning
-                var cleanQuery = rawTitle
-                    .replace(/\(.*?\)|\[.*?\]/g, "")
-                    .replace(/official (video|audio|music video|lyric video|lyrics)/gi, "")
-                    .replace(/ft\.|feat\./gi, "")
-                    .replace(/video/gi, "")
-                    .replace(/lyrics/gi, "")
-                    .replace(/HD|4K|HQ/g, "")
-                    .trim();
-
-                // 2. Use Wikipedia SEARCH API
-                var searchUrl = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
-                fetch(searchUrl)
-                    .then(function(sRes) { return sRes.json(); })
-                    .then(function(sData) {
-                        if (!sData.query || !sData.query.search || sData.query.search.length === 0) {
-                            if (cleanQuery.includes("-")) {
-                                var parts = cleanQuery.split("-");
-                                cleanQuery = parts[parts.length - 1].trim();
-                                var searchUrl2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
-                                return fetch(searchUrl2).then(function(sRes2) { return sRes2.json(); });
-                            }
-                            return null;
-                        }
-                        return sData;
-                    })
-                    .then(function(sData) {
-                        if (!sData || !sData.query || !sData.query.search || sData.query.search.length === 0) return;
-
-                        var pageTitle = sData.query.search[0].title;
-                        var summaryUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(pageTitle.replace(/ /g, "_"));
-                        
-                        return fetch(summaryUrl);
-                    })
-                    .then(function(res) {
-                        if (!res || !res.ok) return;
-                        return res.json();
-                    })
-                    .then(function(info) {
-                        if (!info || !info.extract || info.extract.length <= 40) return;
-
-                        var el = document.getElementById("fact-bubble");
-                        var text = document.getElementById("fact-bubble-text");
-                        
-                        var displayInfo = info.description || info.extract;
-                        
-                        if (displayInfo.includes(".") && displayInfo.length > 150) {
-                            var sentences = displayInfo.match(/[^.!?]+[.!?]+/g);
-                            if (sentences && sentences.length >= 2) {
-                                displayInfo = sentences[0] + " " + sentences[1];
-                            }
-                        }
-
-                        if (displayInfo.length > 240) {
-                            displayInfo = displayInfo.substring(0, 237) + "...";
-                        }
-
-                        text.innerText = displayInfo;
-                        el.classList.add("visible");
-                        
-                        factTimer = setTimeout(hideSongFact, 18000);
-                    })
-                    .catch(function(e) {
-                        console.warn("Song fact error:", e);
-                    });
+                fetchWikipediaSummary(rawTitle, function(extract) {
+                    var el = document.getElementById("fact-bubble");
+                    var text = document.getElementById("fact-bubble-text");
+                    text.innerText = extract;
+                    el.classList.add("visible");
+                    factTimer = setTimeout(hideSongFact, 18000);
+                });
             }, 8000);
+        }
         }
 
         function hideSongFact() {
@@ -941,6 +944,26 @@
             if (!forceFlyer) {
                 adCycleShowMenu = !adCycleShowMenu;
             }
+
+            // POPULATE UP NEXT
+            vRef.child("settings/queue").once("value", function(snap) {
+                var queue = snap.val() || [];
+                var nextSection = document.getElementById("up-next-section");
+                if (queue.length > 0) {
+                    var next = queue[0];
+                    document.getElementById("up-next-title").innerText = next.title || "Unknown";
+                    document.getElementById("up-next-author").innerText = next.author || "";
+                    document.getElementById("up-next-thumb").src = next.thumb || "";
+                    document.getElementById("up-next-history").innerText = "Loading song history...";
+                    nextSection.style.display = "block";
+
+                    fetchWikipediaSummary(next.title, function(extract) {
+                        document.getElementById("up-next-history").innerText = extract;
+                    });
+                } else {
+                    nextSection.style.display = "none";
+                }
+            });
             
             clearTimeout(window._adTimer);
             window._adTimer = setTimeout(hideAd, 25000);
@@ -954,6 +977,10 @@
             container.classList.remove("ad-active");
             videoSection.classList.remove("pip-active");
             sidebar.className = "";
+            
+            // Clear Up Next
+            document.getElementById("up-next-section").style.display = "none";
+            document.getElementById("up-next-history").innerText = "";
         }
 
         // 6. AUTO-AD ROTATION — show ads every 3 minutes for 25 seconds
