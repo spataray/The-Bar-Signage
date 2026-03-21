@@ -256,20 +256,37 @@
 
         <!-- RIGHT ON DESKTOP (Search) -->
         <div class="left-col">
-            <div class="card search-card">
-                <h3>🔍 FIND MUSIC</h3>
-                <form id="search-form" class="search-box" action="javascript:void(0);" onsubmit="doSearch(); return false;">
-                    <input type="search" id="search-input" placeholder="Search songs..." autocomplete="off" oninput="updateSuggestions(this.value)">
-                    <select id="search-type" style="background: #333; color: white; border: 1px solid #444; border-radius: 8px; padding: 0 5px; font-size: 0.8rem;">
-                        <option value="video">Songs</option>
-                        <option value="playlist">Playlists</option>
-                    </select>
-                    <datalist id="search-suggestions"></datalist>
-                    <button type="submit" class="btn-search" id="search-btn">GO</button>
-                </form>
-                <div id="search-error" style="color:var(--bar-red); font-size:0.7rem; margin-bottom:10px; display:none;"></div>
-                <div class="scroll-content" id="search-results">
-                    <div style="text-align:center; padding:40px; opacity:0.2;">Search for a song to begin!</div>
+            <div class="card search-card" style="display:flex; flex-direction:column;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="margin:0;">🔍 FIND MUSIC</h3>
+                    <div style="display:flex; gap:5px;">
+                        <button id="tab-btn-search" onclick="switchDiscovery('search')" style="background:var(--bar-gold); color:black; border:none; padding:4px 10px; border-radius:4px; font-size:0.7rem; font-weight:bold; cursor:pointer;">SEARCH</button>
+                        <button id="tab-btn-featured" onclick="switchDiscovery('featured')" style="background:#333; color:white; border:none; padding:4px 10px; border-radius:4px; font-size:0.7rem; font-weight:bold; cursor:pointer;">FEATURED</button>
+                    </div>
+                </div>
+
+                <!-- SEARCH TAB -->
+                <div id="pane-search">
+                    <form id="search-form" class="search-box" action="javascript:void(0);" onsubmit="doSearch(); return false;">
+                        <input type="search" id="search-input" placeholder="Search songs..." autocomplete="off" oninput="updateSuggestions(this.value)">
+                        <select id="search-type" style="background: #333; color: white; border: 1px solid #444; border-radius: 8px; padding: 0 5px; font-size: 0.8rem;">
+                            <option value="video">Songs</option>
+                            <option value="playlist">Playlists</option>
+                        </select>
+                        <datalist id="search-suggestions"></datalist>
+                        <button type="submit" class="btn-search" id="search-btn">GO</button>
+                    </form>
+                    <div id="search-error" style="color:var(--bar-red); font-size:0.7rem; margin-bottom:10px; display:none;"></div>
+                    <div class="scroll-content" id="search-results">
+                        <div style="text-align:center; padding:40px; opacity:0.2;">Search for a song to begin!</div>
+                    </div>
+                </div>
+
+                <!-- FEATURED TAB -->
+                <div id="pane-featured" style="display:none; flex:1; overflow:hidden; flex-direction:column;">
+                    <div class="scroll-content" id="featured-list" style="display:flex; flex-direction:column; gap:8px;">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -380,6 +397,39 @@
             var banner = document.getElementById('offline-banner');
             if (banner) banner.style.display = snap.val() ? 'none' : 'block';
         });
+
+        function switchDiscovery(tab) {
+            var isSearch = tab === 'search';
+            document.getElementById('pane-search').style.display = isSearch ? 'block' : 'none';
+            document.getElementById('pane-featured').style.display = isSearch ? 'none' : 'flex';
+            
+            document.getElementById('tab-btn-search').style.background = isSearch ? 'var(--bar-gold)' : '#333';
+            document.getElementById('tab-btn-search').style.color = isSearch ? 'black' : 'white';
+            
+            document.getElementById('tab-btn-featured').style.background = isSearch ? '#333' : 'var(--bar-gold)';
+            document.getElementById('tab-btn-featured').style.color = isSearch ? 'white' : 'black';
+
+            if (tab === 'featured') populateFeatured();
+        }
+
+        function populateFeatured() {
+            var listEl = document.getElementById('featured-list');
+            if (!listEl || listEl.children.length > 0) return;
+
+            for (var i = 0; i < FEATURED_PLAYLISTS.length; i++) {
+                var pl = FEATURED_PLAYLISTS[i];
+                var div = document.createElement('div');
+                div.className = 'result-item';
+                div.style.padding = "10px";
+                div.innerHTML = 
+                    '<div class="result-info">' +
+                        '<div class="result-title">[FEATURED] ' + pl.title + '</div>' +
+                        '<div class="result-channel">Curated Playlist</div>' +
+                    '</div>' +
+                    '<button class="btn-add" onclick="loadPlaylist(\'' + pl.id + '\')">+</button>';
+                listEl.appendChild(div);
+            }
+        }
 
         // State Listeners
         function initFirebaseListeners() {

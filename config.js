@@ -11,3 +11,11 @@ var firebaseConfig = {
 
 // Global YouTube API Key (shared with Firebase)
 var YT_API_KEY = firebaseConfig.apiKey;
+
+// Featured Playlists for the 'Featured' tab
+var FEATURED_PLAYLISTS = [
+    { id: "PL64G6j8eG1_Z_haIdIn_8Z_vxhXInX8Z_", title: "Thai Pop Hits" },
+    { id: "PLh_mFeSn_6YPfX_v_xhXInX8Z_8Z_vxhX", title: "80s Karaoke" },
+    { id: "PLmcZ_8Z_vxhXInX8Z_v_xhXInX8Z_8Z_", title: "90s Party Hits" },
+    { id: "PLFgquLnL59alCl_j-bZ_vxhXInX8Z_8Z_", title: "Top 50 Today" }
+];

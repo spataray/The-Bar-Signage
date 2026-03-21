@@ -423,7 +423,7 @@
         <button onclick="switchVenue()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; cursor:pointer;">SWITCH</button>
     </div>
     <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
-    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.4.7</span></div>
+    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.4.8</span></div>
 
     <!-- NOW PLAYING -->
     <div class="card" id="now-playing-card">
@@ -452,6 +452,7 @@
         <h3>&#128269; MANAGEMENT</h3>
         <div class="tab-row" style="flex-wrap: wrap;">
             <button class="tab-btn active" onclick="switchTab('search')">Search</button>
+            <button class="tab-btn" onclick="switchTab('featured')">Featured</button>
             <button class="tab-btn" onclick="switchTab('url')">Paste URL</button>
             <button class="tab-btn" onclick="switchTab('menu')">Menu</button>
             <button class="tab-btn" onclick="switchTab('ticker')">Ads & Ticker</button>
@@ -468,6 +469,12 @@
             </div>
             <div id="search-error"></div>
             <div id="search-results"></div>
+        </div>
+
+        <div id="tab-featured" class="tab-content">
+            <div id="featured-list" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Populated by JS -->
+            </div>
         </div>
 
         <div id="tab-url" class="tab-content">
@@ -813,15 +820,40 @@
             for (var i = 0; i < btns.length; i++) {
                 var b = btns[i];
                 var isMatch = (tab === 'search' && b.innerText === 'Search') || 
+                                (tab === 'featured' && b.innerText === 'Featured') ||
                                 (tab === 'url' && b.innerText === 'Paste URL') || 
                                 (tab === 'menu' && b.innerText === 'Menu') ||
                                 (tab === 'ticker' && b.innerText === 'Ads & Ticker');
                 b.className = isMatch ? 'tab-btn active' : 'tab-btn';
             }
             document.getElementById('tab-search').className = tab === 'search' ? 'tab-content active' : 'tab-content';
+            document.getElementById('tab-featured').className = tab === 'featured' ? 'tab-content active' : 'tab-content';
             document.getElementById('tab-url').className = tab === 'url' ? 'tab-content active' : 'tab-content';
             document.getElementById('tab-menu').className = tab === 'menu' ? 'tab-content active' : 'tab-content';
             document.getElementById('tab-ticker').className = tab === 'ticker' ? 'tab-content active' : 'tab-content';
+
+            if (tab === 'featured') populateFeatured();
+        }
+
+        function populateFeatured() {
+            var listEl = document.getElementById('featured-list');
+            if (!listEl || listEl.children.length > 0) return; // Only populate once
+
+            for (var i = 0; i < FEATURED_PLAYLISTS.length; i++) {
+                var pl = FEATURED_PLAYLISTS[i];
+                var div = document.createElement('div');
+                div.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #222; padding: 12px; border-radius: 8px; border: 1px solid #333;";
+                div.innerHTML = 
+                    '<div>' +
+                        '<div style="font-weight:bold; font-size:0.9rem;">' + pl.title + '</div>' +
+                        '<div style="font-size:0.7rem; opacity:0.5;">Playlist</div>' +
+                    '</div>' +
+                    '<div style="display:flex; gap:5px;">' +
+                        '<button class="btn btn-cast" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + pl.id + '\', true)">Play</button>' +
+                        '<button class="btn btn-unlock" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + pl.id + '\', false)">+</button>' +
+                    '</div>';
+                listEl.appendChild(div);
+            }
         }
 
         // ── YouTube URL Helpers ──
@@ -1363,6 +1395,6 @@
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.4.7 (2026-03-19 22:01 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.4.8 (2026-03-19 22:15 HST)</div>
 </body>
 </html>
