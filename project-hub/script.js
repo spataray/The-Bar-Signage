@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="tile-icon">${initials}</div>
                 <h2>${project.name}</h2>
             `;
+            
+            // Staggered animation delay
+            tile.style.animationDelay = `${index * 0.05}s`;
 
             // Prevent link navigation when clicking delete
             tile.querySelector('.delete-btn').addEventListener('click', (e) => {
