@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/ffd700/000000?text=Hub">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>Project Hub</h1>
+            <p>Your centralized dashboard</p>
+        </div>
+        <button id="add-btn" class="fab" aria-label="Add Site">+</button>
+    </header>
+
+    <main id="hub-grid" class="grid-container">
+        <!-- Tiles will be injected here -->
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Project</h2>
+            <div class="input-group">
+                <label for="site-name">Project Name</label>
+                <input type="text" id="site-name" placeholder="e.g., T.A. Station">
+            </div>
+            <div class="input-group">
+                <label for="site-url">URL</label>
+                <input type="url" id="site-url" placeholder="https://spataray.github.io/...">
+            </div>
+            <div class="modal-actions">
+                <button id="cancel-btn" class="btn-secondary">Cancel</button>
+                <button id="save-btn" class="btn-primary">Save Project</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
