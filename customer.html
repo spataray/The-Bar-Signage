@@ -426,7 +426,7 @@
                         '<div class="result-title">[FEATURED] ' + pl.title + '</div>' +
                         '<div class="result-channel">Curated Playlist</div>' +
                     '</div>' +
-                    '<button class="btn-add" onclick="loadPlaylist(\'' + pl.id + '\')">+</button>';
+                    '<button class="btn-add" onclick="loadPlaylist(\'' + escAttr(pl.id) + '\')">+</button>';
                 listEl.appendChild(div);
             }
         }
@@ -572,7 +572,7 @@
                 div.innerHTML = "<img class=\"result-thumb\" src=\"" + thumb + "\">" +
                     "<div class=\"result-info\"><div class=\"result-title\">" + (isPlaylist ? "[PLAYLIST] " : "") + escHtml(title) + "</div>" +
                     "<div class=\"result-channel\">" + escHtml(channel) + "</div></div>" +
-                    "<button class=\"btn-add\" data-id=\"" + id + "\" data-title=\"" + escAttr(title) + "\" data-author=\"" + escAttr(channel) + "\" data-thumb=\"" + thumb + "\" data-type=\"" + (isPlaylist ? "playlist" : "video") + "\">+</button>";
+                    "<button class=\"btn-add\" data-id=\"" + id + "\" data-title=\"" + escAttr(title) + "\" data-author=\"" + escAttr(channel) + "\" data-thumb=\"" + escAttr(thumb) + "\" data-type=\"" + (isPlaylist ? "playlist" : "video") + "\">+</button>";
                 resultsEl.appendChild(div);
             });
         }
@@ -604,13 +604,10 @@
                             }
                             vRef.child('settings/queue').set(queue.concat(newItems));
                             showStatus('Queued ' + newItems.length + ' songs');
-                        });
+                        }, function(err) { showStatus('Failed to update queue'); console.error(err); });
                     }
                 })
                 .catch(function() { showStatus('Failed to load playlist'); });
-        }
-                resultsEl.appendChild(div);
-            });
         }
 
         function addToQueue(id, title, author, thumb) {
@@ -653,7 +650,7 @@
                         newIndices.push(parseInt(items[j].dataset.originalIndex));
                     }
                     var newQueue = [];
-                    for (var k = 0; j < newIndices.length; k++) {
+                    for (var k = 0; k < newIndices.length; k++) {
                         var idx = newIndices[k];
                         if (!isNaN(idx)) newQueue.push(currentQueue[idx]);
                     }
@@ -691,7 +688,7 @@
                             }
                             datalist.innerHTML = html;
                         }
-                    }).catch(function(e) {});
+                    }).catch(function(e) { console.warn('Suggest fetch failed', e); });
             }, 300);
         }
     </script>

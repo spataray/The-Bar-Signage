@@ -12,10 +12,12 @@ Live at: https://spataray.github.io/The-Bar-Signage/
 
 This is a static HTML/CSS/JS project with no build system, no bundler, and no package manager. Just open the HTML files directly or serve them via GitHub Pages.
 
-**Two-page system connected via Firebase Realtime Database:**
+**Multi-page system connected via Firebase Realtime Database:**
 
 - **`index.html`** — TV display. Runs fullscreen on the bar TV browser. Embeds a YouTube IFrame player, shows an ad sidebar (flyer + menu), idle photo slideshow, and a scrolling ticker. Listens to Firebase for commands from the remote.
 - **`maintenance.html`** — Staff remote control. Opened on phone/iPad. Sends commands to Firebase: play/pause/skip, YouTube search, queue management, karaoke lock, party mode, force ads, remote refresh. Contains all its own CSS inline (no shared stylesheet).
+- **`customer.html`** — Customer-facing PWA for song requests. Customers can search YouTube, view the current queue, and add songs. Uses Firebase (same DB) and SortableJS from CDN.
+- **`project-hub/index.html`** — Internal PWA dashboard linking to all pages.
 - **`style.css`** — Styles for `index.html` only (TV display layout, sidebar, idle screen, ticker, party mode).
 
 **Data flow:**

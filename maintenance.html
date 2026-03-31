@@ -849,8 +849,8 @@
                         '<div style="font-size:0.7rem; opacity:0.5;">Playlist</div>' +
                     '</div>' +
                     '<div style="display:flex; gap:5px;">' +
-                        '<button class="btn btn-cast" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + pl.id + '\', true)">Play</button>' +
-                        '<button class="btn btn-unlock" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + pl.id + '\', false)">+</button>' +
+                        '<button class="btn btn-cast" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + escAttr(pl.id) + '\', true)">Play</button>' +
+                        '<button class="btn btn-unlock" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + escAttr(pl.id) + '\', false)">+</button>' +
                     '</div>';
                 listEl.appendChild(div);
             }
@@ -1128,14 +1128,14 @@
                         vRef.child('settings/queue').once('value', function(snap) {
                             var queue = snap.val() || [];
                             vRef.child('settings/queue').set(queue.concat(items));
-                        });
+                        }, function(err) { showStatus('Failed to update queue'); console.error(err); });
                     }
                 } else {
                     vRef.child('settings/queue').once('value', function(snap) {
                         var queue = snap.val() || [];
                         vRef.child('settings/queue').set(queue.concat(items));
                         showStatus('Queued ' + items.length + ' songs');
-                    });
+                    }, function(err) { showStatus('Failed to update queue'); console.error(err); });
                 }
             }).catch(function() { showStatus('Failed load'); });
         }
@@ -1349,7 +1349,7 @@
                         '<div style="flex:1; min-width:0;">' +
                         '<div style="font-size:0.9rem; font-weight:bold; overflow:hidden; text-overflow:ellipsis;">' + escHtml(item.name) + '</div>' +
                         '<div style="font-size:0.8rem; color:var(--bar-gold);">' + escHtml(item.price || '') + '</div></div>' +
-                        '<button onclick="removeMenuItem(\'' + key + '\')" style="background:none; border:none; color:var(--bar-red); font-size:1.2rem; cursor:pointer;">&times;</button></div>';
+                        '<button onclick="removeMenuItem(\'' + escAttr(key) + '\')" style="background:none; border:none; color:var(--bar-red); font-size:1.2rem; cursor:pointer;">&times;</button></div>';
                 }
                 listEl.innerHTML = html;
             });
@@ -1368,7 +1368,7 @@
                 for (var key in msgs) {
                     html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px; background:#222; border-radius:6px; margin-bottom:5px;">' +
                         '<div style="font-size:0.85rem; flex:1; overflow:hidden; text-overflow:ellipsis;">' + escHtml(msgs[key]) + '</div>' +
-                        '<button onclick="removeTickerMsg(\'' + key + '\')" style="background:none; border:none; color:var(--bar-red); padding:0 5px; cursor:pointer;">&times;</button></div>';
+                        '<button onclick="removeTickerMsg(\'' + escAttr(key) + '\')" style="background:none; border:none; color:var(--bar-red); padding:0 5px; cursor:pointer;">&times;</button></div>';
                 }
                 listEl.innerHTML = html || '<div style="opacity:0.3;text-align:center;">No messages</div>';
             });

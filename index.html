@@ -159,6 +159,12 @@
         var vRef = db.ref("venues/" + venueId);
         document.getElementById("display-venue-id").textContent = venueId;
 
+        function escHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
         function setDebug(key, val) {
             var id = "dbg-" + key.toLowerCase();
             var el = document.getElementById(id);
@@ -398,26 +404,6 @@
             factsTimer = setTimeout(showFunFact, 60000);
         }
 
-        function setDebug(key, val) {
-            var el = document.getElementById("debug-status");
-            if (!el) return;
-            var current = el.innerText;
-            var regex = new RegExp(key + ": [^|]+");
-            el.innerText = current.replace(regex, key + ": " + val);
-        }
-        setDebug("LS", (window.localStorage ? "OK" : "NO"));
-        setDebug("FT", (window.fetch ? "OK" : "NO"));
-        setDebug("IDB", (window.indexedDB ? "OK" : "NO"));
-        setDebug("UA", navigator.userAgent.substring(0, 20));
-        
-        function updateDebugTime() {
-            var now = new Date();
-            var timeStr = now.getHours() + ":" + (now.getMinutes() < 10 ? "0" : "") + now.getMinutes();
-            setDebug("TIME", timeStr);
-        }
-        updateDebugTime();
-        setInterval(updateDebugTime, 30000);
-
         // 3. YOUTUBE SETUP
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
@@ -551,7 +537,11 @@
                 });
             }, 8000);
         }
-        }
+
+        // Last-call feature stubs (not yet implemented)
+        function previewLastCall() {}
+        function previewClosed() {}
+        function resetLastCall() {}
 
         function hideSongFact() {
             clearTimeout(factTimer);
@@ -689,8 +679,8 @@
         function advanceIdleItem() {
             clearTimeout(idleTimer);
             idleTimer = null;
-            const photo = document.getElementById('idle-photo');
-            const vid = document.getElementById('idle-video');
+            var photo = document.getElementById('idle-photo');
+            var vid = document.getElementById('idle-video');
             photo.classList.add('fading');
             vid.classList.add('fading');
             setTimeout(function() {
@@ -701,7 +691,7 @@
         }
 
         function showTickerMessage() {
-            const el = document.getElementById('ticker-text');
+            var el = document.getElementById('ticker-text');
             if (tickerMessages.length === 0) return;
             // Fade out current message
             el.classList.remove('ticker-visible');
@@ -725,7 +715,7 @@
         // Converts Google Drive share links to a directly embeddable image URL
         function normalizeFlyerUrl(url) {
             url = url.trim();
-            const match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
+            var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
             if (match) {
                 return 'https://lh3.googleusercontent.com/d/' + match[1];
             }
@@ -741,7 +731,7 @@
                     var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
                     for (var key in menu) {
                         var item = menu[key];
-                        menuHtml += "<div class=\"menu-item\"><span>" + item.name + "</span><span>" + (item.price || "") + "</span></div>";
+                        menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
                     }
                     document.getElementById("menu-content").innerHTML = menuHtml;
                 } else {
