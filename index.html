@@ -213,14 +213,26 @@
         });
 
         // Connection Monitor (Publicly accessible under .info)
+        // Debounce showing the overlay so transient blips don't flash the screen.
+        // Auto-reload after 30s of sustained disconnection so Firebase can fully reset.
+        var disconnectTimer = null;
+        var reloadTimer = null;
         db.ref(".info/connected").on("value", function(snap) {
             var overlay = document.getElementById("disconnect-overlay");
             if (snap.val() === true) {
+                if (disconnectTimer) { clearTimeout(disconnectTimer); disconnectTimer = null; }
+                if (reloadTimer) { clearTimeout(reloadTimer); reloadTimer = null; }
                 overlay.style.display = "none";
                 setDebug("DB", "OK");
             } else {
-                overlay.style.display = "flex";
-                setDebug("DB", "LOST");
+                if (disconnectTimer) return; // already waiting
+                disconnectTimer = setTimeout(function() {
+                    overlay.style.display = "flex";
+                    setDebug("DB", "LOST");
+                    reloadTimer = setTimeout(function() {
+                        window.location.reload();
+                    }, 30000);
+                }, 5000);
             }
         });
 
