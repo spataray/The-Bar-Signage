@@ -113,7 +113,7 @@
                     <span id="vol-val">100%</span>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <button id="btn-mute" class="btn btn-sm btn-primary" style="width: 50px;" onclick="toggleMute()">Mute</button>
+                    <button id="btn-mute" class="btn btn-sm btn-primary" style="width: 70px;" onclick="toggleMute()">Mute</button>
                     <input type="range" min="0" max="100" value="100" id="vol-slider" onchange="setVolume(this.value)" style="height: 10px; border: none; padding: 0; flex: 1;">
                 </div>
             </div>
@@ -141,7 +141,6 @@
                 <input type="text" id="search-input" placeholder="Song title or artist...">
                 <button class="btn btn-primary" onclick="doSearch()">Search</button>
             </div>
-            <div id="search-error" style="color: var(--bar-red); font-size: 0.75rem; margin-top: 10px; display: none;"></div>
             <div id="search-results" style="margin-top: 15px;"></div>
         </div>
     </div>
@@ -172,7 +171,7 @@
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <input type="text" id="ad-title-input" placeholder="Main Title (e.g. HAPPY HOUR)">
                 <input type="text" id="ad-desc-input" placeholder="Subtitle / Details">
-                <input type="text" id="ad-flyer-input" placeholder="Google Drive Link / Image URL">
+                <input type="text" id="ad-flyer-input" placeholder="Image URL">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn btn-primary" onclick="updateAdConfig()">Update Ad</button>
                     <button class="btn btn-success" onclick="sendCommand('forceAd')">Show Now</button>
@@ -227,33 +226,6 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <div class="status-row">
-                <span>Enable Last Call Timer</span>
-                <label class="switch">
-                    <input type="checkbox" id="toggle-lastcall" onchange="vRef.child('settings/lastCallEnabled').set(this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Appearance</h3>
-            <div style="margin-bottom: 15px;">
-                <label style="font-size: 0.8rem; opacity: 0.6; display: block; margin-bottom: 8px;">Ticker Position</label>
-                <div style="display: flex; gap: 5px;">
-                    <button id="tpos-top" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('top')">Top</button>
-                    <button id="tpos-bottom" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('bottom')">Bottom</button>
-                    <button id="tpos-left" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('left')">Left</button>
-                    <button id="tpos-right" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('right')">Right</button>
-                </div>
-            </div>
-            <div>
-                <label style="font-size: 0.8rem; opacity: 0.6; display: block; margin-bottom: 8px;">Venue Name</label>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="venue-name-input" placeholder="T.A. Station">
-                    <button class="btn btn-primary" onclick="vRef.child('settings/venueName').set(document.getElementById('venue-name-input').value)">Save</button>
-                </div>
-            </div>
         </div>
 
         <div class="card">
@@ -270,20 +242,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-    <!-- CONFIGURATION -->
     <script src="config.js"></script>
 
     <script>
-        // 1. Core Logic
         var YT_API_KEY = firebaseConfig.apiKey; 
         var isMuted = false;
+        var currentPlayerState = -1;
         
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
             var v = urlParams.get('v');
             if (v && v.trim().length >= 4) return v.toUpperCase().trim();
-            
             var promptVal = prompt("Enter 4-character Venue Code (from TV):");
             if (promptVal) {
                 var code = promptVal.toUpperCase().trim();
@@ -296,41 +265,22 @@
         var venueId = getVenueId();
         document.getElementById('venue-code-display').textContent = venueId;
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        var db = firebase.database();
-        var vRef = db.ref('venues/' + venueId);
+        var db = firebase.database(), vRef = db.ref('venues/' + venueId);
 
-        // ── LOCAL STORAGE MIRRORING ──
-        function saveLocal(key, val) {
-            try { localStorage.setItem("tbs_remote_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {}
-        }
-        function getLocal(key) {
-            try { return JSON.parse(localStorage.getItem("tbs_remote_" + venueId + "_" + key)); } catch(e) { return null; }
-        }
+        function saveLocal(key, val) { try { localStorage.setItem("tbs_remote_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {} }
+        function getLocal(key) { try { return JSON.parse(localStorage.getItem("tbs_remote_" + venueId + "_" + key)); } catch(e) { return null; } }
 
-        // Initialize UI from LocalStorage (Instant Boot)
         (function initFromLocal() {
-            var cachedName = getLocal("venueName");
-            if (cachedName) {
-                var d = document.querySelectorAll('.venue-name-display');
-                for (var i = 0; i < d.length; i++) d[i].textContent = cachedName.toUpperCase();
-            }
+            var cn = getLocal("venueName");
+            if (cn) { var d = document.querySelectorAll('.venue-name-display'); for (var i = 0; i < d.length; i++) d[i].textContent = cn.toUpperCase(); }
         })();
 
-        // AUTH & INITIALIZATION
         firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                console.log("Authenticated as:", user.uid);
-                initFirebaseListeners();
-            } else {
-                firebase.auth().signInAnonymously().catch(function(error) {
-                    console.error("Firebase Auth Error:", error.code, error.message);
-                });
-            }
+            if (user) initFirebaseListeners();
+            else firebase.auth().signInAnonymously();
         });
 
-        // ── Navigation ──
         function showPane(id) {
             document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
             document.getElementById('pane-' + id).style.display = 'block';
@@ -338,26 +288,19 @@
             if (event && event.target) event.target.classList.add('active');
         }
 
-        // ── Actions ──
         function sendCommand(action, value) {
-            vRef.child('settings/playerCommand').set({
-                action: action,
-                value: value || null,
-                ts: Date.now()
-            });
+            vRef.child('settings/playerCommand').set({ action: action, value: value || null, ts: Date.now() });
         }
 
         function togglePlayPause() {
-            var btn = document.getElementById('btn-play-pause');
-            var isPlaying = btn.innerHTML.indexOf('pause') !== -1;
-            sendCommand(isPlaying ? 'pause' : 'play');
+            // state 1 = PLAYING
+            sendCommand(currentPlayerState === 1 ? 'pause' : 'play');
         }
 
         function setVolume(val) {
             document.getElementById('vol-val').textContent = val + '%';
             sendCommand('volume', parseInt(val));
-            // Auto-unmute if sliding volume
-            if (isMuted) toggleMute();
+            if (isMuted) toggleMute(); // Auto unmute
         }
 
         function toggleMute() {
@@ -368,57 +311,28 @@
             sendCommand(isMuted ? 'mute' : 'unmute');
         }
 
-        function setTickerPos(pos) {
-            vRef.child('settings/tickerPosition').set(pos);
-        }
-
-        function clearQueue() {
-            if (confirm("Clear the entire queue?")) {
-                vRef.child('settings/queue').set([]);
-            }
-        }
-
-        function addTickerMsg() {
-            var el = document.getElementById('ticker-input');
-            var msg = el.value.trim();
-            if (!msg) return;
-            vRef.child('settings/ticker').push(msg);
-            el.value = '';
-        }
-
-        function removeTickerMsg(key) {
-            vRef.child('settings/ticker').child(key).remove();
-        }
-
+        function setTickerPos(pos) { vRef.child('settings/tickerPosition').set(pos); }
+        function clearQueue() { if (confirm("Clear queue?")) vRef.child('settings/queue').set([]); }
+        function addTickerMsg() { var el = document.getElementById('ticker-input'); if (!el.value.trim()) return; vRef.child('settings/ticker').push(el.value.trim()); el.value = ''; }
+        function removeTickerMsg(key) { vRef.child('settings/ticker').child(key).remove(); }
         function addMenuItem() {
-            var name = document.getElementById('menu-name-input').value.trim();
-            var price = document.getElementById('menu-price-input').value.trim();
-            if (!name) return;
-            vRef.child('settings/menu').push({ name: name, price: price });
-            document.getElementById('menu-name-input').value = '';
-            document.getElementById('menu-price-input').value = '';
+            var n = document.getElementById('menu-name-input'), p = document.getElementById('menu-price-input');
+            if (!n.value.trim()) return;
+            vRef.child('settings/menu').push({ name: n.value.trim(), price: p.value.trim() });
+            n.value = ''; p.value = '';
         }
-
-        function removeMenuItem(key) {
-            vRef.child('settings/menu').child(key).remove();
-        }
-
+        function removeMenuItem(key) { vRef.child('settings/menu').child(key).remove(); }
         function updateAdConfig() {
             vRef.child('settings/adConfig').set({
                 title: document.getElementById('ad-title-input').value.trim(),
                 desc: document.getElementById('ad-desc-input').value.trim(),
                 flyer: document.getElementById('ad-flyer-input').value.trim()
             });
-            alert("Ad configuration updated!");
         }
 
         function playNow(id, title, author) {
             vRef.child('settings/currentVideoId').set(id);
-            vRef.child('settings/nowPlaying').set({
-                videoId: id,
-                title: title || '',
-                author: author || ''
-            });
+            vRef.child('settings/nowPlaying').set({ videoId: id, title: title || '', author: author || '' });
         }
 
         function addToQueue(id, title, author, thumb) {
@@ -445,239 +359,75 @@
             return (match && match[1]) ? match[1] : null;
         }
 
-        // ── Listeners ──
         function initFirebaseListeners() {
             vRef.child('settings/nowPlaying').on('value', function(snap) {
                 var data = snap.val();
-                var thumb = document.getElementById('np-thumb');
-                var title = document.getElementById('np-title');
-                var author = document.getElementById('np-author');
+                var thumb = document.getElementById('np-thumb'), title = document.getElementById('np-title'), author = document.getElementById('np-author');
                 if (data) {
                     thumb.src = "https://img.youtube.com/vi/" + data.videoId + "/default.jpg";
                     title.textContent = data.title || 'Unknown';
                     author.textContent = data.author || '--';
-                } else {
-                    thumb.src = 'images/TAStation-1.JPG';
-                    title.textContent = 'Nothing playing';
-                    author.textContent = '--';
-                }
+                } else { thumb.src = 'images/TAStation-1.JPG'; title.textContent = 'Nothing playing'; author.textContent = '--'; }
             });
 
             vRef.child('settings/playerState').on('value', function(snap) {
-                var state = snap.val();
+                currentPlayerState = snap.val();
                 var btn = document.getElementById('btn-play-pause');
-                btn.innerHTML = state === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
+                btn.innerHTML = currentPlayerState === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
             });
 
-            vRef.child('settings/queue').on('value', function(snap) {
-                var queue = snap.val() || [];
-                saveLocal('queue', queue);
-                var listEl = document.getElementById('queue-list');
-                var countEl = document.getElementById('queue-count');
-                countEl.textContent = queue.length > 0 ? '(' + queue.length + ')' : '';
-
-                if (queue.length === 0) {
-                    listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>';
-                    return;
-                }
-
+            vRef.child('settings/queue').on("value", function(snap) {
+                var q = snap.val() || []; saveLocal('queue', q);
+                var listEl = document.getElementById('queue-list'), countEl = document.getElementById('queue-count');
+                countEl.textContent = q.length > 0 ? '(' + q.length + ')' : '';
+                if (q.length === 0) { listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>'; return; }
                 listEl.innerHTML = '';
-                for (var i = 0; i < queue.length; i++) {
-                    var item = queue[i];
-                    var div = document.createElement('div');
-                    div.className = 'queue-item';
+                q.forEach((item, i) => {
+                    var div = document.createElement('div'); div.className = 'queue-item';
                     var thumb = item.thumb || ('https://img.youtube.com/vi/' + (item.id || '') + '/default.jpg');
-                    var title = item.title || item.id || 'Unknown';
-                    div.innerHTML =
-                        '<span class="queue-num">' + (i + 1) + '</span>' +
-                        '<img class="queue-thumb" src="' + thumb + '" style="cursor:grab;">' +
-                        '<div class="queue-info"><div class="queue-title">' + escHtml(title) + '</div></div>' +
-                        '<button class="queue-remove" data-index="' + i + '">&times;</button>';
+                    div.innerHTML = '<span class="queue-num">' + (i + 1) + '</span><img class="queue-thumb" src="' + thumb + '"><div class="queue-info"><div class="queue-title">' + escHtml(item.title) + '</div></div><button class="queue-remove" data-index="' + i + '">&times;</button>';
                     listEl.appendChild(div);
-                }
-
-                if (window._queueSortable) window._queueSortable.destroy();
-                window._queueSortable = new Sortable(listEl, {
-                    animation: 150,
-                    handle: '.queue-thumb',
-                    onEnd: function(evt) {
-                        if (evt.oldIndex === evt.newIndex) return;
-                        vRef.child('settings/queue').once('value', function(s) {
-                            var q = s.val() || [];
-                            var itm = q.splice(evt.oldIndex, 1)[0];
-                            q.splice(evt.newIndex, 0, itm);
-                            vRef.child('settings/queue').set(q);
-                        });
-                    }
                 });
-
-                listEl.onclick = function(e) {
-                    var btn = e.target.closest('.queue-remove');
-                    if (btn) removeFromQueue(parseInt(btn.dataset.index));
-                };
-            });
-
-            vRef.child('settings/karaokeLock').on('value', function(snap) {
-                document.getElementById('toggle-karaoke').checked = !!snap.val();
-            });
-
-            vRef.child('settings/autoMode').on('value', function(snap) {
-                document.getElementById('toggle-auto').checked = !!snap.val();
-            });
-
-            vRef.child('settings/partyMode').on('value', function(snap) {
-                document.getElementById('toggle-party').checked = !!snap.val();
-            });
-
-            vRef.child('settings/airConsole').on('value', function(snap) {
-                document.getElementById('toggle-airconsole').checked = !!snap.val();
-            });
-
-            vRef.child('settings/lastCallEnabled').on('value', function(snap) {
-                document.getElementById('toggle-lastcall').checked = !!snap.val();
-            });
-
-            vRef.child('settings/showRequestQR').on('value', function(snap) {
-                document.getElementById('toggle-qr').checked = snap.val() !== false;
-            });
-
-            vRef.child('settings/menu').on('value', function(snap) {
-                var menu = snap.val();
-                var listEl = document.getElementById('staff-menu-list');
-                if (!menu) { listEl.innerHTML = '<div style="opacity:0.5;text-align:center;">Empty</div>'; return; }
-                var html = '';
-                for (var key in menu) {
-                    var item = menu[key];
-                    html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#222; border-radius:8px; margin-bottom:5px; border:1px solid #333;">' +
-                        '<div style="flex:1; min-width:0;">' +
-                        '<div style="font-size:0.9rem; font-weight:bold; overflow:hidden; text-overflow:ellipsis;">' + escHtml(item.name) + '</div>' +
-                        '<div style="font-size:0.8rem; color:var(--bar-gold);">' + escHtml(item.price || '') + '</div></div>' +
-                        '<button onclick="removeMenuItem(\'' + escAttr(key) + '\')" style="background:none; border:none; color:var(--bar-red); font-size:1.2rem; cursor:pointer;">&times;</button></div>';
-                }
-                listEl.innerHTML = html;
-            });
-
-            vRef.child('settings/adConfig').on('value', function(snap) {
-                var config = snap.val() || {};
-                document.getElementById('ad-title-input').value = config.title || '';
-                document.getElementById('ad-desc-input').value = config.desc || '';
-                document.getElementById('ad-flyer-input').value = config.flyer || '';
-            });
-
-            vRef.child('settings/ticker').on('value', function(snap) {
-                var msgs = snap.val() || {};
-                var listEl = document.getElementById('staff-ticker-list');
-                var html = '';
-                for (var key in msgs) {
-                    html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px; background:#222; border-radius:6px; margin-bottom:5px;">' +
-                        '<div style="font-size:0.85rem; flex:1; overflow:hidden; text-overflow:ellipsis;">' + escHtml(msgs[key]) + '</div>' +
-                        '<button onclick="removeTickerMsg(\'' + escAttr(key) + '\')" style="background:none; border:none; color:var(--bar-red); padding:0 5px; cursor:pointer;">&times;</button></div>';
-                }
-                listEl.innerHTML = html || '<div style="opacity:0.3;text-align:center;">No messages</div>';
-            });
-
-            vRef.child('settings/captionsEnabled').on('value', function(snap) {
-                document.getElementById('toggle-cc').checked = !!snap.val();
-            });
-
-            vRef.child('settings/tickerPosition').on('value', function(snap) {
-                var pos = snap.val() || 'top';
-                var pArr = ['top','bottom','left','right'];
-                for (var i = 0; i < pArr.length; i++) {
-                    var el = document.getElementById('tpos-' + pArr[i]);
-                    if (el) el.className = (pArr[i] === pos) ? 'btn btn-sm ticker-pos-btn active' : 'btn btn-sm ticker-pos-btn';
-                }
+                listEl.onclick = function(e) { var btn = e.target.closest('.queue-remove'); if (btn) removeFromQueue(parseInt(btn.dataset.index)); };
             });
 
             vRef.child('settings/venueName').on('value', function(snap) {
-                var name = snap.val() || "T.A. STATION";
-                saveLocal('venueName', name);
-                document.getElementById('venue-name-input').value = snap.val() ? name : "";
-                var d = document.querySelectorAll('.venue-name-display');
-                for (var i = 0; i < d.length; i++) d[i].textContent = name.toUpperCase();
+                var name = snap.val() || "T.A. STATION"; saveLocal('venueName', name);
+                var d = document.querySelectorAll('.venue-name-display'); for (var i = 0; i < d.length; i++) d[i].textContent = name.toUpperCase();
                 document.title = name + " - Staff Remote";
             });
+            
+            // Sync toggles
+            vRef.child('settings/karaokeLock').on('value', s => { document.getElementById('toggle-karaoke').checked = !!s.val(); });
+            vRef.child('settings/autoMode').on('value', s => { document.getElementById('toggle-auto').checked = !!s.val(); });
+            vRef.child('settings/partyMode').on('value', s => { document.getElementById('toggle-party').checked = !!s.val(); });
+            vRef.child('settings/showRequestQR').on('value', s => { document.getElementById('toggle-qr').checked = s.val() !== false; });
+            vRef.child('settings/captionsEnabled').on('value', s => { document.getElementById('toggle-cc').checked = !!s.val(); });
         }
 
         function doSearch() {
-            var query = document.getElementById('search-input').value.trim();
-            var searchType = document.getElementById('search-type').value;
-            if (!query) return;
-
-            var errorEl = document.getElementById('search-error');
-            var resultsEl = document.getElementById('search-results');
-            errorEl.style.display = 'none';
-            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
-
-            var vidId = extractVideoId(query);
-            if (vidId) {
-                resultsEl.innerHTML = '';
-                playNow(vidId, query, '');
-                document.getElementById('search-input').value = '';
-                return;
-            }
-
-            var safeQuery = firebaseSafe(query) + "_" + searchType;
-            var cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
+            var q = document.getElementById('search-input').value.trim();
+            var t = document.getElementById('search-type').value;
+            if (!q) return;
+            var resEl = document.getElementById('search-results');
+            resEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
+            var vid = extractVideoId(q);
+            if (vid) { resEl.innerHTML = ''; playNow(vid, q, ''); return; }
             
-            cacheRef.once('value').then(function(snapshot) {
-                var cachedData = snapshot.val();
-                if (cachedData && cachedData.items) {
-                    renderSearchResults(cachedData.items);
-                    return;
-                }
-
-                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
-                    encodeURIComponent(query) + '&type=' + searchType + '&maxResults=15&key=' + YT_API_KEY;
-                
-                return fetch(url)
-                    .then(function(res) { return res.json(); })
-                    .then(function(data) {
-                        if (data.error) {
-                            errorEl.textContent = 'Search Error: ' + (data.error.message || 'Unknown');
-                            errorEl.style.display = 'block';
-                            resultsEl.innerHTML = '';
-                            return;
-                        }
-                        if (!data.items || data.items.length === 0) {
-                            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
-                            return;
-                        }
-                        cacheRef.set({ items: data.items, timestamp: Date.now() });
-                        renderSearchResults(data.items);
-                    });
-            }).catch(function() {
-                errorEl.textContent = 'Search failed. Check connection.';
-                errorEl.style.display = 'block';
-                resultsEl.innerHTML = '';
+            var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(q) + '&type=' + t + '&maxResults=15&key=' + YT_API_KEY;
+            fetch(url).then(r => r.json()).then(data => {
+                resEl.innerHTML = '';
+                if (!data.items) return;
+                data.items.forEach(item => {
+                    var id = item.id.videoId || item.id.playlistId;
+                    if (!id) return;
+                    var div = document.createElement('div'); div.className = 'result-item';
+                    div.innerHTML = '<img class="result-thumb" src="' + item.snippet.thumbnails.default.url + '"><div class="result-info"><div class="result-title">' + escHtml(item.snippet.title) + '</div></div><div style="display:flex; gap:5px;"><button class="btn btn-sm btn-success" onclick="playNow(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\')">Play</button><button class="btn btn-sm btn-primary" onclick="addToQueue(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\')">Add</button></div>';
+                    resEl.appendChild(div);
+                });
             });
         }
-
-        function renderSearchResults(items) {
-            var resultsEl = document.getElementById('search-results');
-            resultsEl.innerHTML = '';
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                var isPlaylist = item.id.kind === 'youtube#playlist';
-                var id = isPlaylist ? item.id.playlistId : item.id.videoId;
-                if (!id) continue;
-                
-                var div = document.createElement('div');
-                div.className = 'result-item';
-                div.innerHTML = 
-                    '<img class="result-thumb" src="' + item.snippet.thumbnails.default.url + '">' +
-                    '<div class="result-info">' +
-                        '<div class="result-title">' + (isPlaylist ? '[PLAYLIST] ' : '') + escHtml(item.snippet.title) + '</div>' +
-                        '<div class="result-channel">' + escHtml(item.snippet.channelTitle) + '</div>' +
-                    '</div>' +
-                    '<div style="display:flex; gap:5px;">' +
-                        '<button class="btn btn-sm btn-success" onclick="playNow(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\',\'' + escAttr(item.snippet.channelTitle) + '\')">Play</button>' +
-                        '<button class="btn btn-sm btn-primary" onclick="addToQueue(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\',\'' + escAttr(item.snippet.channelTitle) + '\',\'' + item.snippet.thumbnails.default.url + '\')">Add</button>' +
-                    '</div>';
-                resultsEl.appendChild(div);
-            }
-        }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.8 (2026-04-18 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.9 (2026-04-18 HST)</div>
 </body>
 </html>
