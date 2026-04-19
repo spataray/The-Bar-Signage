@@ -39,7 +39,7 @@
                 <img id="ad-flyer" alt="Event Flyer">
                 <div class="menu-section" id="menu-content"></div>
                 
-                <!-- NEW: Up Next Info -->
+                <!-- UP NEXT INFO -->
                 <div id="up-next-section" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,204,0,0.3); display: none;">
                     <h3 style="color: var(--bar-gold); font-size: 0.9rem; margin-bottom: 10px; letter-spacing: 2px;">COMING UP NEXT</h3>
                     <div id="up-next-info" style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
@@ -53,30 +53,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Last Call / Closed Overlay -->
-    <div id="lastcall-screen">
-        <div id="lastcall-inner">
-            <div id="phase-lastcall" class="lc-phase">
-                <div class="lc-bell">🔔</div>
-                <div class="lc-title">LAST CALL</div>
-                <div class="lc-countdown" id="lc-countdown">15:00</div>
-                <div class="lc-sub">Bar closes at 2:00 AM &bull; Get your last orders in!</div>
-            </div>
-            <div id="phase-closed" class="lc-phase">
-                <div class="lc-title">MAHALO!</div>
-                <div class="lc-closed-sub">We Are Now Closed</div>
-                <div class="lc-goodbye" id="lc-goodbye"></div>
-                <div class="lc-sub"><span class="venue-name-display">T.A. Station</span> &bull; Honolulu, HI 🌺</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- AirConsole Overlay -->
-    <div id="airconsole-overlay">
-        <iframe id="airconsole-frame" src="" allowfullscreen></iframe>
-        <button id="airconsole-close" onclick="closeAirConsole()">&#x2715; Back to Signage</button>
     </div>
 
     <!-- Request Song QR Code -->
@@ -138,79 +114,65 @@
         var venueId = null;
         var vRef = null;
         var db = null;
+        var factsShuffled = [];
+        var factIndex = 0;
+        var factsTimer = null;
+        var funFacts = [
+            "🌍 Japan has more vending machines than people.",
+            "🌍 In France, it's illegal to name your pig Napoleon.",
+            "🌍 Italians eat 23 pounds of pasta per person yearly.",
+            "🌍 Americans consume 350 slices of pizza per second.",
+            "🌍 Hawaii is slowly moving closer to Alaska at 3 inches per year.",
+            "🌍 Honolulu means 'sheltered bay' in Hawaiian.",
+            "🌍 Thailand has never been colonized by a European power."
+        ];
 
         // ── HELPERS ──
-        function escHtml(str) {
-            var div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
-
-        function buildTickerMessages(sheetMessages) {
-            if (!sheetMessages) return [];
-            return sheetMessages.slice ? sheetMessages.slice() : Object.values(sheetMessages);
-        }
-
-        function normalizeFlyerUrl(url) {
-            url = (url || "").trim();
+        function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
+        function buildTickerMessages(msgs) { if (!msgs) return []; return msgs.slice ? msgs.slice() : Object.values(msgs); }
+        function normalizeFlyerUrl(url) { 
+            url = (url || "").trim(); 
             var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
             if (match) return 'https://lh3.googleusercontent.com/d/' + match[1];
-            return url;
+            return url; 
         }
 
-        // ── LOCAL STORAGE MIRRORING ──
-        function saveLocal(key, val) {
-            try { localStorage.setItem("tbs_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {}
-        }
-        function getLocal(key) {
-            try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; }
-        }
+        // ── LOCAL STORAGE ──
+        function saveLocal(key, val) { try { localStorage.setItem("tbs_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {} }
+        function getLocal(key) { try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; } }
 
         // ── UI UPDATERS ──
         function updateMenuUI(menu) {
             var el = document.getElementById("menu-content");
             if (!el) return;
             if (menu) {
-                var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
-                for (var key in menu) {
-                    var item = menu[key];
-                    menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
-                }
-                el.innerHTML = menuHtml;
+                var h = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
+                for (var k in menu) h += "<div class='menu-item'><span>" + escHtml(menu[k].name) + "</span><span>" + escHtml(menu[k].price || "") + "</span></div>";
+                el.innerHTML = h;
             } else {
-                el.innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
+                el.innerHTML = "<h3>MENU</h3><div style='opacity:0.3;text-align:center;'>Set menu in remote</div>";
             }
         }
 
         function updateAdUI(ad) {
-            var flyerImg = document.getElementById("ad-flyer");
-            var titleEl = document.getElementById("ad-title");
-            var descEl = document.getElementById("ad-desc");
-            if (!flyerImg || !titleEl || !descEl) return;
+            var f = document.getElementById("ad-flyer"), t = document.getElementById("ad-title"), d = document.getElementById("ad-desc");
+            if (!f || !t || !d) return;
             if (ad) {
-                titleEl.innerText = ad.title || window._currentVenueName || "T.A. Station";
-                descEl.innerText = ad.desc || "";
-                if (ad.flyer) {
-                    flyerImg.src = normalizeFlyerUrl(ad.flyer);
-                    flyerImg.style.display = "block";
-                    flyerImg.onerror = function() { this.style.display = "none"; };
-                } else {
-                    flyerImg.style.display = "none";
-                }
+                t.innerText = ad.title || window._currentVenueName || "T.A. Station";
+                d.innerText = ad.desc || "";
+                if (ad.flyer) { f.src = normalizeFlyerUrl(ad.flyer); f.style.display = "block"; f.onerror = function() { this.style.display = "none"; }; }
+                else { f.style.display = "none"; }
             }
         }
 
         function updateVenueNameUI(name) {
             window._currentVenueName = name;
-            var displays = document.querySelectorAll(".venue-name-display");
-            for (var i = 0; i < displays.length; i++) {
-                var el = displays[i];
-                el.textContent = name;
-                if (el.id === "idle-logo") el.textContent = name.toUpperCase();
+            var d = document.querySelectorAll(".venue-name-display");
+            for (var i = 0; i < d.length; i++) {
+                d[i].textContent = name;
+                if (d[i].id === "idle-logo") d[i].textContent = name.toUpperCase();
             }
             document.title = name + " - Digital Signage";
-            var adTitle = document.getElementById("ad-title");
-            if (adTitle && !adTitle.dataset.hasCustomText) adTitle.innerText = name;
         }
 
         function updateTickerPosUI(pos) {
@@ -220,134 +182,94 @@
 
         // ── INITIALIZATION ──
         function initApp() {
-            // Venue Logic
             var urlParams = new URLSearchParams(window.location.search);
             venueId = urlParams.get('v');
             if (!venueId) {
                 venueId = Math.random().toString(36).substring(2, 6).toUpperCase();
-                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?v=" + venueId;
-                window.history.pushState({path:newurl},"",newurl);
+                var nu = window.location.protocol + "//" + window.location.host + window.location.pathname + "?v=" + venueId;
+                window.history.pushState({path:nu},"",nu);
             }
 
-            // Firebase Start
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();
             vRef = db.ref("venues/" + venueId);
 
-            // Load from LS
-            var cachedName = getLocal("venueName") || "T.A. Station";
-            updateVenueNameUI(cachedName);
+            var cn = getLocal("venueName") || "T.A. Station";
+            updateVenueNameUI(cn);
             updateMenuUI(getLocal("menu"));
-            var cachedTicker = getLocal("ticker");
-            if (cachedTicker) tickerMessages = buildTickerMessages(cachedTicker);
+            var ct = getLocal("ticker"); if (ct) tickerMessages = buildTickerMessages(ct);
             updateAdUI(getLocal("adConfig"));
             updateTickerPosUI(getLocal("tickerPosition") || "top");
 
-            // Auth
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) initFirebaseListeners();
-                else firebase.auth().signInAnonymously();
-            });
+            firebase.auth().onAuthStateChanged(function(u) { if (u) initFirebaseListeners(); else firebase.auth().signInAnonymously(); });
 
-            // Connection Dot
-            db.ref(".info/connected").on("value", function(snap) {
+            db.ref(".info/connected").on("value", function(s) {
                 var led = document.getElementById("conn-status-led");
                 if (!led) return;
-                if (snap.val() === true) {
-                    led.style.background = "#28a745";
-                    led.style.boxShadow = "0 0 8px #28a745";
-                    led.style.opacity = "0.6";
-                } else {
-                    led.style.background = "#ff4444";
-                    led.style.boxShadow = "0 0 10px #ff4444";
-                    led.style.opacity = "1";
-                }
+                if (s.val() === true) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; led.style.opacity = "0.6"; }
+                else { led.style.background = "#ff4444"; led.style.boxShadow = "0 0 10px #ff4444"; led.style.opacity = "1"; }
             });
 
-            // Start Timers
-            updateClock();
-            setInterval(updateClock, 1000);
-            syncWeather();
-            setInterval(syncWeather, 600000);
+            updateClock(); setInterval(updateClock, 1000);
+            syncWeather(); setInterval(syncWeather, 600000);
             showFunFact();
             if (tickerMessages.length > 0) showTickerMessage();
-            
-            // Auto Ad Interval
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
         }
 
-        // ── FIREBASE LISTENERS ──
         function initFirebaseListeners() {
             initConnectQR();
-            vRef.child("settings/menu").on("value", function(snap) { saveLocal("menu", snap.val()); updateMenuUI(snap.val()); });
-            vRef.child("settings/adConfig").on("value", function(snap) { saveLocal("adConfig", snap.val()); updateAdUI(snap.val()); });
-            vRef.child("settings/ticker").on("value", function(snap) { 
-                var msgs = snap.val();
-                saveLocal("ticker", msgs);
-                tickerMessages = buildTickerMessages(msgs);
+            vRef.child("settings/menu").on("value", function(s) { saveLocal("menu", s.val()); updateMenuUI(s.val()); });
+            vRef.child("settings/adConfig").on("value", function(s) { saveLocal("adConfig", s.val()); updateAdUI(s.val()); });
+            vRef.child("settings/ticker").on("value", function(s) { 
+                var m = s.val(); saveLocal("ticker", m); tickerMessages = buildTickerMessages(m);
                 if (!tickerTimer && tickerMessages.length > 0) showTickerMessage();
             });
-            vRef.child("settings/currentVideoId").on("value", function(snap) {
-                var vid = snap.val();
-                if (!vid) return;
+            vRef.child("settings/currentVideoId").on("value", function(s) {
+                var vid = s.val(); if (!vid) return;
                 if (typeof vid === "object" && vid.id) vid = vid.id;
                 if (typeof vid !== "string") return;
                 stopIdle();
                 if (playerReady && player && player.loadVideoById) player.loadVideoById(vid);
                 else pendingVideoId = vid;
             });
-            vRef.child("settings/queue").on("value", function(snap) {
-                var queue = snap.val() || [];
-                saveLocal("queue", queue);
-                if (queue.length > 0 && document.getElementById("idle-screen").classList.contains("active")) playNext();
+            vRef.child("settings/queue").on("value", function(s) {
+                var q = s.val() || []; saveLocal("queue", q);
+                if (q.length > 0 && document.getElementById("idle-screen").classList.contains("active")) playNext();
             });
-            vRef.child("settings/playerCommand").on("value", function(snap) {
-                var cmd = snap.val();
-                if (!cmd || !player) return;
-                switch (cmd.action) {
+            vRef.child("settings/playerCommand").on("value", function(s) {
+                var c = s.val(); if (!c || !player) return;
+                switch (c.action) {
                     case "pause": player.pauseVideo(); break;
                     case "play": player.playVideo(); break;
                     case "next": playNext(); break;
                     case "prev": player.seekTo(0); player.playVideo(); break;
-                    case "volume": player.setVolume(cmd.value); break;
+                    case "volume": player.setVolume(c.value); break;
                     case "slideshow": player.stopVideo(); startIdle(); break;
                     case "fixDisplay": stopIdle(); if (player && player.getPlayerState() !== 1) playNext(); break;
                 }
                 vRef.child("settings/playerCommand").set(null);
             });
-            vRef.child("settings/autoMode").on("value", function(snap) { autoMode = !!snap.val(); if (autoMode) playNext(); });
-            vRef.child("settings/partyMode").on("value", function(snap) { 
-                isPartyMode = !!snap.val();
-                document.body.classList.toggle("party-mode", isPartyMode);
-            });
-            vRef.child("settings/karaokeLock").on("value", function(snap) {
-                isLocked = !!snap.val();
-                document.getElementById("status-indicator").style.display = isLocked ? "block" : "none";
+            vRef.child("settings/autoMode").on("value", function(s) { autoMode = !!s.val(); if (autoMode) playNext(); });
+            vRef.child("settings/partyMode").on("value", function(s) { isPartyMode = !!s.val(); document.body.classList.toggle("party-mode", isPartyMode); });
+            vRef.child("settings/karaokeLock").on("value", function(s) {
+                isLocked = !!s.val(); document.getElementById("status-indicator").style.display = isLocked ? "block" : "none";
                 if (isLocked) hideAd();
             });
-            vRef.child("settings/venueName").on("value", function(snap) { saveLocal("venueName", snap.val()); updateVenueNameUI(snap.val() || "T.A. Station"); });
-            vRef.child("settings/tickerPosition").on("value", function(snap) { saveLocal("tickerPosition", snap.val()); updateTickerPosUI(snap.val() || "top"); });
+            vRef.child("settings/remoteRefresh").on("value", function(s) { if (s.val()) { vRef.child("settings/remoteRefresh").set(null); location.reload(); } });
+            vRef.child("settings/venueName").on("value", function(s) { saveLocal("venueName", s.val()); updateVenueNameUI(s.val() || "T.A. Station"); });
+            vRef.child("settings/tickerPosition").on("value", function(s) { saveLocal("tickerPosition", s.val()); updateTickerPosUI(s.val() || "top"); });
         }
 
-        // ── YOUTUBE ──
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3 },
                 events: {
-                    onReady: function() {
-                        playerReady = true;
-                        if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; }
-                    },
-                    onStateChange: function(event) {
-                        if (event.data === YT.PlayerState.PLAYING) {
-                            reportNowPlaying();
-                            showSongFact();
-                        }
-                        if (event.data === YT.PlayerState.ENDED) {
-                            playNext();
-                            hideSongFact();
-                        }
-                        vRef.child('settings/playerState').set(event.data);
+                    onReady: function() { playerReady = true; if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } },
+                    onStateChange: function(e) { 
+                        if (e.data === YT.PlayerState.PLAYING) reportNowPlaying();
+                        if (e.data === YT.PlayerState.ENDED) playNext();
+                        vRef.child('settings/playerState').set(e.data);
                     },
                     onError: function() { setTimeout(playNext, 2000); }
                 }
@@ -355,27 +277,21 @@
         }
 
         function playNext() {
-            vRef.child('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
-                if (queue.length > 0) {
-                    var next = queue[0];
-                    vRef.child('settings/queue').set(queue.slice(1));
-                    stopIdle();
-                    if (player && player.loadVideoById) player.loadVideoById(next.id);
-                    else pendingVideoId = next.id;
-                } else {
-                    startIdle();
-                }
+            vRef.child('settings/queue').once('value', function(s) {
+                var q = s.val() || [];
+                if (q.length > 0) {
+                    var n = q[0]; vRef.child('settings/queue').set(q.slice(1));
+                    stopIdle(); if (player && player.loadVideoById) player.loadVideoById(n.id); else pendingVideoId = n.id;
+                } else { startIdle(); }
             });
         }
 
         function reportNowPlaying() {
             if (!player || !player.getVideoData) return;
-            var data = player.getVideoData();
-            if (data.video_id) vRef.child('settings/nowPlaying').set({ videoId: data.video_id, title: data.title || '', author: data.author || '' });
+            var d = player.getVideoData();
+            if (d.video_id) vRef.child('settings/nowPlaying').set({ videoId: d.video_id, title: d.title || '', author: d.author || '' });
         }
 
-        // ── FEATURES ──
         function updateClock() {
             var el = document.getElementById("clock-display");
             if (el) el.innerText = new Date().toLocaleTimeString("en-US", { timeZone: "Pacific/Honolulu", hour: "numeric", minute: "2-digit", hour12: true });
@@ -386,75 +302,71 @@
                 .then(r => r.json()).then(data => {
                     var el = document.getElementById("weather-display");
                     if (el && data.current_weather) {
-                        var icons = { 0: "☀️", 1: "🌤️", 2: "🌤️", 3: "☁️" };
-                        var icon = icons[data.current_weather.weathercode] || "🌧️";
+                        var icon = { 0: "☀️", 1: "🌤️", 2: "🌤️", 3: "☁️" }[data.current_weather.weathercode] || "🌧️";
                         el.innerText = icon + " " + Math.round(data.current_weather.temperature) + "°F";
                     }
                 }).catch(() => {});
         }
 
         function showTickerMessage() {
-            var el = document.getElementById('ticker-text');
-            if (!el || tickerMessages.length === 0) return;
+            var el = document.getElementById('ticker-text'); if (!el || tickerMessages.length === 0) return;
             el.classList.remove('ticker-visible'); el.classList.add('ticker-hidden');
             setTimeout(function() {
-                el.innerText = tickerMessages[tickerIndex];
-                tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+                el.innerText = tickerMessages[tickerIndex]; tickerIndex = (tickerIndex + 1) % tickerMessages.length;
                 el.classList.remove('ticker-hidden'); el.classList.add('ticker-visible');
                 setTimeout(function() { el.classList.remove('ticker-visible'); el.classList.add('ticker-hidden'); }, 15000);
             }, 800);
             tickerTimer = setTimeout(showTickerMessage, 60000);
         }
 
-        // ── IDLE / SLIDESHOW ──
-        var idlePhotos = ['images/TAStation-1.JPG','images/TAStation-2.JPG','images/TAStation-3.JPG','images/TAStation-4.JPG','images/TAStation-5.JPG','images/TAStation-6.JPG','images/TAStation-7.JPG','images/TAStation-8.JPG','images/TAStation-9.JPG','images/TAStation-10.JPG'];
-        var idleIndex = 0;
-        var idleTimer = null;
-
-        function startIdle() {
-            var screen = document.getElementById('idle-screen');
-            screen.classList.add('active');
-            showAd(true);
-            vRef.child('settings/nowPlaying').set(null);
-            showIdleItem();
+        function showFunFact() {
+            if (factsShuffled.length === 0) { factsShuffled = funFacts.slice(); factsShuffled.sort(() => Math.random() - 0.5); factIndex = 0; }
+            var el = document.getElementById("facts-text"); if (!el) return;
+            el.classList.remove("ticker-visible"); el.classList.add("ticker-hidden");
+            setTimeout(function() {
+                el.innerText = factsShuffled[factIndex]; factIndex = (factIndex + 1) % factsShuffled.length;
+                el.classList.remove("ticker-hidden"); el.classList.add("ticker-visible");
+                setTimeout(function() { el.classList.remove("ticker-visible"); el.classList.add("ticker-hidden"); }, 15000);
+            }, 800);
+            factsTimer = setTimeout(showFunFact, 60000);
         }
 
-        function stopIdle() {
-            document.getElementById('idle-screen').classList.remove('active');
-            clearTimeout(idleTimer);
+        function initConnectQR() {
+            var q = document.getElementById("request-qr-img"), c = document.getElementById("request-qr-container");
+            var url = window.location.href.split("?")[0].replace("index.html", "customer.html") + "?v=" + venueId;
+            q.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(url);
+            vRef.child("settings/showRequestQR").on("value", function(s) { c.style.display = s.val() !== false ? "flex" : "none"; });
         }
 
+        function startIdle() { document.getElementById('idle-screen').classList.add('active'); showAd(true); vRef.child('settings/nowPlaying').set(null); showIdleItem(); }
+        function stopIdle() { document.getElementById('idle-screen').classList.remove('active'); clearTimeout(idleTimer); }
         function showIdleItem() {
-            var photo = document.getElementById('idle-photo');
-            photo.src = idlePhotos[idleIndex];
-            idleIndex = (idleIndex + 1) % idlePhotos.length;
+            var p = ['images/TAStation-1.JPG','images/TAStation-2.JPG','images/TAStation-3.JPG'];
+            document.getElementById('idle-photo').src = p[idleIndex];
+            idleIndex = (idleIndex + 1) % p.length;
             idleTimer = setTimeout(showIdleItem, 8000);
         }
 
-        function showAd(forceFlyer) {
-            var sidebar = document.getElementById("ad-sidebar");
-            var container = document.getElementById("app-container");
-            container.classList.add("ad-active");
-            sidebar.className = (forceFlyer || !adCycleShowMenu) ? "show-flyer" : "show-menu";
-            if (!forceFlyer) adCycleShowMenu = !adCycleShowMenu;
+        function showAd(f) {
+            var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container");
+            c.classList.add("ad-active"); s.className = (f || !adCycleShowMenu) ? "show-flyer" : "show-menu";
+            if (!f) adCycleShowMenu = !adCycleShowMenu;
+            
+            vRef.child("settings/queue").once("value", function(sn) {
+                var q = sn.val() || [], n = document.getElementById("up-next-section");
+                if (q.length > 0) {
+                    document.getElementById("up-next-title").innerText = q[0].title;
+                    document.getElementById("up-next-author").innerText = q[0].author || "";
+                    document.getElementById("up-next-thumb").src = q[0].thumb || "";
+                    n.style.display = "block";
+                } else { n.style.display = "none"; }
+            });
             setTimeout(hideAd, 25000);
         }
 
-        function hideAd() {
-            document.getElementById("ad-sidebar").className = "";
-            document.getElementById("app-container").classList.remove("ad-active");
-        }
-
-        // Wikipedia Song Facts (Stub for now)
-        function showSongFact() {}
-        function hideSongFact() {}
-        function showFunFact() {}
-        function initConnectQR() {}
-
-        // ── BOOT ──
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
-        else initApp();
-
+        function hideAd() { document.getElementById("ad-sidebar").className = ""; document.getElementById("app-container").classList.remove("ad-active"); }
+        function showSongFact() {} function hideSongFact() {}
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp); else initApp();
     </script>
 </body>
 </html>
