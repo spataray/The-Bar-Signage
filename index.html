@@ -24,10 +24,9 @@
         
         #error-log {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
-            background: rgba(255,255,255,0.1); color: #00ff00; font-family: monospace;
+            background: rgba(0,0,0,0.8); color: white; font-family: monospace;
             font-size: 11px; padding: 10px; border-radius: 5px; z-index: 15000;
-            display: block; pointer-events: none; line-height: 1.4;
-            text-shadow: 1px 1px 2px black;
+            display: none; pointer-events: none; line-height: 1.4;
         }
     </style>
 </head>
@@ -37,10 +36,10 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.4 (CC + Log Fix)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.5 (Clean Display)</div>
     </div>
 
-    <div id="error-log"><b>SYSTEM LOG:</b></div>
+    <div id="error-log"></div>
 
     <div id="status-indicator">KARAOKE LOCKED</div>
 
@@ -95,7 +94,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.4 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.5 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -130,9 +129,14 @@
         var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Hawaii is moving closer to Alaska by 3 inches a year.", "🌍 Thailand has never been colonized."];
 
         function logMsg(msg) {
+            console.log("SYSTEM LOG:", msg);
+            // Visual log is now hidden by default in CSS and only used if explicitly enabled for testing
+        }
+
+        function logError(msg) {
             var el = document.getElementById("error-log");
-            if (el) { el.style.display = "block"; el.innerHTML += "<br>> " + msg; }
-            console.log(msg);
+            if (el) { el.style.display = "block"; el.innerHTML += "<br>> ERROR: " + msg; }
+            console.error(msg);
         }
 
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
@@ -152,7 +156,7 @@
 
         function unlockPlayer() {
             if (isUnlocked) return;
-            logMsg("Unlocking player...");
+            logMsg("Unlocking player via interaction...");
             document.getElementById('gesture-layer').style.display = 'none';
             isUnlocked = true;
             
@@ -196,6 +200,7 @@
             syncWeather(); setInterval(syncWeather, 600000);
             showFunFact();
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
+            
             if (window.YT && window.YT.Player) onYouTubeIframeAPIReady();
             window.addEventListener('keydown', function() { unlockPlayer(); });
         }
@@ -215,7 +220,7 @@
             
             vRef.child("settings/playerCommand").on("value", function(s) {
                 var c = s.val(); if (!c || !playerReady || !player) return;
-                logMsg("CMD: " + c.action + " (v=" + (c.value || 'N/A') + ")");
+                logMsg("CMD: " + c.action);
                 switch (c.action) {
                     case "pause": player.pauseVideo(); break;
                     case "play": player.playVideo(); break;
@@ -235,13 +240,6 @@
             });
             
             vRef.child("settings/remoteRefresh").on("value", function(s) { if (s.val()) { vRef.child("settings/remoteRefresh").set(null); location.reload(); } });
-            
-            // Sync CC toggle from database
-            vRef.child("settings/captionsEnabled").on("value", function(s) {
-                if (!playerReady || !player) return;
-                if (s.val()) { player.loadModule("captions"); }
-                else { player.unloadModule("captions"); }
-            });
         }
 
         function onYouTubeIframeAPIReady() {
@@ -258,6 +256,11 @@
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
                         if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } 
+                        else {
+                            vRef.child("settings/currentVideoId").once("value", function(sn) {
+                                var vid = sn.val(); if (vid) player.loadVideoById(vid);
+                            });
+                        }
                     },
                     onStateChange: function(e) { 
                         if (e.data === YT.PlayerState.PLAYING) {
@@ -266,7 +269,8 @@
                         }
                         if (e.data === YT.PlayerState.ENDED) playNext();
                         vRef.child('settings/playerState').set(e.data);
-                    }
+                    },
+                    onError: function(e) { logError("YT Error Code: " + e.data); setTimeout(playNext, 2000); }
                 }
             });
         }
