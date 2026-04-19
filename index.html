@@ -14,10 +14,10 @@
     <style>
         #gesture-layer {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); z-index: 25000;
+            background: rgba(0,0,0,0.9); z-index: 25000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: var(--bar-gold); font-family: sans-serif; cursor: pointer;
-            text-align: center;
+            text-align: center; outline: none;
         }
         #gesture-layer h1 { font-size: 3rem; margin: 0; }
         #gesture-layer p { font-size: 1.2rem; opacity: 0.8; margin-top: 10px; }
@@ -30,13 +30,13 @@
         }
     </style>
 </head>
-<body>
+<body onload="document.getElementById('gesture-layer').focus()">
 
-    <!-- GESTURE PROXY LAYER (Required by Browsers for Remote Control) -->
-    <div id="gesture-layer" onclick="unlockPlayer()">
+    <!-- GESTURE PROXY LAYER (Click OR Press Remote OK to Unlock) -->
+    <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
-        <p>CLICK TO ENABLE REMOTE CONTROL</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.2 (Gesture Proxy)</div>
+        <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.3 (Universal Unlock)</div>
     </div>
 
     <div id="error-log"><b>SYSTEM LOG:</b></div>
@@ -94,7 +94,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.2 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.3 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -149,17 +149,15 @@
             document.title = name + " - Digital Signage";
         }
 
-        // ── THE UNLOCK KEY ──
         function unlockPlayer() {
-            logMsg("Unlocking player via gesture...");
+            if (isUnlocked) return;
+            logMsg("Unlocking player via interaction...");
             document.getElementById('gesture-layer').style.display = 'none';
             isUnlocked = true;
             
             if (player && playerReady) {
                 player.unMute();
-                player.playVideo(); // This "activates" the audio/video context
-                
-                // If we don't have a video yet, pause it back after a split second
+                player.playVideo();
                 setTimeout(function() {
                     vRef.child("settings/currentVideoId").once("value", function(sn) {
                         if (!sn.val()) {
@@ -199,6 +197,9 @@
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
             
             if (window.YT && window.YT.Player) onYouTubeIframeAPIReady();
+            
+            // Allow physical TV remote interaction to unlock
+            window.addEventListener('keydown', function() { unlockPlayer(); });
         }
 
         function initFirebaseListeners() {
@@ -241,7 +242,8 @@
             player = new YT.Player('player', {
                 height: '100%', width: '100%',
                 playerVars: { 
-                    autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1
+                    autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1,
+                    origin: window.location.origin, widget_referrer: window.location.origin
                 },
                 events: {
                     onReady: function() { 
@@ -321,6 +323,14 @@
             var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container"); if (!s || !c) return;
             c.classList.add("ad-active"); s.className = (f || !adCycleShowMenu) ? "show-flyer" : "show-menu";
             if (!f) adCycleShowMenu = !adCycleShowMenu;
+            vRef.child("settings/queue").once("value", function(sn) {
+                var q = sn.val() || [], n = document.getElementById("up-next-section");
+                if (q.length > 0 && n) {
+                    document.getElementById("up-next-title").innerText = q[0].title || "Unknown";
+                    document.getElementById("up-next-author").innerText = q[0].author || "";
+                    n.style.display = "block";
+                } else if (n) { n.style.display = "none"; }
+            });
             setTimeout(hideAd, 25000);
         }
 
