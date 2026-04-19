@@ -14,7 +14,7 @@
     <style>
         #error-log {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
-            background: rgba(255,0,0,0.8); color: white; font-family: monospace;
+            background: rgba(0,0,0,0.8); color: white; font-family: monospace;
             font-size: 11px; padding: 10px; border-radius: 5px; z-index: 15000;
             display: none; pointer-events: none; line-height: 1.4;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -23,7 +23,7 @@
 </head>
 <body>
 
-    <div id="error-log"><b>SYSTEM ERROR:</b></div>
+    <div id="error-log"><b>SYSTEM LOG:</b></div>
 
     <div id="status-indicator">KARAOKE LOCKED</div>
 
@@ -78,7 +78,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.8 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.0 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -112,10 +112,10 @@
         var factsShuffled = [], factIndex = 0, factsTimer = null;
         var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Honolulu means 'sheltered bay' in Hawaiian.", "🌍 Thailand has never been colonized."];
 
-        function logError(msg) {
+        function logMsg(msg) {
             var el = document.getElementById("error-log");
             if (el) { el.style.display = "block"; el.innerHTML += "<br>> " + msg; }
-            console.error(msg);
+            console.log(msg);
         }
 
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
@@ -217,14 +217,21 @@
                 var q = s.val() || []; saveLocal("queue", q);
                 if (q.length > 0 && document.getElementById("idle-screen").classList.contains("active")) playNext();
             });
+            
+            // COMMAND LISTENER
             vRef.child("settings/playerCommand").on("value", function(s) {
-                var c = s.val(); if (!c || !player) return;
+                var c = s.val(); if (!c) return;
+                if (!playerReady || !player) { 
+                    console.log("Player not ready, ignoring command:", c.action);
+                    return; 
+                }
+                
+                logMsg("CMD Received: " + c.action);
                 
                 // UNMUTE ON FIRST COMMAND
                 if (!hasInteracted && (c.action !== 'mute')) { 
                     player.unMute(); 
                     hasInteracted = true; 
-                    console.log("Unmuted player via remote interaction.");
                 }
                 
                 switch (c.action) {
@@ -240,6 +247,7 @@
                 }
                 vRef.child("settings/playerCommand").set(null);
             });
+            
             vRef.child("settings/partyMode").on("value", function(s) { document.body.classList.toggle("party-mode", !!s.val()); });
             vRef.child("settings/karaokeLock").on("value", function(s) {
                 isLocked = !!s.val(); document.getElementById("status-indicator").style.display = isLocked ? "block" : "none";
@@ -253,24 +261,17 @@
             if (player) return;
             player = new YT.Player('player', {
                 height: '100%', width: '100%',
-                playerVars: { 
-                    autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1
-                },
+                playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1 },
                 events: {
                     onReady: function() { 
                         playerReady = true; 
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
-                        
-                        player.mute(); // Autoplay requirement
-
-                        if (pendingVideoId) { 
-                            player.loadVideoById(pendingVideoId); 
-                            pendingVideoId = null; 
-                        } else {
+                        player.mute(); 
+                        if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } 
+                        else {
                             vRef.child("settings/currentVideoId").once("value", function(sn) {
-                                var vid = sn.val();
-                                if (vid) player.loadVideoById(vid);
+                                var vid = sn.val(); if (vid) player.loadVideoById(vid);
                             });
                         }
                     },
@@ -282,7 +283,7 @@
                         if (e.data === YT.PlayerState.ENDED) playNext();
                         vRef.child('settings/playerState').set(e.data);
                     },
-                    onError: function(e) { logError("YT Error: " + e.data); setTimeout(playNext, 2000); }
+                    onError: function(e) { logMsg("YT Error: " + e.data); setTimeout(playNext, 2000); }
                 }
             });
         }
