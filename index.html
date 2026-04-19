@@ -78,7 +78,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.0 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.1 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -110,7 +110,7 @@
         var player, playerReady = false, pendingVideoId = null, isLocked = false, hasInteracted = false;
         var tickerMessages = [], tickerIndex = 0, tickerTimer = null, venueId = null, vRef = null, db = null;
         var factsShuffled = [], factIndex = 0, factsTimer = null;
-        var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Honolulu means 'sheltered bay' in Hawaiian.", "🌍 Thailand has never been colonized."];
+        var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Hawaii is moving closer to Alaska by 3 inches a year.", "🌍 Thailand has never been colonized."];
 
         function logMsg(msg) {
             var el = document.getElementById("error-log");
@@ -120,7 +120,6 @@
 
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
         function buildTickerMessages(msgs) { if (!msgs) return []; return msgs.slice ? msgs.slice() : Object.values(msgs); }
-        
         function saveLocal(key, val) { try { localStorage.setItem("tbs_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {} }
         function getLocal(key) { try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; } }
 
@@ -218,18 +217,12 @@
                 if (q.length > 0 && document.getElementById("idle-screen").classList.contains("active")) playNext();
             });
             
-            // COMMAND LISTENER
             vRef.child("settings/playerCommand").on("value", function(s) {
-                var c = s.val(); if (!c) return;
-                if (!playerReady || !player) { 
-                    console.log("Player not ready, ignoring command:", c.action);
-                    return; 
-                }
+                var c = s.val(); if (!c || !playerReady || !player) return;
+                logMsg("CMD: " + c.action);
                 
-                logMsg("CMD Received: " + c.action);
-                
-                // UNMUTE ON FIRST COMMAND
-                if (!hasInteracted && (c.action !== 'mute')) { 
+                // Wake up interaction
+                if (!hasInteracted) { 
                     player.unMute(); 
                     hasInteracted = true; 
                 }
@@ -261,15 +254,22 @@
             if (player) return;
             player = new YT.Player('player', {
                 height: '100%', width: '100%',
-                playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1 },
+                playerVars: { 
+                    autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1,
+                    origin: window.location.origin, widget_referrer: window.location.origin
+                },
                 events: {
                     onReady: function() { 
                         playerReady = true; 
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
+                        
                         player.mute(); 
-                        if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } 
-                        else {
+
+                        if (pendingVideoId) { 
+                            player.loadVideoById(pendingVideoId); 
+                            pendingVideoId = null; 
+                        } else {
                             vRef.child("settings/currentVideoId").once("value", function(sn) {
                                 var vid = sn.val(); if (vid) player.loadVideoById(vid);
                             });
