@@ -1,7 +1,7 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
 Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
 
-### T.A. Station - Digital Signage System v1.2.0
+### T.A. Station - Digital Signage System v1.5.2
 
 A professional digital signage system for T.A. Station (Honolulu, HI). Features real-time YouTube playback, automated ad rotation, and staff remote control.
 
@@ -15,17 +15,28 @@ To access the staff remote (`maintenance.html`), you will need:
 
 ---
 
+### 🌟 New in v1.5.2 (Resilience Update)
+
+- **LocalStorage Mirroring**: The TV and Remote now remember the last known state (menu, ticker, ads, and queue) locally. This ensures an **instant boot** and allows the app to continue functioning even if the internet is unstable.
+- **Subtle LED Status Indicator**: Removed the intrusive "Connection Lost" overlay. It has been replaced by a tiny, professional LED dot in the corner:
+  - **🟢 Green**: Connected and Synced.
+  - **🔴 Red**: Offline (Running from local memory).
+- **Stale-While-Revalidate Caching**: The Service Worker now updates in the background. New versions (like this one) will automatically activate without requiring a manual hard refresh.
+- **Extended Connectivity Grace Period**: Increased the connection timeout to 15 seconds and removed aggressive auto-reloads to prevent screen flickering during minor network blips.
+
+---
+
 ### 🌟 New in v1.2.0
 
-- **PIP Ad Layout**: When ads appear, the YouTube video now smoothly transitions into a "Picture-in-Picture" (PIP) inset window with a gold border. This ensures the video remains fully visible and professional-looking while ads are displayed.
-- **Enhanced Authentication**: A two-step login process (Connect Code then Staff PIN) ensures secure and reliable connection between the remote and the TV.
-- **Improved Mobile Compatibility**: Fully updated meta tags for a better "App Mode" experience on both iOS and Android.
+- **PIP Ad Layout**: When ads appear, the YouTube video now smoothly transitions into a "Picture-in-Picture" (PIP) inset window with a gold border.
+- **Enhanced Authentication**: A two-step login process (Connect Code then Staff PIN).
+- **Improved Mobile Compatibility**: Fully updated meta tags for a better "App Mode" experience.
 
 ---
 
 ### 📱 "App Mode" & Installation
 
-This project is now a **Progressive Web App (PWA)**. You can install it on your device for an app-like experience without a browser bar:
+This project is a **Progressive Web App (PWA)**. You can install it on your device for an app-like experience without a browser bar:
 
 - **Staff Phone/iPad:** Open `maintenance.html` in Safari (iOS) or Chrome (Android) and select **"Add to Home Screen"**.
 - **Samsung Smart TV:** 
@@ -49,8 +60,9 @@ When the `index.html` page is open on your TV, you can use the physical remote b
 
 ### Project Files
 
-* **`index.html`**: The main TV display. v1.1.0 includes D-Pad support and PWA features.
-* **`maintenance.html`**: Staff remote. v1.1.0 includes drag-and-drop queue reordering (SortableJS).
+* **`index.html`**: The main TV display. v1.5.2 includes LocalStorage mirroring and LED status.
+* **`maintenance.html`**: Staff remote. v1.5.2 includes offline memory for queue and venue settings.
+* **`customer.html`**: Customer request portal. v1.5.2 includes updated versioning.
 * **`style.css`**: Visual branding and "Party Mode" styles.
 * **`manifest.json`**: PWA configuration.
 * **`config.xml`**: Samsung Tizen Web App configuration.
@@ -62,25 +74,17 @@ When the `index.html` page is open on your TV, you can use the physical remote b
 Open `maintenance.html` on your iPad or phone:
 
 * **Search**: Search YouTube directly from the remote. Tap play or add to queue.
-* **Queue (New!)**: Drag and drop the thumbnail of any song to reorder it in the queue.
+* **Queue**: Drag and drop the thumbnail of any song to reorder it in the queue.
 * **Playlists**: Paste a YouTube playlist URL to load all songs into the queue.
 * **Playback**: Play/pause, skip, and volume controls sync to the TV in real time.
-* **Connection Monitoring**: Both the TV and Remote show a warning if the internet connection is lost.
 
 ---
 
 ### Ads & Karaoke
 
-* **Auto-Ads**: Ads rotate every 3 minutes. v1.1.0 includes **offline caching**—if the internet drops, the last fetched ads will still display.
+* **Auto-Ads**: Ads rotate every 3 minutes. v1.5.2 includes full **localStorage mirroring**—if the internet drops, the last fetched ads will still display.
 * **Karaoke Lock**: Hides all ads while customers are singing. Shows a red "KARAOKE LOCKED" indicator.
 * **Party Mode**: Switches to a neon pink/blue theme with flickering effects.
-
----
-
-### Content Management
-
-Ads, menu, and ticker are managed via [Google Sheets](https://docs.google.com/spreadsheets/d/1SCT9dV1cGovk2o3Dd7y1fE3CUY2CR58GQvxgKLITeU4/edit).
-Content syncs automatically every 60 seconds using `PapaParse` for reliability.
 
 ---
 
@@ -88,7 +92,7 @@ Content syncs automatically every 60 seconds using `PapaParse` for reliability.
 
 * **Hosting**: GitHub Pages at `spataray.github.io/The-Bar-Signage/`.
 * **Real-time Sync**: Firebase Realtime Database syncs remote and TV instantly.
-* **YouTube Search**: Requires **YouTube Data API v3** enabled in [Google Cloud Console](https://console.cloud.google.com/apis/library/youtube.googleapis.com) on the same project as Firebase. The API key is shared.
+* **YouTube Search**: Requires **YouTube Data API v3** enabled in Google Cloud Console.
 
 ---
 
