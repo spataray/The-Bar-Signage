@@ -24,9 +24,10 @@
         
         #error-log {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
-            background: rgba(255,0,0,0.8); color: white; font-family: monospace;
+            background: rgba(255,255,255,0.1); color: #00ff00; font-family: monospace;
             font-size: 11px; padding: 10px; border-radius: 5px; z-index: 15000;
-            display: none; pointer-events: none; line-height: 1.4;
+            display: block; pointer-events: none; line-height: 1.4;
+            text-shadow: 1px 1px 2px black;
         }
     </style>
 </head>
@@ -36,7 +37,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.3 (Universal Unlock)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.4 (CC + Log Fix)</div>
     </div>
 
     <div id="error-log"><b>SYSTEM LOG:</b></div>
@@ -94,7 +95,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.3 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.4 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -151,7 +152,7 @@
 
         function unlockPlayer() {
             if (isUnlocked) return;
-            logMsg("Unlocking player via interaction...");
+            logMsg("Unlocking player...");
             document.getElementById('gesture-layer').style.display = 'none';
             isUnlocked = true;
             
@@ -195,10 +196,7 @@
             syncWeather(); setInterval(syncWeather, 600000);
             showFunFact();
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
-            
             if (window.YT && window.YT.Player) onYouTubeIframeAPIReady();
-            
-            // Allow physical TV remote interaction to unlock
             window.addEventListener('keydown', function() { unlockPlayer(); });
         }
 
@@ -212,14 +210,12 @@
                 if (playerReady && player) {
                     player.loadVideoById(vid);
                     if (isUnlocked) player.playVideo();
-                } else {
-                    pendingVideoId = vid;
-                }
+                } else { pendingVideoId = vid; }
             });
             
             vRef.child("settings/playerCommand").on("value", function(s) {
                 var c = s.val(); if (!c || !playerReady || !player) return;
-                logMsg("CMD: " + c.action);
+                logMsg("CMD: " + c.action + " (v=" + (c.value || 'N/A') + ")");
                 switch (c.action) {
                     case "pause": player.pauseVideo(); break;
                     case "play": player.playVideo(); break;
@@ -228,6 +224,10 @@
                     case "volume": player.setVolume(c.value); break;
                     case "mute": player.mute(); break;
                     case "unmute": player.unMute(); break;
+                    case "captions": 
+                        if (c.value) { player.loadModule("captions"); player.setOption("captions", "track", {"languageCode": "en"}); }
+                        else { player.unloadModule("captions"); }
+                        break;
                     case "slideshow": player.stopVideo(); startIdle(); break;
                     case "fixDisplay": stopIdle(); playNext(); break;
                 }
@@ -235,6 +235,13 @@
             });
             
             vRef.child("settings/remoteRefresh").on("value", function(s) { if (s.val()) { vRef.child("settings/remoteRefresh").set(null); location.reload(); } });
+            
+            // Sync CC toggle from database
+            vRef.child("settings/captionsEnabled").on("value", function(s) {
+                if (!playerReady || !player) return;
+                if (s.val()) { player.loadModule("captions"); }
+                else { player.unloadModule("captions"); }
+            });
         }
 
         function onYouTubeIframeAPIReady() {
@@ -243,7 +250,7 @@
                 height: '100%', width: '100%',
                 playerVars: { 
                     autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1,
-                    origin: window.location.origin, widget_referrer: window.location.origin
+                    cc_load_policy: 1, cc_lang_pref: 'en'
                 },
                 events: {
                     onReady: function() { 
