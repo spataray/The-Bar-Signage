@@ -21,10 +21,10 @@
         #boot-overlay h1 { font-size: 3rem; margin-bottom: 10px; }
         #boot-overlay p { opacity: 0.7; }
         #error-log {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            background: rgba(255,0,0,0.2); color: white; font-family: monospace;
-            font-size: 10px; padding: 10px; border-radius: 5px; z-index: 15000;
-            display: none; pointer-events: none;
+            position: fixed; bottom: 30px; left: 20px; right: 20px;
+            background: rgba(255,0,0,0.5); color: white; font-family: monospace;
+            font-size: 11px; padding: 10px; border-radius: 5px; z-index: 15000;
+            display: none; pointer-events: none; line-height: 1.4;
         }
     </style>
 </head>
@@ -33,10 +33,10 @@
     <div id="boot-overlay" onclick="startSignage()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>TAP ANYWHERE TO START SIGNAGE</p>
-        <div style="margin-top: 20px; font-size: 12px; opacity: 0.5;">v1.5.4 (Resilience Boot)</div>
+        <div style="margin-top: 20px; font-size: 12px; opacity: 0.5;">v1.5.5 (Strict ID Fix)</div>
     </div>
 
-    <div id="error-log"></div>
+    <div id="error-log"><b>SYSTEM LOG:</b></div>
 
     <div id="status-indicator">KARAOKE LOCKED</div>
 
@@ -90,13 +90,8 @@
         <div style="font-size: 0.55rem; margin-top: 5px; opacity: 0.9; font-weight: bold;">Scan with Phone</div>
     </div>
 
-    <!-- Song Fact Bubble -->
-    <div id="fact-bubble">
-        <div id="fact-bubble-text"></div>
-    </div>
-
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.4 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.5 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -116,7 +111,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
-    <!-- CONFIGURATION -->
     <script src="config.js"></script>
 
     <script>
@@ -126,57 +120,25 @@
             });
         }
 
-        // ── GLOBALS ──
-        var player;
-        var playerReady = false;
-        var pendingVideoId = null;
-        var isLocked = false;
-        var tickerMessages = [];
-        var tickerIndex = 0;
-        var tickerTimer = null;
-        var venueId = null;
-        var vRef = null;
-        var db = null;
-        var factsShuffled = [];
-        var factIndex = 0;
-        var factsTimer = null;
-        var funFacts = [
-            "🌍 Japan has more vending machines than people.",
-            "🌍 In France, it's illegal to name your pig Napoleon.",
-            "🌍 Italians eat 23 pounds of pasta per person yearly.",
-            "🌍 Americans consume 350 slices of pizza per second.",
-            "🌍 Hawaii is slowly moving closer to Alaska at 3 inches per year.",
-            "🌍 Honolulu means 'sheltered bay' in Hawaiian.",
-            "🌍 Thailand has never been colonized by a European power."
-        ];
+        var player, playerReady = false, pendingVideoId = null, isLocked = false;
+        var tickerMessages = [], tickerIndex = 0, tickerTimer = null, venueId = null, vRef = null, db = null;
+        var factsShuffled = [], factIndex = 0, factsTimer = null;
+        var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Honolulu means 'sheltered bay' in Hawaiian.", "🌍 Thailand has never been colonized."];
 
-        function logError(msg) {
+        function logMsg(msg) {
             var el = document.getElementById("error-log");
-            if (el) {
-                el.style.display = "block";
-                el.innerText += "\n> " + msg;
-            }
-            console.error(msg);
+            if (el) { el.style.display = "block"; el.innerHTML += "<br>> " + msg; }
+            console.log(msg);
         }
 
-        // ── HELPERS ──
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
         function buildTickerMessages(msgs) { if (!msgs) return []; return msgs.slice ? msgs.slice() : Object.values(msgs); }
-        function normalizeFlyerUrl(url) { 
-            url = (url || "").trim(); 
-            var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
-            if (match) return 'https://lh3.googleusercontent.com/d/' + match[1];
-            return url; 
-        }
-
-        // ── LOCAL STORAGE ──
+        
         function saveLocal(key, val) { try { localStorage.setItem("tbs_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {} }
         function getLocal(key) { try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; } }
 
-        // ── UI UPDATERS ──
         function updateMenuUI(menu) {
-            var el = document.getElementById("menu-content");
-            if (!el) return;
+            var el = document.getElementById("menu-content"); if (!el) return;
             if (menu) {
                 var h = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
                 for (var k in menu) h += "<div class='menu-item'><span>" + escHtml(menu[k].name) + "</span><span>" + escHtml(menu[k].price || "") + "</span></div>";
@@ -190,8 +152,12 @@
             if (ad) {
                 t.innerText = ad.title || window._currentVenueName || "T.A. Station";
                 d.innerText = ad.desc || "";
-                if (ad.flyer) { f.src = normalizeFlyerUrl(ad.flyer); f.style.display = "block"; f.onerror = function() { this.style.display = "none"; }; }
-                else { f.style.display = "none"; }
+                if (ad.flyer) { 
+                    var url = ad.flyer.trim();
+                    var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
+                    if (match) url = 'https://lh3.googleusercontent.com/d/' + match[1];
+                    f.src = url; f.style.display = "block"; f.onerror = function() { this.style.display = "none"; }; 
+                } else { f.style.display = "none"; }
             }
         }
 
@@ -205,12 +171,14 @@
             document.title = name + " - Digital Signage";
         }
 
-        // ── INITIALIZATION ──
         function startSignage() {
             document.getElementById('boot-overlay').style.display = 'none';
             if (playerReady && pendingVideoId) {
+                logMsg("Booting player with pending ID: " + pendingVideoId);
                 player.loadVideoById(pendingVideoId);
                 pendingVideoId = null;
+            } else {
+                startIdle();
             }
         }
 
@@ -235,8 +203,7 @@
             firebase.auth().onAuthStateChanged(function(u) { if (u) initFirebaseListeners(); else firebase.auth().signInAnonymously(); });
 
             db.ref(".info/connected").on("value", function(s) {
-                var led = document.getElementById("conn-status-led");
-                if (!led) return;
+                var led = document.getElementById("conn-status-led"); if (!led) return;
                 if (s.val() === true) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
                 else { led.style.background = "#ff4444"; led.style.boxShadow = "0 0 10px #ff4444"; }
             });
@@ -261,7 +228,8 @@
             vRef.child("settings/currentVideoId").on("value", function(s) {
                 var vid = s.val(); if (!vid) return;
                 if (typeof vid === "object" && vid.id) vid = vid.id;
-                if (typeof vid !== "string") return;
+                if (typeof vid !== "string" || vid.length < 10) return;
+                logMsg("Requesting Video ID: " + vid);
                 stopIdle();
                 if (playerReady && player && player.loadVideoById) {
                     player.loadVideoById(vid);
@@ -295,17 +263,17 @@
             vRef.child("settings/venueName").on("value", function(s) { saveLocal("venueName", s.val()); updateVenueNameUI(s.val()); });
         }
 
-        // ── YOUTUBE ──
         function onYouTubeIframeAPIReady() {
             if (player) return;
+            logMsg("Initializing YouTube Player...");
             player = new YT.Player('player', {
                 height: '100%', width: '100%',
                 playerVars: { 
-                    autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3,
-                    origin: window.location.origin, widget_referrer: window.location.origin
+                    autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1
                 },
                 events: {
                     onReady: function() { 
+                        logMsg("YouTube Player Ready.");
                         playerReady = true; 
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
@@ -314,12 +282,12 @@
                     onStateChange: function(e) { 
                         if (e.data === YT.PlayerState.PLAYING) {
                             var d = player.getVideoData();
-                            if (d.video_id) vRef.child('settings/nowPlaying').set({ videoId: d.video_id, title: d.title, author: d.author });
+                            if (d && d.video_id) vRef.child('settings/nowPlaying').set({ videoId: d.video_id, title: d.title, author: d.author });
                         }
                         if (e.data === YT.PlayerState.ENDED) playNext();
                         vRef.child('settings/playerState').set(e.data);
                     },
-                    onError: function(e) { logError("YT Error: " + e.data); setTimeout(playNext, 2000); }
+                    onError: function(e) { logMsg("YT Error: " + e.data); setTimeout(playNext, 2000); }
                 }
             });
         }
@@ -375,34 +343,37 @@
         }
 
         function initConnectQR() {
-            var q = document.getElementById("request-qr-img"), c = document.getElementById("request-qr-container");
-            if (!q || !c) return;
+            var q = document.getElementById("request-qr-img"), c = document.getElementById("request-qr-container"); if (!q || !c) return;
             var url = window.location.href.split("?")[0].replace("index.html", "customer.html") + "?v=" + venueId;
             q.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(url);
             vRef.child("settings/showRequestQR").on("value", function(s) { c.style.display = s.val() !== false ? "flex" : "none"; });
         }
 
-        function startIdle() { document.getElementById('idle-screen').classList.add('active'); showAd(true); showIdleItem(); }
-        function stopIdle() { document.getElementById('idle-screen').classList.remove('active'); clearTimeout(idleTimer); }
+        var idleTimer = null, idleIndex = 0;
+        function startIdle() { var screen = document.getElementById('idle-screen'); if (screen) screen.classList.add('active'); showAd(true); showIdleItem(); }
+        function stopIdle() { var screen = document.getElementById('idle-screen'); if (screen) screen.classList.remove('active'); clearTimeout(idleTimer); }
         function showIdleItem() {
             var p = ['images/TAStation-1.JPG','images/TAStation-2.JPG','images/TAStation-3.JPG'];
-            var img = document.getElementById('idle-photo');
-            if (img) { img.src = p[idleIndex]; idleIndex = (idleIndex + 1) % p.length; idleTimer = setTimeout(showIdleItem, 8000); }
+            var img = document.getElementById('idle-photo'); if (img) { img.src = p[idleIndex]; idleIndex = (idleIndex + 1) % p.length; idleTimer = setTimeout(showIdleItem, 8000); }
         }
 
+        var adCycleShowMenu = false;
         function showAd(f) {
-            var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container");
-            if (!s || !c) return;
+            var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container"); if (!s || !c) return;
             c.classList.add("ad-active"); s.className = (f || !adCycleShowMenu) ? "show-flyer" : "show-menu";
             if (!f) adCycleShowMenu = !adCycleShowMenu;
+            vRef.child("settings/queue").once("value", function(sn) {
+                var q = sn.val() || [], n = document.getElementById("up-next-section");
+                if (q.length > 0 && n) {
+                    document.getElementById("up-next-title").innerText = q[0].title || "Unknown";
+                    document.getElementById("up-next-author").innerText = q[0].author || "";
+                    n.style.display = "block";
+                } else if (n) { n.style.display = "none"; }
+            });
             setTimeout(hideAd, 25000);
         }
 
-        function hideAd() { 
-            var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container");
-            if (s) s.className = ""; if (c) c.classList.remove("ad-active"); 
-        }
-        
+        function hideAd() { var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container"); if (s) s.className = ""; if (c) c.classList.remove("ad-active"); }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp); else initApp();
     </script>
 </body>
