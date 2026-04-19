@@ -112,7 +112,10 @@
                     <span>Volume</span>
                     <span id="vol-val">100%</span>
                 </div>
-                <input type="range" min="0" max="100" value="100" id="vol-slider" onchange="setVolume(this.value)" style="height: 10px; border: none; padding: 0;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="btn-mute" class="btn btn-sm btn-primary" style="width: 50px;" onclick="toggleMute()">Mute</button>
+                    <input type="range" min="0" max="100" value="100" id="vol-slider" onchange="setVolume(this.value)" style="height: 10px; border: none; padding: 0; flex: 1;">
+                </div>
             </div>
         </div>
 
@@ -274,6 +277,7 @@
     <script>
         // 1. Core Logic
         var YT_API_KEY = firebaseConfig.apiKey; 
+        var isMuted = false;
         
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
@@ -352,6 +356,16 @@
         function setVolume(val) {
             document.getElementById('vol-val').textContent = val + '%';
             sendCommand('volume', parseInt(val));
+            // Auto-unmute if sliding volume
+            if (isMuted) toggleMute();
+        }
+
+        function toggleMute() {
+            var btn = document.getElementById('btn-mute');
+            isMuted = !isMuted;
+            btn.textContent = isMuted ? "Unmute" : "Mute";
+            btn.className = isMuted ? "btn btn-sm btn-danger" : "btn btn-sm btn-primary";
+            sendCommand(isMuted ? 'mute' : 'unmute');
         }
 
         function setTickerPos(pos) {
@@ -664,6 +678,6 @@
             }
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.7 (2026-04-18 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.8 (2026-04-18 HST)</div>
 </body>
 </html>

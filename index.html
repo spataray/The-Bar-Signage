@@ -78,7 +78,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.7 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.8 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -190,7 +190,7 @@
             if (tickerMessages.length > 0) showTickerMessage();
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
             
-            startIdle(); // Start in idle mode by default
+            startIdle();
             if (window.YT && window.YT.Player) onYouTubeIframeAPIReady();
         }
 
@@ -219,8 +219,13 @@
             });
             vRef.child("settings/playerCommand").on("value", function(s) {
                 var c = s.val(); if (!c || !player) return;
-                // Any command from remote acts as "interaction" to unmute
-                if (!hasInteracted) { player.unMute(); hasInteracted = true; }
+                
+                // UNMUTE ON FIRST COMMAND
+                if (!hasInteracted && (c.action !== 'mute')) { 
+                    player.unMute(); 
+                    hasInteracted = true; 
+                    console.log("Unmuted player via remote interaction.");
+                }
                 
                 switch (c.action) {
                     case "pause": player.pauseVideo(); break;
@@ -228,6 +233,8 @@
                     case "next": playNext(); break;
                     case "prev": player.seekTo(0); player.playVideo(); break;
                     case "volume": player.setVolume(c.value); break;
+                    case "mute": player.mute(); break;
+                    case "unmute": player.unMute(); break;
                     case "slideshow": player.stopVideo(); startIdle(); break;
                     case "fixDisplay": stopIdle(); playNext(); break;
                 }
@@ -255,8 +262,7 @@
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
                         
-                        // Start muted to bypass autoplay blocks
-                        player.mute(); 
+                        player.mute(); // Autoplay requirement
 
                         if (pendingVideoId) { 
                             player.loadVideoById(pendingVideoId); 
