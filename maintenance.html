@@ -80,7 +80,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h2 style="margin:0;" class="venue-name-display">T.A. STATION</h2>
         <div style="font-size: 0.7rem; font-weight: bold; background: #333; padding: 5px 10px; border-radius: 20px;">
-            CODE: <span id="venue-code-display" style="color: var(--bar-gold);">----</span>
+            TV: <span id="venue-code-display" style="color: var(--bar-gold);">----</span>
         </div>
     </div>
 
@@ -183,6 +183,15 @@
     <!-- SETTINGS PANE -->
     <div id="pane-settings" class="pane" style="display: none;">
         <div class="card">
+            <h3 style="color: var(--bar-green);">🔗 Sync to TV</h3>
+            <p style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 10px;">Enter the 4-digit code shown on the TV screen.</p>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="manual-venue-input" placeholder="e.g. A1B2" maxlength="4" style="text-transform: uppercase; text-align: center; font-weight: bold; letter-spacing: 2px;">
+                <button class="btn btn-success" onclick="syncManualCode()">Sync</button>
+            </div>
+        </div>
+
+        <div class="card">
             <h3>Control Overrides</h3>
             <div class="status-row">
                 <span>Karaoke Lock (Hide Ads)</span>
@@ -219,12 +228,16 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <div class="status-row">
-                <span>AirConsole (Games)</span>
-                <label class="switch">
-                    <input type="checkbox" id="toggle-airconsole" onchange="vRef.child('settings/airConsole').set(this.checked)">
-                    <span class="slider"></span>
-                </label>
+        </div>
+
+        <div class="card">
+            <h3>Appearance</h3>
+            <div>
+                <label style="font-size: 0.8rem; opacity: 0.6; display: block; margin-bottom: 8px;">Venue Name</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="venue-name-input" placeholder="T.A. Station">
+                    <button class="btn btn-primary" onclick="vRef.child('settings/venueName').set(document.getElementById('venue-name-input').value)">Save</button>
+                </div>
             </div>
         </div>
 
@@ -252,24 +265,28 @@
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
             var v = urlParams.get('v');
-            if (v && v.trim().length >= 4) return v.toUpperCase().trim();
-            var promptVal = prompt("Enter 4-character Venue Code (from TV):");
-            if (promptVal) {
-                var code = promptVal.toUpperCase().trim();
-                window.location.search = '?v=' + code;
-                return code;
-            }
+            if (v && v.trim().length === 4) return v.toUpperCase().trim();
             return 'DEFAULT';
         }
 
         var venueId = getVenueId();
         document.getElementById('venue-code-display').textContent = venueId;
+        document.getElementById('manual-venue-input').value = (venueId === 'DEFAULT' ? '' : venueId);
 
         firebase.initializeApp(firebaseConfig);
         var db = firebase.database(), vRef = db.ref('venues/' + venueId);
 
         function saveLocal(key, val) { try { localStorage.setItem("tbs_remote_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {} }
         function getLocal(key) { try { return JSON.parse(localStorage.getItem("tbs_remote_" + venueId + "_" + key)); } catch(e) { return null; } }
+
+        function syncManualCode() {
+            var newCode = document.getElementById('manual-venue-input').value.trim().toUpperCase();
+            if (newCode.length === 4) {
+                window.location.href = window.location.pathname + "?v=" + newCode;
+            } else {
+                alert("Please enter exactly 4 characters.");
+            }
+        }
 
         (function initFromLocal() {
             var cn = getLocal("venueName");
@@ -293,14 +310,13 @@
         }
 
         function togglePlayPause() {
-            // state 1 = PLAYING
             sendCommand(currentPlayerState === 1 ? 'pause' : 'play');
         }
 
         function setVolume(val) {
             document.getElementById('vol-val').textContent = val + '%';
             sendCommand('volume', parseInt(val));
-            if (isMuted) toggleMute(); // Auto unmute
+            if (isMuted) toggleMute();
         }
 
         function toggleMute() {
@@ -351,7 +367,6 @@
             });
         }
 
-        function firebaseSafe(str) { return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_"); }
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
         function escAttr(str) { if (!str) return ""; return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;"); }
         function extractVideoId(url) {
@@ -397,7 +412,6 @@
                 document.title = name + " - Staff Remote";
             });
             
-            // Sync toggles
             vRef.child('settings/karaokeLock').on('value', s => { document.getElementById('toggle-karaoke').checked = !!s.val(); });
             vRef.child('settings/autoMode').on('value', s => { document.getElementById('toggle-auto').checked = !!s.val(); });
             vRef.child('settings/partyMode').on('value', s => { document.getElementById('toggle-party').checked = !!s.val(); });
@@ -428,6 +442,6 @@
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.6.6 (2026-04-18 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.6.7 (2026-04-18 HST)</div>
 </body>
 </html>
