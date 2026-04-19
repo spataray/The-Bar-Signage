@@ -41,7 +41,6 @@
 
         input, select { background: #000; color: white; border: 1px solid #444; padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 1rem; }
         
-        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85rem; }
 
         /* Queue List Styling */
@@ -58,7 +57,6 @@
         .result-thumb { width: 80px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; }
         .result-info { flex: 1; min-width: 0; }
         .result-title { font-size: 0.8rem; font-weight: bold; }
-        .result-channel { font-size: 0.7rem; opacity: 0.5; }
 
         /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
@@ -68,11 +66,11 @@
         input:checked + .slider { background-color: var(--bar-green); }
         input:checked + .slider:before { transform: translateX(26px); }
 
-        .ticker-pos-btn { background: #333; color: #888; border: 1px solid #444; }
-        .ticker-pos-btn.active { background: var(--bar-gold); color: black; border-color: var(--bar-gold); }
-
-        .tab-btn { background: #222; color: #888; flex: 1; padding: 12px; border-bottom: 2px solid transparent; text-transform: uppercase; font-weight: bold; font-size: 0.8rem; }
-        .tab-btn.active { color: var(--bar-gold); border-bottom-color: var(--bar-gold); }
+        .tab-btn { background: #222; color: #888; flex: 1; padding: 12px; border: none; border-bottom: 2px solid transparent; text-transform: uppercase; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+        .tab-btn.active { color: var(--bar-gold); border-bottom-color: var(--bar-gold); background: #1a1a1a; }
+        
+        .pane { display: none; }
+        .pane.active { display: block; }
     </style>
 </head>
 <body>
@@ -85,14 +83,14 @@
     </div>
 
     <!-- TABS -->
-    <div style="display: flex; background: #1a1a1a; margin: -10px -10px 15px -10px; border-bottom: 1px solid #333;">
-        <button class="tab-btn active" onclick="showPane('player')">Player</button>
-        <button class="tab-btn" onclick="showPane('content')">Content</button>
-        <button class="tab-btn" onclick="showPane('settings')">Settings</button>
+    <div style="display: flex; background: #1a1a1a; margin: -10px -10px 15px -10px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100;">
+        <button class="tab-btn active" onclick="showPane('player', this)">Player</button>
+        <button class="tab-btn" onclick="showPane('content', this)">Content</button>
+        <button class="tab-btn" onclick="showPane('settings', this)">Settings</button>
     </div>
 
     <!-- PLAYER PANE -->
-    <div id="pane-player" class="pane">
+    <div id="pane-player" class="pane active">
         <div class="card">
             <h3>Now Playing</h3>
             <div id="np-container" style="display: flex; gap: 15px; align-items: center;">
@@ -146,7 +144,7 @@
     </div>
 
     <!-- CONTENT PANE -->
-    <div id="pane-content" class="pane" style="display: none;">
+    <div id="pane-content" class="pane">
         <div class="card">
             <h3>Ticker Messages</h3>
             <div style="display: flex; gap: 8px; margin-bottom: 12px;">
@@ -181,7 +179,7 @@
     </div>
 
     <!-- SETTINGS PANE -->
-    <div id="pane-settings" class="pane" style="display: none;">
+    <div id="pane-settings" class="pane">
         <div class="card">
             <h3 style="color: var(--bar-green);">🔗 Sync to TV</h3>
             <p style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 10px;">Enter the 4-digit code shown on the TV screen.</p>
@@ -225,6 +223,13 @@
                 <span>YouTube Captions (CC)</span>
                 <label class="switch">
                     <input type="checkbox" id="toggle-cc" onchange="vRef.child('settings/captionsEnabled').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>AirConsole (Games)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-airconsole" onchange="vRef.child('settings/airConsole').set(this.checked)">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -298,11 +303,11 @@
             else firebase.auth().signInAnonymously();
         });
 
-        function showPane(id) {
-            document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
-            document.getElementById('pane-' + id).style.display = 'block';
+        function showPane(id, btn) {
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('pane-' + id).classList.add('active');
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if (event && event.target) event.target.classList.add('active');
+            if (btn) btn.classList.add('active');
         }
 
         function sendCommand(action, value) {
@@ -442,6 +447,6 @@
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.7.0 (2026-04-18 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.7.1 (2026-04-18 HST)</div>
 </body>
 </html>
