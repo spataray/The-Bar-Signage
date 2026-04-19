@@ -28,6 +28,16 @@
             font-size: 11px; padding: 10px; border-radius: 5px; z-index: 15000;
             display: none; pointer-events: none; line-height: 1.4;
         }
+        
+        #venue-code-badge {
+            position: fixed; top: 105px; left: 20px; z-index: 2100;
+            background: rgba(0,0,0,0.8); padding: 8px 15px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2); font-family: monospace;
+            display: flex; flex-direction: column; align-items: flex-start;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #venue-code-badge:hover { transform: scale(1.05); background: rgba(30,30,30,0.9); }
     </style>
 </head>
 <body onload="document.getElementById('gesture-layer').focus()">
@@ -36,7 +46,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.5 (Clean Display)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.6.6 (Code Restore)</div>
     </div>
 
     <div id="error-log"></div>
@@ -48,6 +58,12 @@
 
     <!-- YouTube Status LED (Bottom Right) -->
     <div id="yt-status-led" title="YouTube Status" style="position: fixed; bottom: 10px; right: 10px; width: 6px; height: 6px; background: #ff4444; border-radius: 50%; box-shadow: 0 0 5px #ff4444; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
+
+    <!-- Venue Code Display -->
+    <div id="venue-code-badge" onclick="changeVenueCode()" title="Click to manually change code">
+        <div style="font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Connect Code</div>
+        <div id="display-venue-id" style="font-size: 1.2rem; font-weight: 900; color: var(--bar-gold); letter-spacing: 2px;">----</div>
+    </div>
 
     <div id="app-container">
         <div id="video-section">
@@ -94,7 +110,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.5 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.6.6 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -128,11 +144,7 @@
         var factsShuffled = [], factIndex = 0, factsTimer = null;
         var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Hawaii is moving closer to Alaska by 3 inches a year.", "🌍 Thailand has never been colonized."];
 
-        function logMsg(msg) {
-            console.log("SYSTEM LOG:", msg);
-            // Visual log is now hidden by default in CSS and only used if explicitly enabled for testing
-        }
-
+        function logMsg(msg) { console.log("SYSTEM LOG:", msg); }
         function logError(msg) {
             var el = document.getElementById("error-log");
             if (el) { el.style.display = "block"; el.innerHTML += "<br>> ERROR: " + msg; }
@@ -156,21 +168,27 @@
 
         function unlockPlayer() {
             if (isUnlocked) return;
-            logMsg("Unlocking player via interaction...");
+            logMsg("Unlocking player...");
             document.getElementById('gesture-layer').style.display = 'none';
             isUnlocked = true;
-            
             if (player && playerReady) {
                 player.unMute();
                 player.playVideo();
                 setTimeout(function() {
                     vRef.child("settings/currentVideoId").once("value", function(sn) {
-                        if (!sn.val()) {
-                            player.pauseVideo();
-                            startIdle();
-                        }
+                        if (!sn.val()) { player.pauseVideo(); startIdle(); }
                     });
                 }, 500);
+            }
+        }
+
+        function changeVenueCode() {
+            var newCode = prompt("Enter new 4-character Connect Code:", venueId);
+            if (newCode && newCode.trim().length === 4) {
+                var url = window.location.href.split("?")[0] + "?v=" + newCode.toUpperCase().trim();
+                window.location.href = url;
+            } else if (newCode) {
+                alert("Connect Code must be exactly 4 characters.");
             }
         }
 
@@ -182,6 +200,7 @@
                 var nu = window.location.protocol + "//" + window.location.host + window.location.pathname + "?v=" + venueId;
                 window.history.pushState({path:nu},"",nu);
             }
+            document.getElementById('display-venue-id').textContent = venueId;
 
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();
@@ -200,7 +219,6 @@
             syncWeather(); setInterval(syncWeather, 600000);
             showFunFact();
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
-            
             if (window.YT && window.YT.Player) onYouTubeIframeAPIReady();
             window.addEventListener('keydown', function() { unlockPlayer(); });
         }
@@ -217,7 +235,6 @@
                     if (isUnlocked) player.playVideo();
                 } else { pendingVideoId = vid; }
             });
-            
             vRef.child("settings/playerCommand").on("value", function(s) {
                 var c = s.val(); if (!c || !playerReady || !player) return;
                 logMsg("CMD: " + c.action);
@@ -238,8 +255,8 @@
                 }
                 vRef.child("settings/playerCommand").set(null);
             });
-            
             vRef.child("settings/remoteRefresh").on("value", function(s) { if (s.val()) { vRef.child("settings/remoteRefresh").set(null); location.reload(); } });
+            vRef.child("settings/venueName").on("value", function(s) { saveLocal("venueName", s.val()); updateVenueNameUI(s.val()); });
         }
 
         function onYouTubeIframeAPIReady() {
@@ -256,11 +273,7 @@
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
                         if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } 
-                        else {
-                            vRef.child("settings/currentVideoId").once("value", function(sn) {
-                                var vid = sn.val(); if (vid) player.loadVideoById(vid);
-                            });
-                        }
+                        else { vRef.child("settings/currentVideoId").once("value", function(sn) { var vid = sn.val(); if (vid) player.loadVideoById(vid); }); }
                     },
                     onStateChange: function(e) { 
                         if (e.data === YT.PlayerState.PLAYING) {
