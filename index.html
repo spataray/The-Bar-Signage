@@ -160,6 +160,60 @@
             try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; }
         }
 
+        // UI Update Helpers
+        function updateMenuUI(menu) {
+            if (menu) {
+                var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
+                for (var key in menu) {
+                    var item = menu[key];
+                    menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
+                }
+                document.getElementById("menu-content").innerHTML = menuHtml;
+            } else {
+                document.getElementById("menu-content").innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
+            }
+        }
+
+        function updateAdUI(ad) {
+            var flyerImg = document.getElementById("ad-flyer");
+            if (ad) {
+                document.getElementById("ad-title").innerText = ad.title || window._currentVenueName || "T.A. Station";
+                document.getElementById("ad-desc").innerText = ad.desc || "";
+                if (ad.flyer) {
+                    flyerImg.src = normalizeFlyerUrl(ad.flyer);
+                    flyerImg.style.display = "block";
+                    flyerImg.onerror = function() { 
+                        this.style.display = "none"; 
+                    };
+                } else {
+                    flyerImg.style.display = "none";
+                }
+            }
+        }
+
+        function updateVenueNameUI(name) {
+            window._currentVenueName = name;
+            var displays = document.querySelectorAll(".venue-name-display");
+            for (var i = 0; i < displays.length; i++) {
+                var el = displays[i];
+                el.textContent = name;
+                if (el.id === "idle-logo") {
+                    el.textContent = name.toUpperCase();
+                }
+            }
+            document.title = name + " - Digital Signage";
+            
+            var adTitle = document.getElementById("ad-title");
+            if (adTitle && !adTitle.dataset.hasCustomText) {
+                adTitle.innerText = name;
+            }
+        }
+
+        function updateTickerPosUI(pos) {
+            document.body.classList.remove("ticker-bottom", "ticker-left", "ticker-right");
+            if (pos !== "top") document.body.classList.add("ticker-" + pos);
+        }
+
         // Initialize UI from LocalStorage (Instant Boot)
         (function initFromLocal() {
             var cachedName = getLocal("venueName") || "T.A. Station";
@@ -171,7 +225,6 @@
             var cachedTicker = getLocal("ticker");
             if (cachedTicker) {
                 tickerMessages = buildTickerMessages(Object.values(cachedTicker));
-                if (tickerMessages.length > 0) showTickerMessage();
             }
             
             var cachedAd = getLocal("adConfig");
@@ -747,61 +800,6 @@
                 return 'https://lh3.googleusercontent.com/d/' + match[1];
             }
             return url;
-        }
-
-        // 5. FIREBASE LISTENERS
-        function updateMenuUI(menu) {
-            if (menu) {
-                var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
-                for (var key in menu) {
-                    var item = menu[key];
-                    menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
-                }
-                document.getElementById("menu-content").innerHTML = menuHtml;
-            } else {
-                document.getElementById("menu-content").innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
-            }
-        }
-
-        function updateAdUI(ad) {
-            var flyerImg = document.getElementById("ad-flyer");
-            if (ad) {
-                document.getElementById("ad-title").innerText = ad.title || window._currentVenueName || "T.A. Station";
-                document.getElementById("ad-desc").innerText = ad.desc || "";
-                if (ad.flyer) {
-                    flyerImg.src = normalizeFlyerUrl(ad.flyer);
-                    flyerImg.style.display = "block";
-                    flyerImg.onerror = function() { 
-                        this.style.display = "none"; 
-                    };
-                } else {
-                    flyerImg.style.display = "none";
-                }
-            }
-        }
-
-        function updateVenueNameUI(name) {
-            window._currentVenueName = name;
-            var displays = document.querySelectorAll(".venue-name-display");
-            for (var i = 0; i < displays.length; i++) {
-                var el = displays[i];
-                el.textContent = name;
-                if (el.id === "idle-logo") {
-                    el.textContent = name.toUpperCase();
-                }
-            }
-            document.title = name + " - Digital Signage";
-            
-            // Re-apply to ad title if empty in sheet
-            var adTitle = document.getElementById("ad-title");
-            if (adTitle && !adTitle.dataset.hasCustomText) {
-                adTitle.innerText = name;
-            }
-        }
-
-        function updateTickerPosUI(pos) {
-            document.body.classList.remove("ticker-bottom", "ticker-left", "ticker-right");
-            if (pos !== "top") document.body.classList.add("ticker-" + pos);
         }
 
         function initFirebaseListeners() {
