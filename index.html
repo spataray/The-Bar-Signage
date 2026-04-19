@@ -16,8 +16,11 @@
 
     <div id="status-indicator">KARAOKE LOCKED</div>
 
-    <!-- Connection Status LED -->
-    <div id="conn-status-led" style="position: fixed; bottom: 10px; left: 10px; width: 6px; height: 6px; background: #28a745; border-radius: 50%; box-shadow: 0 0 5px #28a745; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
+    <!-- Connection Status LED (Bottom Left) -->
+    <div id="conn-status-led" title="Firebase Status" style="position: fixed; bottom: 10px; left: 10px; width: 6px; height: 6px; background: #ff4444; border-radius: 50%; box-shadow: 0 0 5px #ff4444; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
+
+    <!-- YouTube Status LED (Bottom Right) -->
+    <div id="yt-status-led" title="YouTube Status" style="position: fixed; bottom: 10px; right: 10px; width: 6px; height: 6px; background: #ff4444; border-radius: 50%; box-shadow: 0 0 5px #ff4444; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
 
     <div id="app-container">
         <div id="video-section">
@@ -215,6 +218,12 @@
             showFunFact();
             if (tickerMessages.length > 0) showTickerMessage();
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
+
+            // Manual check for YouTube API in case it loaded already
+            if (window.YT && window.YT.Player) {
+                console.log("YT API already loaded, manually triggering init.");
+                onYouTubeIframeAPIReady();
+            }
         }
 
         function initFirebaseListeners() {
@@ -229,9 +238,14 @@
                 var vid = s.val(); if (!vid) return;
                 if (typeof vid === "object" && vid.id) vid = vid.id;
                 if (typeof vid !== "string") return;
+                console.log("Firebase currentVideoId changed:", vid);
                 stopIdle();
-                if (playerReady && player && player.loadVideoById) player.loadVideoById(vid);
-                else pendingVideoId = vid;
+                if (playerReady && player && player.loadVideoById) {
+                    player.loadVideoById(vid);
+                } else {
+                    console.log("Player not ready, buffering ID:", vid);
+                    pendingVideoId = vid;
+                }
             });
             vRef.child("settings/queue").on("value", function(s) {
                 var q = s.val() || []; saveLocal("queue", q);
@@ -261,17 +275,32 @@
             vRef.child("settings/tickerPosition").on("value", function(s) { saveLocal("tickerPosition", s.val()); updateTickerPosUI(s.val() || "top"); });
         }
 
+        // ── YOUTUBE API READY ──
         function onYouTubeIframeAPIReady() {
+            console.log("YouTube API Ready callback fired.");
             player = new YT.Player('player', {
                 playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3 },
                 events: {
-                    onReady: function() { playerReady = true; if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } },
+                    onReady: function() { 
+                        console.log("YouTube Player Ready.");
+                        playerReady = true; 
+                        var led = document.getElementById("yt-status-led");
+                        if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
+                        if (pendingVideoId) { 
+                            console.log("Loading pending video:", pendingVideoId);
+                            player.loadVideoById(pendingVideoId); 
+                            pendingVideoId = null; 
+                        } 
+                    },
                     onStateChange: function(e) { 
                         if (e.data === YT.PlayerState.PLAYING) reportNowPlaying();
                         if (e.data === YT.PlayerState.ENDED) playNext();
                         vRef.child('settings/playerState').set(e.data);
                     },
-                    onError: function() { setTimeout(playNext, 2000); }
+                    onError: function(e) { 
+                        console.warn("YouTube Player Error:", e.data);
+                        setTimeout(playNext, 2000); 
+                    }
                 }
             });
         }
@@ -281,7 +310,8 @@
                 var q = s.val() || [];
                 if (q.length > 0) {
                     var n = q[0]; vRef.child('settings/queue').set(q.slice(1));
-                    stopIdle(); if (player && player.loadVideoById) player.loadVideoById(n.id); else pendingVideoId = n.id;
+                    stopIdle(); 
+                    if (playerReady && player && player.loadVideoById) player.loadVideoById(n.id); else pendingVideoId = n.id;
                 } else { startIdle(); }
             });
         }
@@ -333,39 +363,63 @@
 
         function initConnectQR() {
             var q = document.getElementById("request-qr-img"), c = document.getElementById("request-qr-container");
+            if (!q || !c) return;
             var url = window.location.href.split("?")[0].replace("index.html", "customer.html") + "?v=" + venueId;
             q.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(url);
             vRef.child("settings/showRequestQR").on("value", function(s) { c.style.display = s.val() !== false ? "flex" : "none"; });
         }
 
-        function startIdle() { document.getElementById('idle-screen').classList.add('active'); showAd(true); vRef.child('settings/nowPlaying').set(null); showIdleItem(); }
-        function stopIdle() { document.getElementById('idle-screen').classList.remove('active'); clearTimeout(idleTimer); }
+        function startIdle() { 
+            var screen = document.getElementById('idle-screen');
+            if (screen) screen.classList.add('active'); 
+            showAd(true); 
+            vRef.child('settings/nowPlaying').set(null); 
+            showIdleItem(); 
+        }
+        function stopIdle() { 
+            var screen = document.getElementById('idle-screen');
+            if (screen) screen.classList.remove('active'); 
+            clearTimeout(idleTimer); 
+        }
         function showIdleItem() {
             var p = ['images/TAStation-1.JPG','images/TAStation-2.JPG','images/TAStation-3.JPG'];
-            document.getElementById('idle-photo').src = p[idleIndex];
-            idleIndex = (idleIndex + 1) % p.length;
-            idleTimer = setTimeout(showIdleItem, 8000);
+            var img = document.getElementById('idle-photo');
+            if (img) {
+                img.src = p[idleIndex];
+                idleIndex = (idleIndex + 1) % p.length;
+                idleTimer = setTimeout(showIdleItem, 8000);
+            }
         }
 
         function showAd(f) {
             var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container");
+            if (!s || !c) return;
             c.classList.add("ad-active"); s.className = (f || !adCycleShowMenu) ? "show-flyer" : "show-menu";
             if (!f) adCycleShowMenu = !adCycleShowMenu;
             
             vRef.child("settings/queue").once("value", function(sn) {
                 var q = sn.val() || [], n = document.getElementById("up-next-section");
-                if (q.length > 0) {
-                    document.getElementById("up-next-title").innerText = q[0].title;
-                    document.getElementById("up-next-author").innerText = q[0].author || "";
-                    document.getElementById("up-next-thumb").src = q[0].thumb || "";
+                if (q.length > 0 && n) {
+                    var titleEl = document.getElementById("up-next-title");
+                    var authEl = document.getElementById("up-next-author");
+                    var thumbEl = document.getElementById("up-next-thumb");
+                    if (titleEl) titleEl.innerText = q[0].title || "Unknown";
+                    if (authEl) authEl.innerText = q[0].author || "";
+                    if (thumbEl) thumbEl.src = q[0].thumb || "";
                     n.style.display = "block";
-                } else { n.style.display = "none"; }
+                } else if (n) { n.style.display = "none"; }
             });
             setTimeout(hideAd, 25000);
         }
 
-        function hideAd() { document.getElementById("ad-sidebar").className = ""; document.getElementById("app-container").classList.remove("ad-active"); }
+        function hideAd() { 
+            var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container");
+            if (s) s.className = ""; 
+            if (c) c.classList.remove("ad-active"); 
+        }
+        
         function showSongFact() {} function hideSongFact() {}
+        
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp); else initApp();
     </script>
 </body>
