@@ -29,10 +29,25 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// STALE-WHILE-REVALIDATE Strategy
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request).then((networkResponse) => {
+          // Update cache with new version if successful
+          if (networkResponse && networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        }).catch(() => {
+          // Fallback if offline and not in cache
+          return cachedResponse;
+        });
+
+        // Return cached version immediately, or wait for network if not cached
+        return cachedResponse || fetchPromise;
+      });
     })
   );
 });

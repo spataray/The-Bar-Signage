@@ -16,17 +16,10 @@
 
     <div id="status-indicator">KARAOKE LOCKED</div>
 
-    <!-- Venue Code Display -->
-    <div id="venue-code-badge" style="position: fixed; top: 105px; left: 20px; z-index: 2100; background: rgba(0,0,0,0.8); padding: 8px 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); font-family: monospace; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
-        <div style="font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Connect Code</div>
-        <div id="display-venue-id" style="font-size: 1.2rem; font-weight: 900; color: var(--bar-gold); letter-spacing: 2px;">----</div>
-    </div>
+    <!-- Connection Status LED -->
+    <div id="conn-status-led" style="position: fixed; bottom: 10px; left: 10px; width: 6px; height: 6px; background: #28a745; border-radius: 50%; box-shadow: 0 0 5px #28a745; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
 
-    <div id="disconnect-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); color: #ff4444; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; font-family: sans-serif;">
-        <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
-        <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">CONNECTION LOST</div>
-        <div style="margin-top: 10px; opacity: 0.7;">Reconnecting to <span class="venue-name-display">T.A. Station</span>...</div>
-    </div>
+    <!-- Venue Code Display -->
 
     <div id="app-container">
         <div id="video-section">
@@ -159,6 +152,35 @@
         var vRef = db.ref("venues/" + venueId);
         document.getElementById("display-venue-id").textContent = venueId;
 
+        // ── LOCAL STORAGE MIRRORING ──
+        function saveLocal(key, val) {
+            try { localStorage.setItem("tbs_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {}
+        }
+        function getLocal(key) {
+            try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; }
+        }
+
+        // Initialize UI from LocalStorage (Instant Boot)
+        (function initFromLocal() {
+            var cachedName = getLocal("venueName") || "T.A. Station";
+            updateVenueNameUI(cachedName);
+            
+            var cachedMenu = getLocal("menu");
+            if (cachedMenu) updateMenuUI(cachedMenu);
+            
+            var cachedTicker = getLocal("ticker");
+            if (cachedTicker) {
+                tickerMessages = buildTickerMessages(Object.values(cachedTicker));
+                if (tickerMessages.length > 0) showTickerMessage();
+            }
+            
+            var cachedAd = getLocal("adConfig");
+            if (cachedAd) updateAdUI(cachedAd);
+            
+            var cachedPos = getLocal("tickerPosition");
+            if (cachedPos) updateTickerPosUI(cachedPos);
+        })();
+
         function escHtml(str) {
             var div = document.createElement('div');
             div.textContent = str || '';
@@ -213,26 +235,19 @@
         });
 
         // Connection Monitor (Publicly accessible under .info)
-        // Debounce showing the overlay so transient blips don't flash the screen.
-        // Auto-reload after 30s of sustained disconnection so Firebase can fully reset.
-        var disconnectTimer = null;
-        var reloadTimer = null;
         db.ref(".info/connected").on("value", function(snap) {
-            var overlay = document.getElementById("disconnect-overlay");
+            var led = document.getElementById("conn-status-led");
             if (snap.val() === true) {
-                if (disconnectTimer) { clearTimeout(disconnectTimer); disconnectTimer = null; }
-                if (reloadTimer) { clearTimeout(reloadTimer); reloadTimer = null; }
-                overlay.style.display = "none";
+                led.style.background = "#28a745";
+                led.style.boxShadow = "0 0 8px #28a745";
+                led.style.opacity = "0.6";
                 setDebug("DB", "OK");
             } else {
-                if (disconnectTimer) return; // already waiting
-                disconnectTimer = setTimeout(function() {
-                    overlay.style.display = "flex";
-                    setDebug("DB", "LOST");
-                    reloadTimer = setTimeout(function() {
-                        window.location.reload();
-                    }, 30000);
-                }, 5000);
+                // Dim to red if connection starts to drop
+                led.style.background = "#ff4444";
+                led.style.boxShadow = "0 0 10px #ff4444";
+                led.style.opacity = "1";
+                setDebug("DB", "LOST");
             }
         });
 
@@ -735,42 +750,77 @@
         }
 
         // 5. FIREBASE LISTENERS
+        function updateMenuUI(menu) {
+            if (menu) {
+                var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
+                for (var key in menu) {
+                    var item = menu[key];
+                    menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
+                }
+                document.getElementById("menu-content").innerHTML = menuHtml;
+            } else {
+                document.getElementById("menu-content").innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
+            }
+        }
+
+        function updateAdUI(ad) {
+            var flyerImg = document.getElementById("ad-flyer");
+            if (ad) {
+                document.getElementById("ad-title").innerText = ad.title || window._currentVenueName || "T.A. Station";
+                document.getElementById("ad-desc").innerText = ad.desc || "";
+                if (ad.flyer) {
+                    flyerImg.src = normalizeFlyerUrl(ad.flyer);
+                    flyerImg.style.display = "block";
+                    flyerImg.onerror = function() { 
+                        this.style.display = "none"; 
+                    };
+                } else {
+                    flyerImg.style.display = "none";
+                }
+            }
+        }
+
+        function updateVenueNameUI(name) {
+            window._currentVenueName = name;
+            var displays = document.querySelectorAll(".venue-name-display");
+            for (var i = 0; i < displays.length; i++) {
+                var el = displays[i];
+                el.textContent = name;
+                if (el.id === "idle-logo") {
+                    el.textContent = name.toUpperCase();
+                }
+            }
+            document.title = name + " - Digital Signage";
+            
+            // Re-apply to ad title if empty in sheet
+            var adTitle = document.getElementById("ad-title");
+            if (adTitle && !adTitle.dataset.hasCustomText) {
+                adTitle.innerText = name;
+            }
+        }
+
+        function updateTickerPosUI(pos) {
+            document.body.classList.remove("ticker-bottom", "ticker-left", "ticker-right");
+            if (pos !== "top") document.body.classList.add("ticker-" + pos);
+        }
+
         function initFirebaseListeners() {
             initConnectQR();
             vRef.child("settings/menu").on("value", function(snap) {
                 var menu = snap.val();
-                if (menu) {
-                    var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
-                    for (var key in menu) {
-                        var item = menu[key];
-                        menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
-                    }
-                    document.getElementById("menu-content").innerHTML = menuHtml;
-                } else {
-                    document.getElementById("menu-content").innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
-                }
+                saveLocal("menu", menu);
+                updateMenuUI(menu);
             });
 
             vRef.child("settings/adConfig").on("value", function(snap) {
                 var ad = snap.val();
-                var flyerImg = document.getElementById("ad-flyer");
-                if (ad) {
-                    document.getElementById("ad-title").innerText = ad.title || window._currentVenueName || "T.A. Station";
-                    document.getElementById("ad-desc").innerText = ad.desc || "";
-                    if (ad.flyer) {
-                        flyerImg.src = normalizeFlyerUrl(ad.flyer);
-                        flyerImg.style.display = "block";
-                        flyerImg.onerror = function() { 
-                            this.style.display = "none"; 
-                        };
-                    } else {
-                        flyerImg.style.display = "none";
-                    }
-                }
+                saveLocal("adConfig", ad);
+                updateAdUI(ad);
             });
 
             vRef.child("settings/ticker").on("value", function(snap) {
                 var msgs = snap.val();
+                saveLocal("ticker", msgs);
                 if (msgs) {
                     var sheetMessages = [];
                     for (var k in msgs) sheetMessages.push(msgs[k]);
@@ -785,7 +835,6 @@
 
             vRef.child("settings/lastCallEnabled").on("value", function(snap) {
                 lastCallEnabled = !!snap.val();
-                // If disabled, reset any active last call state immediately
                 if (!lastCallEnabled) {
                     resetLastCall();
                 }
@@ -796,7 +845,6 @@
                 setDebug("VID", vid || "NONE");
                 if (!vid) return;
                 
-                // Robustness: handle if vid is an object {id: '...'} instead of a string
                 if (typeof vid === "object" && vid.id) vid = vid.id;
                 if (typeof vid !== "string") return;
 
@@ -810,9 +858,9 @@
                 }
             });
 
-            // Auto-play when queue is no longer empty and we are idle
             vRef.child("settings/queue").on("value", function(snap) {
                 var queue = snap.val() || [];
+                saveLocal("queue", queue);
                 var idleActive = document.getElementById("idle-screen").classList.contains("active");
                 if (queue.length > 0 && idleActive) {
                     console.log("Queue detected while idle, playing next...");
@@ -865,7 +913,6 @@
                 }
             });
 
-            // Karaoke Lock — hides ads when customers are singing
             vRef.child("settings/karaokeLock").on("value", function(snap) {
                 isLocked = !!snap.val();
                 var indicator = document.getElementById("status-indicator");
@@ -877,41 +924,24 @@
                 }
             });
 
-            // Force Ad — show flyer immediately for 25 seconds
             vRef.child("settings/forceAd").on("value", function(snap) {
                 if (snap.val() && !isLocked) {
                     showAd(true);
                 }
             });
 
-            // Venue Name Sync
             vRef.child("settings/venueName").on("value", function(snap) {
                 var name = snap.val() || "T.A. Station";
-                window._currentVenueName = name;
-                var displays = document.querySelectorAll(".venue-name-display");
-                for (var i = 0; i < displays.length; i++) {
-                    var el = displays[i];
-                    el.textContent = name;
-                    if (el.id === "idle-logo") {
-                        el.textContent = name.toUpperCase();
-                    }
-                }
-                document.title = name + " - Digital Signage";
-                
-                // Re-apply to ad title if empty in sheet
-                if (!document.getElementById("ad-title").dataset.hasCustomText) {
-                    document.getElementById("ad-title").innerText = name;
-                }
+                saveLocal("venueName", name);
+                updateVenueNameUI(name);
             });
 
-            // Ticker Position
             vRef.child("settings/tickerPosition").on("value", function(snap) {
                 var pos = snap.val() || "top";
-                document.body.classList.remove("ticker-bottom", "ticker-left", "ticker-right");
-                if (pos !== "top") document.body.classList.add("ticker-" + pos);
+                saveLocal("tickerPosition", pos);
+                updateTickerPosUI(pos);
             });
 
-            // AIRCONSOLE OVERLAY
             vRef.child("settings/airConsole").on("value", function(snap) {
                 var overlay = document.getElementById("airconsole-overlay");
                 var frame = document.getElementById("airconsole-frame");

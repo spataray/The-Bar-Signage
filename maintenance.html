@@ -762,6 +762,29 @@
         var db = firebase.database();
         var vRef = db.ref('venues/' + venueId);
 
+        // ── LOCAL STORAGE MIRRORING ──
+        function saveLocal(key, val) {
+            try { localStorage.setItem("tbs_remote_" + venueId + "_" + key, JSON.stringify(val)); } catch(e) {}
+        }
+        function getLocal(key) {
+            try { return JSON.parse(localStorage.getItem("tbs_remote_" + venueId + "_" + key)); } catch(e) { return null; }
+        }
+
+        // Initialize UI from LocalStorage (Instant Boot)
+        (function initFromLocal() {
+            var cachedName = getLocal("venueName");
+            if (cachedName) {
+                var d = document.querySelectorAll('.venue-name-display');
+                for (var i = 0; i < d.length; i++) d[i].textContent = cachedName.toUpperCase();
+            }
+            
+            var cachedQueue = getLocal("queue");
+            if (cachedQueue) {
+                // We'll let the Firebase listener handle the actual render to avoid double-processing,
+                // but we could render a placeholder here if needed.
+            }
+        })();
+
         // AUTH & INITIALIZATION
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
@@ -1269,6 +1292,7 @@
 
             vRef.child('settings/queue').on('value', function(snap) {
                 var queue = snap.val() || [];
+                saveLocal('queue', queue);
                 var listEl = document.getElementById('queue-list');
                 var countEl = document.getElementById('queue-count');
                 countEl.textContent = queue.length > 0 ? '(' + queue.length + ')' : '';
@@ -1388,6 +1412,7 @@
 
             vRef.child('settings/venueName').on('value', function(snap) {
                 var name = snap.val() || "T.A. STATION";
+                saveLocal('venueName', name);
                 document.getElementById('venue-name-input').value = snap.val() ? name : "";
                 var d = document.querySelectorAll('.venue-name-display');
                 for (var i = 0; i < d.length; i++) d[i].textContent = name.toUpperCase();
