@@ -12,14 +12,6 @@
     <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <style>
-        #boot-overlay {
-            position: fixed; top:0; left:0; right:0; bottom:0;
-            background: rgba(0,0,0,0.9); z-index: 20000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--bar-gold); font-family: sans-serif; cursor: pointer;
-        }
-        #boot-overlay h1 { font-size: 3rem; margin-bottom: 10px; }
-        #boot-overlay p { opacity: 0.7; }
         #error-log {
             position: fixed; bottom: 30px; left: 20px; right: 20px;
             background: rgba(255,0,0,0.8); color: white; font-family: monospace;
@@ -30,12 +22,6 @@
     </style>
 </head>
 <body>
-
-    <div id="boot-overlay" onclick="startSignage()">
-        <h1 class="venue-name-display">T.A. STATION</h1>
-        <p>TAP ANYWHERE TO START SIGNAGE</p>
-        <div style="margin-top: 20px; font-size: 12px; opacity: 0.5;">v1.5.6 (Clean Boot)</div>
-    </div>
 
     <div id="error-log"><b>SYSTEM ERROR:</b></div>
 
@@ -92,7 +78,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.6 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.7 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -121,7 +107,7 @@
             });
         }
 
-        var player, playerReady = false, pendingVideoId = null, isLocked = false;
+        var player, playerReady = false, pendingVideoId = null, isLocked = false, hasInteracted = false;
         var tickerMessages = [], tickerIndex = 0, tickerTimer = null, venueId = null, vRef = null, db = null;
         var factsShuffled = [], factIndex = 0, factsTimer = null;
         var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Honolulu means 'sheltered bay' in Hawaiian.", "🌍 Thailand has never been colonized."];
@@ -172,16 +158,6 @@
             document.title = name + " - Digital Signage";
         }
 
-        function startSignage() {
-            document.getElementById('boot-overlay').style.display = 'none';
-            if (playerReady && pendingVideoId) {
-                player.loadVideoById(pendingVideoId);
-                pendingVideoId = null;
-            } else {
-                startIdle();
-            }
-        }
-
         function initApp() {
             var urlParams = new URLSearchParams(window.location.search);
             venueId = urlParams.get('v');
@@ -213,7 +189,8 @@
             showFunFact();
             if (tickerMessages.length > 0) showTickerMessage();
             setInterval(function() { if (!isLocked) showAd(); }, 180000);
-
+            
+            startIdle(); // Start in idle mode by default
             if (window.YT && window.YT.Player) onYouTubeIframeAPIReady();
         }
 
@@ -242,6 +219,9 @@
             });
             vRef.child("settings/playerCommand").on("value", function(s) {
                 var c = s.val(); if (!c || !player) return;
+                // Any command from remote acts as "interaction" to unmute
+                if (!hasInteracted) { player.unMute(); hasInteracted = true; }
+                
                 switch (c.action) {
                     case "pause": player.pauseVideo(); break;
                     case "play": player.playVideo(); break;
@@ -274,7 +254,19 @@
                         playerReady = true; 
                         var led = document.getElementById("yt-status-led");
                         if (led) { led.style.background = "#28a745"; led.style.boxShadow = "0 0 8px #28a745"; }
-                        if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; } 
+                        
+                        // Start muted to bypass autoplay blocks
+                        player.mute(); 
+
+                        if (pendingVideoId) { 
+                            player.loadVideoById(pendingVideoId); 
+                            pendingVideoId = null; 
+                        } else {
+                            vRef.child("settings/currentVideoId").once("value", function(sn) {
+                                var vid = sn.val();
+                                if (vid) player.loadVideoById(vid);
+                            });
+                        }
                     },
                     onStateChange: function(e) { 
                         if (e.data === YT.PlayerState.PLAYING) {
