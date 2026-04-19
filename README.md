@@ -1,7 +1,7 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
 Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
 
-### T.A. Station - Digital Signage System v1.5.2
+### T.A. Station - Digital Signage System v1.5.3
 
 A professional digital signage system for T.A. Station (Honolulu, HI). Features real-time YouTube playback, automated ad rotation, and staff remote control.
 
@@ -12,6 +12,12 @@ To access the staff remote (`maintenance.html`), you will need:
 - **Staff PIN:** **1218** (or the administrative override **9999**).
 
 *Note: Once entered, these credentials are saved in your browser's local storage.*
+
+---
+
+### 🌟 New in v1.5.3 (Initialization Fix)
+- **Hoisting & Startup Fix**: Resolved a critical issue where the app crashed on startup due to improper function ordering. Clock, weather, and video playback are now restored.
+- **Improved Script Reliability**: Wrapped all core startup logic in `window.onload` to ensure the app only starts when all resources and functions are fully available.
 
 ---
 

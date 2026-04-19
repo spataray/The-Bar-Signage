@@ -96,7 +96,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.2 (2026-04-18 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.5.3 (2026-04-18 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -150,7 +150,11 @@
         }
         var venueId = getVenueId();
         var vRef = db.ref("venues/" + venueId);
-        document.getElementById("display-venue-id").textContent = venueId;
+
+        function buildTickerMessages(sheetMessages) {
+            if (!sheetMessages) return [];
+            return sheetMessages.slice ? sheetMessages.slice() : Object.values(sheetMessages);
+        }
 
         // ── LOCAL STORAGE MIRRORING ──
         function saveLocal(key, val) {
@@ -1021,47 +1025,13 @@
         }, 180000);
 
         // 7. STARTUP
-        showFunFact();
-
-        // 8. CLOCK — updates every second, Hawaii time
-        function updateClock() {
-            var el = document.getElementById("clock-display");
-            if (!el) return;
-            el.innerText = new Date().toLocaleTimeString("en-US", {
-                timeZone: "Pacific/Honolulu",
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-            });
-        }
-        updateClock();
-        setInterval(updateClock, 1000);
-
-        // 9. WEATHER — Honolulu, HI via Open-Meteo (free, no API key)
-        function getWeatherIcon(code) {
-            if (code === 0) return "☀️";
-            if (code <= 2) return "🌤️";
-            if (code === 3) return "☁️";
-            if (code <= 48) return "🌫️";
-            if (code <= 67) return "🌧️";
-            if (code <= 82) return "🌦️";
-            return "⛈️";
-        }
-
-        function syncWeather() {
-            fetch("https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583&current_weather=true&temperature_unit=fahrenheit")
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    var w = data.current_weather;
-                    var el = document.getElementById("weather-display");
-                    if (el && w) {
-                        el.innerText = getWeatherIcon(w.weathercode) + " " + Math.round(w.temperature) + "°F";
-                    }
-                })
-                .catch(function(e) { console.warn("Weather fetch failed:", e); });
-        }
-        syncWeather();
-        setInterval(syncWeather, 600000); // every 10 minutes
+        window.onload = function() {
+            showFunFact();
+            updateClock();
+            setInterval(updateClock, 1000);
+            syncWeather();
+            setInterval(syncWeather, 600000); // every 10 minutes
+        };
 
         var lastCallEnabled = false;
 
