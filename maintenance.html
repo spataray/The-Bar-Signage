@@ -10,12 +10,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
     <meta name="referrer" content="no-referrer-when-downgrade">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
         :root {
             --bar-gold: #ffcc00;
             --bar-red: #ff4444;
             --bar-green: #28a745;
-            --dark-bg: #1a1a1a;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
         }
 
         body {
@@ -23,739 +25,272 @@
             background-color: var(--dark-bg);
             color: white;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 10px;
+            padding-bottom: 80px;
         }
 
-        h1 { color: var(--bar-gold); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .subtitle { margin-bottom: 20px; opacity: 0.7; font-size: 0.8rem; }
+        h2, h3 { color: var(--bar-gold); text-transform: uppercase; letter-spacing: 1px; margin-top: 0; }
+        .card { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        .card {
-            background: #2a2a2a;
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            border: 1px solid #333;
-        }
+        .btn { padding: 10px 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--bar-gold); color: black; }
+        .btn-danger { background: var(--bar-red); color: white; }
+        .btn-success { background: var(--bar-green); color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
 
-        .card h3 {
-            margin-top: 0;
-            color: var(--bar-gold);
-        }
+        input, select { background: #000; color: white; border: 1px solid #444; padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 1rem; }
+        
+        .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85rem; }
 
-        input[type="text"], input[type="search"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background: #000;
-            color: #fff;
-            box-sizing: border-box;
-            font-size: 1rem;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            margin: 5px 0;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: transform 0.1s;
-        }
-
-        .btn:active { transform: scale(0.96); }
-        .btn-cast { background-color: #007bff; color: white; }
-        .btn-lock { background-color: var(--bar-red); color: white; }
-        .btn-unlock { background-color: #555; color: white; }
-        .btn-ad { background-color: var(--bar-gold); color: black; }
-        .btn-party { background: linear-gradient(45deg, #ff00ff, #00f2ff); color: white; }
-        .btn-auto { background: linear-gradient(45deg, #1db954, #1565c0); color: white; }
-        .btn-refresh { background-color: #6c757d; color: white; }
-        .btn-sheet { background-color: var(--bar-green); color: white; text-decoration: none; display: block; text-align: center; line-height: 1.4; }
-
-        /* Toggle switches */
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 13px 0;
-            border-bottom: 1px solid #333;
-        }
-        .toggle-row:last-of-type { border-bottom: none; }
-        .toggle-label { font-size: 0.95rem; font-weight: 600; }
-        .toggle-desc { font-size: 0.75rem; opacity: 0.5; margin-top: 2px; }
-        .toggle-switch { position: relative; width: 52px; height: 28px; flex-shrink: 0; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-        .toggle-slider {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #444;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .toggle-slider::before {
-            content: '';
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            left: 3px;
-            top: 3px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.2s;
-        }
-        .toggle-switch input:checked + .toggle-slider { background: var(--bar-gold); }
-        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(24px); }
-
-        /* Compact button grid */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .btn-sm { padding: 12px 8px; font-size: 0.8rem; }
-
-        .lang-toggle {
-            background: none;
-            border: 1px solid var(--bar-gold);
-            color: var(--bar-gold);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-        }
-
-        .instr { font-size: 0.9rem; line-height: 1.5; color: #ccc; display: none; }
-        .active { display: block; }
-        #status-msg { margin-top: 10px; font-weight: bold; color: var(--bar-gold); min-height: 22px; text-align: center; }
-
-        /* Now Playing */
-        #np-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        #np-thumb {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 10px;
-            background: #111;
-        }
-        #np-info { min-width: 0; }
-        #np-title {
-            font-weight: bold;
-            font-size: 1.05rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #np-author {
-            font-size: 0.8rem;
-            opacity: 0.6;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .np-idle #np-title { opacity: 0.5; }
-
-        /* Playback Controls */
-        .playback-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .ctrl-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            background: #444;
-            color: white;
-            font-size: 1.3rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s;
-        }
-        .ctrl-btn:active { background: #666; }
-        .ctrl-btn.primary {
-            width: 60px;
-            height: 60px;
-            background: var(--bar-gold);
-            color: #000;
-            font-size: 1.5rem;
-        }
-
-        /* Volume */
-        .volume-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .volume-row span { font-size: 1.1rem; flex-shrink: 0; }
-        #volume-slider {
-            flex: 1;
-            -webkit-appearance: none;
-            height: 6px;
-            border-radius: 3px;
-            background: #444;
-            outline: none;
-        }
-        #volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: var(--bar-gold);
-            cursor: pointer;
-        }
+        /* Queue List Styling */
+        #queue-list { max-height: 400px; overflow-y: auto; }
+        .queue-item { display: flex; gap: 10px; padding: 10px; background: #252525; border-radius: 8px; align-items: center; margin-bottom: 8px; position: relative; }
+        .queue-num { font-size: 0.7rem; opacity: 0.3; width: 15px; }
+        .queue-thumb { width: 60px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; }
+        .queue-info { flex: 1; min-width: 0; }
+        .queue-title { font-size: 0.8rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .queue-remove { background: none; border: none; color: var(--bar-red); font-size: 1.5rem; cursor: pointer; padding: 0 5px; }
 
         /* Search Results */
-        .search-row {
-            display: flex;
-            gap: 8px;
-        }
-        .search-row input { flex: 1; margin-bottom: 0; }
-        .search-row button {
-            flex-shrink: 0;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: none;
-            background: #007bff;
-            color: white;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-        }
+        .result-item { display: flex; gap: 10px; padding: 10px; background: #252525; border-radius: 8px; align-items: center; margin-bottom: 8px; }
+        .result-thumb { width: 80px; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px; }
+        .result-info { flex: 1; min-width: 0; }
+        .result-title { font-size: 0.8rem; font-weight: bold; }
+        .result-channel { font-size: 0.7rem; opacity: 0.5; }
 
-        #search-results {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--bar-green); }
+        input:checked + .slider:before { transform: translateX(26px); }
 
-        .result-card {
-            background: #222;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+        .ticker-pos-btn { background: #333; color: #888; border: 1px solid #444; }
+        .ticker-pos-btn.active { background: var(--bar-gold); color: black; border-color: var(--bar-gold); }
 
-        .result-thumb-wrap {
-            position: relative;
-            aspect-ratio: 16/9;
-            background: #111;
-        }
-
-        .result-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .result-card-actions {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.88));
-        }
-
-        .btn-play-sm {
-            background: var(--bar-gold);
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 8px 14px;
-            cursor: pointer;
-            flex: 1;
-            margin-right: 5px;
-        }
-
-        .btn-queue-sm {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-
-        .result-card-info {
-            padding: 8px 10px 10px;
-        }
-
-        .result-title {
-            font-size: 0.82rem;
-            font-weight: 600;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .result-channel {
-            font-size: 0.72rem;
-            opacity: 0.45;
-            margin-top: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Queue */
-        .queue-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #333;
-        }
-        .queue-item:last-child { border-bottom: none; }
-        .queue-num {
-            font-size: 0.8rem;
-            opacity: 0.4;
-            width: 20px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .queue-thumb {
-            width: 48px;
-            height: 36px;
-            object-fit: cover;
-            border-radius: 4px;
-            background: #111;
-            flex-shrink: 0;
-        }
-        .queue-info { flex: 1; min-width: 0; }
-        .queue-title {
-            font-size: 0.8rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .queue-remove {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: none;
-            background: transparent;
-            color: #888;
-            font-size: 1rem;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .queue-remove:active { color: var(--bar-red); }
-        .queue-empty {
-            text-align: center;
-            opacity: 0.4;
-            padding: 15px 0;
-            font-size: 0.9rem;
-        }
-
-        #search-error {
-            color: var(--bar-red);
-            font-size: 0.85rem;
-            margin-top: 8px;
-            display: none;
-        }
-
-        .tab-row {
-            display: flex;
-            gap: 0;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #444;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: #333;
-            color: #aaa;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-        .tab-btn.active {
-            background: var(--bar-gold);
-            color: #000;
-        }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .ticker-pos-btn { background: #333; color: #aaa; }
-        .ticker-pos-btn.active { background: var(--bar-gold); color: #000; }
+        .tab-btn { background: #222; color: #888; flex: 1; padding: 12px; border-bottom: 2px solid transparent; text-transform: uppercase; font-weight: bold; font-size: 0.8rem; }
+        .tab-btn.active { color: var(--bar-gold); border-bottom-color: var(--bar-gold); }
     </style>
 </head>
 <body>
 
-    <h1 class="venue-name-display" style="margin-bottom:0;">T.A. STATION</h1>
-    <div style="font-size:0.75rem; font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:8px; opacity:0.8;">
-        TV CONNECTED: <span id="current-code-display" style="color:var(--bar-gold); letter-spacing:1px;">----</span>
-        <button onclick="switchVenue()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; cursor:pointer;">SWITCH</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2 style="margin:0;" class="venue-name-display">T.A. STATION</h2>
+        <div style="font-size: 0.7rem; font-weight: bold; background: #333; padding: 5px 10px; border-radius: 20px;">
+            CODE: <span id="venue-code-display" style="color: var(--bar-gold);">----</span>
+        </div>
     </div>
-    <div id="offline-banner" style="display:none; background:var(--bar-red); color:white; padding: 5px 20px; font-size: 0.8rem; font-weight:bold; width:100%; text-align:center; position:fixed; top:0; z-index:9999;">OFFLINE &bull; RECONNECTING...</div>
-    <div class="subtitle">Staff Remote <span style="opacity:0.35; font-size:0.75em;">v1.5.1</span></div>
 
-    <!-- NOW PLAYING -->
-    <div class="card" id="now-playing-card">
-        <h3>&#127925; NOW PLAYING</h3>
-        <div id="np-container" class="np-idle">
-            <img id="np-thumb" src="" alt="">
-            <div id="np-info">
-                <div id="np-title">Nothing playing</div>
-                <div id="np-author"></div>
+    <!-- TABS -->
+    <div style="display: flex; background: #1a1a1a; margin: -10px -10px 15px -10px; border-bottom: 1px solid #333;">
+        <button class="tab-btn active" onclick="showPane('player')">Player</button>
+        <button class="tab-btn" onclick="showPane('content')">Content</button>
+        <button class="tab-btn" onclick="showPane('settings')">Settings</button>
+    </div>
+
+    <!-- PLAYER PANE -->
+    <div id="pane-player" class="pane">
+        <div class="card">
+            <h3>Now Playing</h3>
+            <div id="np-container" style="display: flex; gap: 15px; align-items: center;">
+                <img id="np-thumb" src="images/TAStation-1.JPG" style="width: 80px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; border: 1px solid #444;">
+                <div style="flex: 1; min-width: 0;">
+                    <div id="np-title" style="font-weight: bold; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nothing playing</div>
+                    <div id="np-author" style="font-size: 0.75rem; opacity: 0.5;">--</div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; margin-top: 15px; align-items: center;">
+                <button class="btn btn-primary" onclick="sendCommand('prev')">&#9194;</button>
+                <button class="btn btn-primary" id="btn-play-pause" onclick="togglePlayPause()" style="font-size: 1.2rem;">&#9654;&#65039;</button>
+                <button class="btn btn-primary" onclick="sendCommand('next')">&#9193;</button>
+            </div>
+            <div style="margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 5px; opacity: 0.6;">
+                    <span>Volume</span>
+                    <span id="vol-val">100%</span>
+                </div>
+                <input type="range" min="0" max="100" value="100" id="vol-slider" onchange="setVolume(this.value)" style="height: 10px; border: none; padding: 0;">
             </div>
         </div>
-        <div class="playback-row">
-            <button class="ctrl-btn" onclick="sendCommand('prev')" title="Previous">&#9198;</button>
-            <button class="ctrl-btn primary" id="btn-playpause" onclick="togglePlayPause()" title="Play/Pause">&#9654;&#65039;</button>
-            <button class="ctrl-btn" onclick="sendCommand('next')" title="Next">&#9197;</button>
-        </div>
-        <div class="volume-row">
-            <span>&#128264;</span>
-            <input type="range" id="volume-slider" min="0" max="100" value="50" oninput="sendVolume(this.value)">
-            <span>&#128266;</span>
-        </div>
-    </div>
 
-    <!-- SEARCH / URL / MENU / TICKER -->
-    <div class="card">
-        <h3>&#128269; MANAGEMENT</h3>
-        <div class="tab-row" style="flex-wrap: wrap;">
-            <button class="tab-btn active" onclick="switchTab('search')">Search</button>
-            <button class="tab-btn" onclick="switchTab('featured')">Featured</button>
-            <button class="tab-btn" onclick="switchTab('url')">Paste URL</button>
-            <button class="tab-btn" onclick="switchTab('menu')">Menu</button>
-            <button class="tab-btn" onclick="switchTab('ticker')">Ads & Ticker</button>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0;">Queue <span id="queue-count" style="opacity: 0.5; font-size: 0.7rem;"></span></h3>
+                <button class="btn btn-sm btn-danger" onclick="clearQueue()">Clear All</button>
+            </div>
+            <div id="queue-list">
+                <div style="text-align: center; padding: 20px; opacity: 0.2;">Loading queue...</div>
+            </div>
         </div>
 
-        <div id="tab-search" class="tab-content active">
-            <div class="search-row">
-                <input type="search" id="search-input" placeholder="Search songs, artists..." enterkeyhint="search">
-                <select id="search-type" style="background: #333; color: white; border: 1px solid #444; border-radius: 8px; padding: 0 5px; font-size: 0.8rem; margin-left: 5px;">
-                    <option value="video">Videos</option>
-                    <option value="playlist">Playlists</option>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0;">Search YouTube</h3>
+                <select id="search-type" style="width: 80px; padding: 5px; font-size: 0.8rem;">
+                    <option value="video">Songs</option>
+                    <option value="playlist">Playlist</option>
                 </select>
-                <button onclick="doSearch()">&#128270;</button>
             </div>
-            <div id="search-error"></div>
-            <div id="search-results"></div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="search-input" placeholder="Song title or artist...">
+                <button class="btn btn-primary" onclick="doSearch()">Search</button>
+            </div>
+            <div id="search-error" style="color: var(--bar-red); font-size: 0.75rem; margin-top: 10px; display: none;"></div>
+            <div id="search-results" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- CONTENT PANE -->
+    <div id="pane-content" class="pane" style="display: none;">
+        <div class="card">
+            <h3>Ticker Messages</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <input type="text" id="ticker-input" placeholder="Add custom message...">
+                <button class="btn btn-primary" onclick="addTickerMsg()">Add</button>
+            </div>
+            <div id="staff-ticker-list"></div>
         </div>
 
-        <div id="tab-featured" class="tab-content">
-            <div id="featured-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Populated by JS -->
+        <div class="card">
+            <h3>Bar Menu</h3>
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <input type="text" id="menu-name-input" placeholder="Item Name">
+                <input type="text" id="menu-price-input" placeholder="Price">
+                <button class="btn btn-primary" onclick="addMenuItem()">Add</button>
             </div>
+            <div id="staff-menu-list"></div>
         </div>
 
-        <div id="tab-url" class="tab-content">
-            <input type="text" id="url-input" placeholder="Paste YouTube or playlist URL...">
-            <button class="btn btn-cast" onclick="playFromUrl()">&#9889; Play Now</button>
-            <button class="btn btn-unlock" onclick="queueFromUrl()">&#10133; Add to Queue</button>
-        </div>
-
-        <div id="tab-menu" class="tab-content">
-            <div id="staff-menu-list" style="margin-bottom: 15px;">
-                <div style="opacity: 0.5; text-align: center; padding: 10px;">Loading menu...</div>
-            </div>
-            
-            <div style="border-top: 1px solid #333; padding-top: 15px;">
-                <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Add New Item</div>
-                <input type="text" id="menu-item-name" placeholder="Item Name (e.g. Mai Tai)" style="margin-bottom: 8px;">
-                <input type="text" id="menu-item-price" placeholder="Price (e.g. $12)" style="margin-bottom: 8px;">
-                <button class="btn btn-sm" style="background:var(--bar-green); color:white;" onclick="addMenuItem()">+ Add to Menu</button>
-            </div>
-        </div>
-
-        <div id="tab-ticker" class="tab-content">
-            <div style="margin-bottom: 20px;">
-                <div style="font-size:0.8rem; color:var(--bar-gold); font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Sidebar Flyer (Ad)</div>
-                <input type="text" id="ad-title-input" placeholder="Flyer Title (e.g. Happy Hour)">
-                <input type="text" id="ad-desc-input" placeholder="Description (e.g. All drinks 50% off)">
-                <input type="text" id="ad-flyer-input" placeholder="Flyer Image URL (Google Drive/Imgur)">
-                <button class="btn btn-sm" style="background:var(--bar-gold); color:black;" onclick="saveAd()">Update Flyer</button>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
-
-            <div>
-                <div style="font-size:0.8rem; color:var(--bar-gold); font-weight:bold; margin-bottom:10px; text-transform:uppercase;">Scrolling Ticker Messages</div>
-                <div id="staff-ticker-list" style="margin-bottom: 10px;"></div>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="ticker-msg-input" placeholder="New message..." style="margin-bottom: 0;">
-                    <button class="btn btn-sm" style="background:var(--bar-green); color:white; width: 60px;" onclick="addTickerMsg()">+</button>
+        <div class="card">
+            <h3>Ad Overlay (Flyer)</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <input type="text" id="ad-title-input" placeholder="Main Title (e.g. HAPPY HOUR)">
+                <input type="text" id="ad-desc-input" placeholder="Subtitle / Details">
+                <input type="text" id="ad-flyer-input" placeholder="Google Drive Link / Image URL">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn btn-primary" onclick="updateAdConfig()">Update Ad</button>
+                    <button class="btn btn-success" onclick="sendCommand('forceAd')">Show Now</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- QUEUE -->
-    <div class="card">
-        <h3>&#128203; UP NEXT <span id="queue-count" style="opacity:0.5; font-size:0.8rem;"></span></h3>
-        <div id="queue-list">
-            <div class="queue-empty">Queue is empty</div>
+    <!-- SETTINGS PANE -->
+    <div id="pane-settings" class="pane" style="display: none;">
+        <div class="card">
+            <h3>Control Overrides</h3>
+            <div class="status-row">
+                <span>Karaoke Lock (Hide Ads)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-karaoke" onchange="vRef.child('settings/karaokeLock').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>Auto-Mode (Random Radio)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-auto" onchange="vRef.child('settings/autoMode').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>Party Mode (Neon Theme)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-party" onchange="vRef.child('settings/partyMode').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>Show Request QR</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-qr" onchange="vRef.child('settings/showRequestQR').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>YouTube Captions (CC)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-cc" onchange="vRef.child('settings/captionsEnabled').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>AirConsole (Games)</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-airconsole" onchange="vRef.child('settings/airConsole').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="status-row">
+                <span>Enable Last Call Timer</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-lastcall" onchange="vRef.child('settings/lastCallEnabled').set(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
-        <button class="btn" style="background:#444; color:white; margin-top:10px;" onclick="clearQueue()">&#128465;&#65039; Clear Queue</button>
-    </div>
 
-    <!-- QUICK CONTROLS -->
-    <div class="card">
-        <h3>&#127918; QUICK CONTROLS</h3>
-
-        <div class="toggle-row">
+        <div class="card">
+            <h3>Appearance</h3>
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 0.8rem; opacity: 0.6; display: block; margin-bottom: 8px;">Ticker Position</label>
+                <div style="display: flex; gap: 5px;">
+                    <button id="tpos-top" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('top')">Top</button>
+                    <button id="tpos-bottom" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('bottom')">Bottom</button>
+                    <button id="tpos-left" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('left')">Left</button>
+                    <button id="tpos-right" class="btn btn-sm ticker-pos-btn" onclick="setTickerPos('right')">Right</button>
+                </div>
+            </div>
             <div>
-                <div class="toggle-label">&#127925; Auto Music</div>
-                <div class="toggle-desc">YouTube radio when queue is empty</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-auto" onchange="setAutoMode(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label">&#127908; Karaoke Lock</div>
-                <div class="toggle-desc">Prevents ad flyers during karaoke</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-karaoke" onchange="setLock(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label">&#10024; Party Mode</div>
-                <div class="toggle-desc">Flashing neon theme on TV</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-party" onchange="setPartyMode(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label">&#127918; AirConsole</div>
-                <div class="toggle-desc">Show AirConsole games on TV</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-airconsole" onchange="setAirConsole(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label">&#128242; Customer QR</div>
-                <div class="toggle-desc">Show QR on TV for song requests</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-qr" onchange="setQRMode(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label">&#128172; Subtitles (CC)</div>
-                <div class="toggle-desc">Show captions on TV when available</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-cc" onchange="setCaptions(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label">&#128276; End-of-Night Timer</div>
-                <div class="toggle-desc">Auto-Last Call at 1:45 AM</div>
-            </div>
-            <label class="toggle-switch">
-                <input type="checkbox" id="toggle-lastcall" onchange="setLastCallEnabled(this.checked)">
-                <span class="toggle-slider"></span>
-            </label>
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
-        <button class="btn btn-ad" onclick="triggerAd()">&#128444;&#65039; Show Flyer Now</button>
-        <div id="status-msg"></div>
-    </div>
-
-    <!-- VENUE SETTINGS -->
-    <div class="card">
-        <h3>&#127968; VENUE SETTINGS</h3>
-        <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Venue / Wi-Fi Name</div>
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="text" id="venue-name-input" placeholder="e.g. T.A. Station" style="margin-bottom: 0;">
-            <button class="btn btn-sm" style="background:var(--bar-gold); color:black; width:auto; padding: 0 15px;" onclick="saveVenueName()">Save</button>
-        </div>
-        <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 5px; line-height: 1.4;">This updates the name displayed on the TV, Staff Remote, and Customer Request App (e.g. to display your guest Wi-Fi name).</p>
-    </div>
-
-    <!-- STAFF ACCESS QR -->
-    <div class="card">
-        <h3>&#128242; STAFF ACCESS</h3>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div style="background: white; padding: 5px; border-radius: 8px; line-height: 0;">
-                <img id="staff-qr-img" src="" style="width: 80px; height: 80px; display: block;" alt="Staff QR">
-            </div>
-            <div style="flex: 1;">
-                <div style="font-size: 0.85rem; font-weight: bold; margin-bottom: 4px;">Share Remote</div>
-                <div style="font-size: 0.75rem; opacity: 0.6; line-height: 1.3;">New staff can scan this to open the remote on their phones instantly.</div>
+                <label style="font-size: 0.8rem; opacity: 0.6; display: block; margin-bottom: 8px;">Venue Name</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="venue-name-input" placeholder="T.A. Station">
+                    <button class="btn btn-primary" onclick="vRef.child('settings/venueName').set(document.getElementById('venue-name-input').value)">Save</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- SYSTEM TOOLS -->
-    <div class="card">
-        <h3>&#128736;&#65039; SYSTEM</h3>
-        <div class="btn-grid">
-            <button class="btn btn-sm" style="background:#6f42c1; color:white;" onclick="startSlideshow()">&#128247; Slideshow</button>
-            <button class="btn btn-sm" style="background:#dc3545; color:white;" onclick="sendCommand('fixDisplay')">&#128640; Fix Display</button>
-            <button class="btn btn-sm btn-refresh" onclick="remoteRefresh()">&#128260; Refresh TV</button>
-            <button class="btn btn-sm btn-refresh" onclick="location.reload()">&#128259; Refresh Remote</button>
-        </div>
-        <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
-        <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Ticker Position</div>
-        <div class="btn-grid" style="grid-template-columns: repeat(4, 1fr);">
-            <button class="btn btn-sm ticker-pos-btn" id="tpos-top" onclick="setTickerPos('top')">&#8679; Top</button>
-            <button class="btn btn-sm ticker-pos-btn" id="tpos-bottom" onclick="setTickerPos('bottom')">&#8681; Bottom</button>
-            <button class="btn btn-sm ticker-pos-btn" id="tpos-left" onclick="setTickerPos('left')">&#8678; Left</button>
-            <button class="btn btn-sm ticker-pos-btn" id="tpos-right" onclick="setTickerPos('right')">&#8680; Right</button>
-        </div>
-        <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
-        <div style="font-size:0.75rem; opacity:0.45; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Last Call</div>
-        <div class="btn-grid">
-            <button class="btn btn-sm" style="background:#c8860a; color:white;" onclick="sendCommand('previewLastCall')">&#128276; Preview</button>
-            <button class="btn btn-sm" style="background:#222; color:#aaa; border:1px solid #555;" onclick="sendCommand('previewClosed')">&#127981; Closed</button>
-        </div>
-        <button class="btn" style="background:#1a3a1a; color:#6fcf6f; margin-top:8px;" onclick="sendCommand('resetLastCall')">&#10004; Reset Last Call</button>
-    </div>
-
-    <!-- GOOGLE SHEETS -->
-    <div class="card">
-        <a href="https://docs.google.com/spreadsheets/d/1SCT9dV1cGovk2o3Dd7y1fE3CUY2CR58GQvxgKLITeU4/edit" class="btn btn-sheet" target="_blank">
-            &#128994; EDIT MENU & TICKER<br><small>(Google Sheets)</small>
-        </a>
-    </div>
-
-    <!-- INSTRUCTIONS -->
-    <div class="card">
-        <button class="lang-toggle" onclick="toggleLang()">TH / EN</button>
-        <div id="en-instr" class="instr active">
-            <strong>Controls:</strong>
-            <ul>
-                <li><b>Search:</b> Find songs and tap Play or + to queue.</li>
-                <li><b>Paste URL:</b> Play or queue directly from a YouTube link.</li>
-                <li><b>Queue:</b> Songs play in order — tap &times; to remove one.</li>
-                <li><b>Auto Music:</b> YouTube radio plays automatically when queue is empty.</li>
-                <li><b>Karaoke Lock:</b> Hides ads while customers are singing.</li>
-                <li><b>Party Mode:</b> Flashing neon theme on the TV.</li>
-                <li><b>Show Flyer:</b> Displays the ad flyer immediately.</li>
-                <li><b>Slideshow:</b> Shows photo slideshow when nothing is playing.</li>
-                <li><b>Refresh TV:</b> Fixes the TV browser if it freezes.</li>
-            </ul>
-        </div>
-        <div id="th-instr" class="instr">
-            <strong>&#3623;&#3636;&#3608;&#3637;&#3651;&#3594;&#3657;&#3591;&#3634;&#3609;:</strong>
-            <ul>
-                <li><b>Search:</b> &#3588;&#3657;&#3609;&#3627;&#3634;&#3648;&#3614;&#3621;&#3591; &#3649;&#3621;&#3657;&#3623;&#3585;&#3604; Play &#3627;&#3619;&#3639;&#3629; + &#3648;&#3614;&#3639;&#3656;&#3629;&#3648;&#3614;&#3636;&#3656;&#3617;&#3651;&#3609;&#3588;&#3636;&#3623;</li>
-                <li><b>Paste URL:</b> &#3623;&#3634;&#3591;&#3621;&#3636;&#3591;&#3585;&#3660; YouTube &#3648;&#3614;&#3639;&#3656;&#3629;&#3648;&#3621;&#3656;&#3609;&#3627;&#3619;&#3639;&#3629;&#3648;&#3614;&#3636;&#3656;&#3617;&#3651;&#3609;&#3588;&#3636;&#3623;&#3650;&#3604;&#3618;&#3605;&#3619;&#3591;</li>
-                <li><b>Queue:</b> &#3648;&#3614;&#3621;&#3591;&#3592;&#3632;&#3648;&#3621;&#3656;&#3609;&#3605;&#3656;&#3629;&#3648;&#3609;&#3639;&#3656;&#3629;&#3591; — &#3585;&#3604; &times; &#3648;&#3614;&#3639;&#3656;&#3629;&#3621;&#3610;&#3648;&#3614;&#3621;&#3591;</li>
-                <li><b>Auto Music:</b> &#3648;&#3614;&#3621;&#3591;&#3629;&#3633;&#3605;&#3650;&#3609;&#3617;&#3633;&#3605;&#3636;&#3592;&#3634;&#3585; YouTube &#3648;&#3617;&#3639;&#3656;&#3629;&#3588;&#3636;&#3623;&#3623;&#3656;&#3634;&#3591;</li>
-                <li><b>Karaoke Lock:</b> &#3611;&#3636;&#3604;&#3650;&#3615;&#3649;&#3619;&#3585;&#3586;&#3603;&#3632;&#3621;&#3641;&#3585;&#3588;&#3657;&#3634;&#3619;&#3657;&#3629;&#3591;&#3648;&#3614;&#3621;&#3591;</li>
-                <li><b>Party Mode:</b> &#3648;&#3611;&#3621;&#3637;&#3656;&#3618;&#3609;&#3608;&#3637;&#3617;&#3648;&#3611;&#3655;&#3609;&#3652;&#3615;&#3609;&#3637;&#3629;&#3629;&#3609;&#3610;&#3609;&#3607;&#3637;&#3623;&#3637;</li>
-                <li><b>Show Flyer:</b> &#3649;&#3626;&#3604;&#3591;&#3650;&#3611;&#3626;&#3648;&#3605;&#3629;&#3619;&#3660;&#3607;&#3633;&#3609;&#3607;&#3637;</li>
-                <li><b>Slideshow:</b> &#3649;&#3626;&#3604;&#3591;&#3619;&#3641;&#3611;&#3616;&#3634;&#3614;&#3648;&#3617;&#3639;&#3656;&#3629;&#3652;&#3617;&#3656;&#3617;&#3637;&#3648;&#3614;&#3621;&#3591;&#3648;&#3621;&#3656;&#3609;</li>
-                <li><b>Refresh TV:</b> &#3619;&#3637;&#3648;&#3615;&#3619;&#3594;&#3627;&#3609;&#3657;&#3634;&#3592;&#3629;&#3607;&#3637;&#3623;&#3637;&#3627;&#3634;&#3585;&#3588;&#3657;&#3634;&#3591;</li>
-            </ul>
+        <div class="card">
+            <h3>Diagnostics</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn btn-danger" onclick="sendCommand('slideshow')">Force Idle</button>
+                <button class="btn btn-danger" onclick="sendCommand('fixDisplay')">Fix Display</button>
+                <button class="btn btn-danger" onclick="vRef.child('settings/remoteRefresh').set(Date.now())">Refresh TV</button>
+                <button class="btn btn-primary" onclick="location.reload()">Refresh App</button>
+            </div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <!-- CONFIGURATION -->
     <script src="config.js"></script>
 
     <script>
-        // Standardized Venue ID Logic
+        // 1. Core Logic
+        var YT_API_KEY = firebaseConfig.apiKey; 
+        
         function getVenueId() {
             var urlParams = new URLSearchParams(window.location.search);
             var v = urlParams.get('v');
+            if (v && v.trim().length >= 4) return v.toUpperCase().trim();
             
-            // If we have a valid code in URL, use it
-            if (v && v !== 'DEFAULT' && v.trim().length === 4) {
-                return v.toUpperCase().trim();
-            }
-
-            // Otherwise, prompt for it
-            var promptVal = prompt("Enter 4-character Connect Code (shown on TV):");
+            var promptVal = prompt("Enter 4-character Venue Code (from TV):");
             if (promptVal) {
                 var code = promptVal.toUpperCase().trim();
-                if (code.length === 4) {
-                    window.location.search = '?v=' + code;
-                    // The page will reload now
-                } else {
-                    alert("Invalid Connect Code. Must be exactly 4 characters.");
-                }
+                window.location.search = '?v=' + code;
+                return code;
             }
             return 'DEFAULT';
         }
 
-        function switchVenue() {
-            var promptVal = prompt("Enter new 4-character Connect Code:");
-            if (promptVal) {
-                var code = promptVal.toUpperCase().trim();
-                if (code.length === 4) {
-                    window.location.search = '?v=' + code;
-                } else {
-                    alert("Invalid code.");
-                }
-            }
-        }
-
         var venueId = getVenueId();
-        if (venueId === 'DEFAULT') {
-            document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding: 20px;">' +
-                '<h1 style="color:var(--bar-gold);">Welcome to Staff Remote</h1>' +
-                '<p>Please refresh and enter a valid Connect Code to begin.</p></div>';
-            throw new Error("Connect Code required");
-        }
+        document.getElementById('venue-code-display').textContent = venueId;
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -777,12 +312,6 @@
                 var d = document.querySelectorAll('.venue-name-display');
                 for (var i = 0; i < d.length; i++) d[i].textContent = cachedName.toUpperCase();
             }
-            
-            var cachedQueue = getLocal("queue");
-            if (cachedQueue) {
-                // We'll let the Firebase listener handle the actual render to avoid double-processing,
-                // but we could render a placeholder here if needed.
-            }
         })();
 
         // AUTH & INITIALIZATION
@@ -792,502 +321,138 @@
                 initFirebaseListeners();
             } else {
                 firebase.auth().signInAnonymously().catch(function(error) {
-                    console.error("Firebase Anonymous Auth Error:", error.code, error.message);
+                    console.error("Firebase Auth Error:", error.code, error.message);
                 });
             }
         });
 
-        // Auth Logic (Staff PIN)
-        var authKey = 'TA_STATION_AUTH_' + venueId;
-        function checkAuth() {
-            if (localStorage.getItem(authKey)) return true;
-            var pin = prompt('Enter Staff PIN (e.g. 1218):');
-            if (pin === '1218' || pin === '9999') {
-                localStorage.setItem(authKey, 'true');
-                return true;
-            }
-            if (pin !== null) alert('Access Denied');
-            return false;
+        // ── Navigation ──
+        function showPane(id) {
+            document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
+            document.getElementById('pane-' + id).style.display = 'block';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
         }
 
-        if (!checkAuth()) {
-            document.body.innerHTML = '<div style="background:#000; height:100vh; color:white; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding: 20px;">' +
-                '<h1 style="color:var(--bar-gold);">Access Denied</h1>' +
-                '<p>Invalid PIN. Refresh to try again.</p></div>';
-            throw new Error("Authentication failed");
-        }
-
-        // Update UI with connection status
-        document.addEventListener('DOMContentLoaded', function() {
-            var displayEl = document.getElementById('current-code-display');
-            if (displayEl) displayEl.textContent = venueId;
-        });
-
-        // Connection Monitor
-        db.ref(".info/connected").on("value", function(snap) {
-            var banner = document.getElementById('offline-banner');
-            if (banner) banner.style.display = snap.val() ? 'none' : 'block';
-        });
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js');
+        // ── Actions ──
+        function sendCommand(action, value) {
+            vRef.child('settings/playerCommand').set({
+                action: action,
+                value: value || null,
+                ts: Date.now()
             });
         }
 
-        var currentPlayerState = null;
-
-        // ── Tabs ──
-        function switchTab(tab) {
-            var btns = document.querySelectorAll('.tab-btn');
-            for (var i = 0; i < btns.length; i++) {
-                var b = btns[i];
-                var isMatch = (tab === 'search' && b.innerText === 'Search') || 
-                                (tab === 'featured' && b.innerText === 'Featured') ||
-                                (tab === 'url' && b.innerText === 'Paste URL') || 
-                                (tab === 'menu' && b.innerText === 'Menu') ||
-                                (tab === 'ticker' && b.innerText === 'Ads & Ticker');
-                b.className = isMatch ? 'tab-btn active' : 'tab-btn';
-            }
-            document.getElementById('tab-search').className = tab === 'search' ? 'tab-content active' : 'tab-content';
-            document.getElementById('tab-featured').className = tab === 'featured' ? 'tab-content active' : 'tab-content';
-            document.getElementById('tab-url').className = tab === 'url' ? 'tab-content active' : 'tab-content';
-            document.getElementById('tab-menu').className = tab === 'menu' ? 'tab-content active' : 'tab-content';
-            document.getElementById('tab-ticker').className = tab === 'ticker' ? 'tab-content active' : 'tab-content';
-
-            if (tab === 'featured') populateFeatured();
+        function togglePlayPause() {
+            var btn = document.getElementById('btn-play-pause');
+            var isPlaying = btn.innerHTML.indexOf('pause') !== -1;
+            sendCommand(isPlaying ? 'pause' : 'play');
         }
 
-        function populateFeatured() {
-            var listEl = document.getElementById('featured-list');
-            if (!listEl || listEl.children.length > 0) return; // Only populate once
+        function setVolume(val) {
+            document.getElementById('vol-val').textContent = val + '%';
+            sendCommand('volume', parseInt(val));
+        }
 
-            for (var i = 0; i < FEATURED_PLAYLISTS.length; i++) {
-                var pl = FEATURED_PLAYLISTS[i];
-                var div = document.createElement('div');
-                div.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #222; padding: 12px; border-radius: 8px; border: 1px solid #333;";
-                div.innerHTML = 
-                    '<div>' +
-                        '<div style="font-weight:bold; font-size:0.9rem;">' + pl.title + '</div>' +
-                        '<div style="font-size:0.7rem; opacity:0.5;">Playlist</div>' +
-                    '</div>' +
-                    '<div style="display:flex; gap:5px;">' +
-                        '<button class="btn btn-cast" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + escAttr(pl.id) + '\', true)">Play</button>' +
-                        '<button class="btn btn-unlock" style="padding:5px 10px; margin:0;" onclick="loadPlaylist(\'' + escAttr(pl.id) + '\', false)">+</button>' +
-                    '</div>';
-                listEl.appendChild(div);
+        function setTickerPos(pos) {
+            vRef.child('settings/tickerPosition').set(pos);
+        }
+
+        function clearQueue() {
+            if (confirm("Clear the entire queue?")) {
+                vRef.child('settings/queue').set([]);
             }
         }
 
-        // ── YouTube URL Helpers ──
-        function extractVideoId(url) {
-            var regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            var match = url.match(regex);
-            return match ? match[1] : null;
+        function addTickerMsg() {
+            var el = document.getElementById('ticker-input');
+            var msg = el.value.trim();
+            if (!msg) return;
+            vRef.child('settings/ticker').push(msg);
+            el.value = '';
         }
 
-        function extractPlaylistId(url) {
-            var match = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-            return match ? match[1] : null;
+        function removeTickerMsg(key) {
+            vRef.child('settings/ticker').child(key).remove();
         }
 
-        // ── Search ──
-        var searchTimeout = null;
-
-        function firebaseSafe(str) {
-            return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_");
+        function addMenuItem() {
+            var name = document.getElementById('menu-name-input').value.trim();
+            var price = document.getElementById('menu-price-input').value.trim();
+            if (!name) return;
+            vRef.child('settings/menu').push({ name: name, price: price });
+            document.getElementById('menu-name-input').value = '';
+            document.getElementById('menu-price-input').value = '';
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('search-input').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') doSearch();
+        function removeMenuItem(key) {
+            vRef.child('settings/menu').child(key).remove();
+        }
+
+        function updateAdConfig() {
+            vRef.child('settings/adConfig').set({
+                title: document.getElementById('ad-title-input').value.trim(),
+                desc: document.getElementById('ad-desc-input').value.trim(),
+                flyer: document.getElementById('ad-flyer-input').value.trim()
             });
-        });
-
-        function doSearch() {
-            var query = document.getElementById('search-input').value.trim();
-            var searchType = document.getElementById('search-type').value;
-            if (!query) return;
-
-            var errorEl = document.getElementById('search-error');
-            var resultsEl = document.getElementById('search-results');
-            errorEl.style.display = 'none';
-            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
-
-            var vidId = extractVideoId(query);
-            if (vidId) {
-                resultsEl.innerHTML = '';
-                playNow(vidId, query, '');
-                document.getElementById('search-input').value = '';
-                return;
-            }
-
-            var refinedQuery = query;
-            if (searchType === 'video') {
-                var lowerQuery = query.toLowerCase();
-                var isSpecialVersion = 
-                    lowerQuery.indexOf('karaoke') !== -1 || 
-                    lowerQuery.indexOf('instrumental') !== -1 || 
-                    lowerQuery.indexOf('backing') !== -1 || 
-                    lowerQuery.indexOf('live') !== -1 || 
-                    lowerQuery.indexOf('remix') !== -1 || 
-                    lowerQuery.indexOf('lyrics') !== -1 || 
-                    lowerQuery.indexOf('official') !== -1 || 
-                    lowerQuery.indexOf('video') !== -1;
-                
-                if (!isSpecialVersion) {
-                    refinedQuery += " official music video";
-                }
-            }
-
-            var safeQuery = firebaseSafe(query) + "_" + searchType;
-            var cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
-            
-            cacheRef.once('value').then(function(snapshot) {
-                var cachedData = snapshot.val();
-
-                if (cachedData && cachedData.items) {
-                    renderSearchResults(cachedData.items);
-                    return;
-                }
-
-                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
-                    encodeURIComponent(refinedQuery) + '&type=' + searchType + '&maxResults=15&key=' + YT_API_KEY;
-                if (searchType === 'video') url += '&videoEmbeddable=true';
-                
-                return fetch(url)
-                    .then(function(res) { return res.json(); })
-                    .then(function(data) {
-                        if (data.error) {
-                            var originalMsg = data.error.message || 'Unknown error';
-                            var msg = originalMsg;
-                            if (data.error.code === 403) {
-                                if (originalMsg.indexOf('referer') !== -1 || originalMsg.indexOf('referrer') !== -1) {
-                                    msg = 'API key blocked. Add domain to allowed HTTP referrers.';
-                                } else if (originalMsg.indexOf('quota') !== -1) {
-                                    msg = 'Daily search limit reached. Paste YouTube URL instead.';
-                                } else {
-                                    msg = 'YouTube API not enabled.';
-                                }
-                            }
-                            errorEl.textContent = 'Search Error: ' + msg;
-                            errorEl.style.display = 'block';
-                            resultsEl.innerHTML = '';
-                            return;
-                        }
-
-                        if (!data.items || data.items.length === 0) {
-                            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
-                            return;
-                        }
-
-                        cacheRef.set({ items: data.items, timestamp: Date.now() });
-                        renderSearchResults(data.items);
-                    });
-            }).catch(function(err) {
-                errorEl.textContent = 'Search failed. Check connection.';
-                errorEl.style.display = 'block';
-                resultsEl.innerHTML = '';
-            });
-        }
-
-        function renderSearchResults(items) {
-            var resultsEl = document.getElementById('search-results');
-            resultsEl.innerHTML = '';
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                var isPlaylist = item.id.kind === 'youtube#playlist';
-                var id = isPlaylist ? item.id.playlistId : item.id.videoId;
-                var title = item.snippet.title;
-                var channel = item.snippet.channelTitle;
-                var thumb = (item.snippet.thumbnails.medium || item.snippet.thumbnails.default).url;
-
-                var div = document.createElement('div');
-                div.className = 'result-card';
-                div.innerHTML =
-                    '<div class="result-thumb-wrap">' +
-                        '<img class="result-thumb" src="' + thumb + '" alt="">' +
-                        '<div class="result-card-actions">' +
-                            '<button class="' + (isPlaylist ? 'btn-play-pl' : 'btn-play-sm') + '" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">&#9654; ' + (isPlaylist ? 'Play Set' : 'Play') + '</button>' +
-                            '<button class="' + (isPlaylist ? 'btn-queue-pl' : 'btn-queue-sm') + '" data-id="' + id + '" data-title="' + escAttr(title) + '" data-author="' + escAttr(channel) + '">+</button>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="result-card-info">' +
-                        '<div class="result-title">' + (isPlaylist ? '[PLAYLIST] ' : '') + escHtml(title) + '</div>' +
-                        '<div class="result-channel">' + escHtml(channel) + '</div>' +
-                    '</div>';
-                resultsEl.appendChild(div);
-            }
-
-            resultsEl.onclick = function(e) {
-                var btn = e.target.closest('button');
-                if (!btn) return;
-                var id = btn.dataset.id;
-                var title = btn.dataset.title;
-                var author = btn.dataset.author;
-                if (btn.className === 'btn-play-sm') {
-                    playNow(id, title, author);
-                } else if (btn.className === 'btn-queue-sm') {
-                    addToQueue(id, title, author);
-                } else if (btn.className === 'btn-play-pl') {
-                    loadPlaylist(id, true);
-                } else if (btn.className === 'btn-queue-pl') {
-                    loadPlaylist(id, false);
-                }
-            };
+            alert("Ad configuration updated!");
         }
 
         function playNow(id, title, author) {
             vRef.child('settings/currentVideoId').set(id);
-            showStatus('Playing: ' + title);
-        }
-
-        function addToQueue(id, title, author) {
-            vRef.child('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
-                queue.push({
-                    id: id,
-                    title: title || '',
-                    author: author || '',
-                    thumb: 'https://img.youtube.com/vi/' + id + '/default.jpg'
-                });
-                vRef.child('settings/queue').set(queue);
-                showStatus('Queued: ' + (title || id));
+            vRef.child('settings/nowPlaying').set({
+                videoId: id,
+                title: title || '',
+                author: author || ''
             });
         }
 
-        function clearQueue() {
-            if (confirm('Clear the entire queue?')) {
-                vRef.child('settings/queue').set([]);
-                showStatus('Queue cleared');
-            }
+        function addToQueue(id, title, author, thumb) {
+            vRef.child('settings/queue').once('value', function(snapshot) {
+                var queue = snapshot.val() || [];
+                queue.push({ id: id, title: title, author: author, thumb: thumb });
+                vRef.child('settings/queue').set(queue);
+            });
         }
 
         function removeFromQueue(index) {
-            vRef.child('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
+            vRef.child('settings/queue').once('value', function(snapshot) {
+                var queue = snapshot.val() || [];
                 queue.splice(index, 1);
                 vRef.child('settings/queue').set(queue);
             });
         }
 
-        function playFromUrl() {
-            var input = document.getElementById('url-input').value.trim();
-            if (!input) return;
-            var playlistId = extractPlaylistId(input);
-            if (playlistId) {
-                loadPlaylist(playlistId, true);
-                document.getElementById('url-input').value = '';
-                return;
-            }
-            var vidId = extractVideoId(input) || input.trim();
-            if (vidId.length === 11) {
-                playNow(vidId, '', '');
-                document.getElementById('url-input').value = '';
-            }
+        function firebaseSafe(str) { return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_"); }
+        function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
+        function escAttr(str) { if (!str) return ""; return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;"); }
+        function extractVideoId(url) {
+            var match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|shorts\/)([a-zA-Z0-9_-]{11})/);
+            return (match && match[1]) ? match[1] : null;
         }
 
-        function queueFromUrl() {
-            var input = document.getElementById('url-input').value.trim();
-            if (!input) return;
-            var playlistId = extractPlaylistId(input);
-            if (playlistId) {
-                loadPlaylist(playlistId, false);
-                document.getElementById('url-input').value = '';
-                return;
-            }
-            var vidId = extractVideoId(input) || input.trim();
-            if (vidId.length === 11) {
-                addToQueue(vidId, '', '');
-                document.getElementById('url-input').value = '';
-            }
-        }
-
-        function loadPlaylist(playlistId, playFirst) {
-            showStatus('Loading playlist...');
-            var items = [];
-            var nextPageToken = '';
-            
-            function fetchPage(page) {
-                var url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=' +
-                    playlistId + '&key=' + YT_API_KEY;
-                if (nextPageToken) url += '&pageToken=' + nextPageToken;
-                
-                return fetch(url)
-                    .then(function(res) { return res.json(); })
-                    .then(function(data) {
-                        if (data.error) {
-                            showStatus('Playlist error: ' + data.error.message);
-                            return;
-                        }
-                        if (data.items) {
-                            for (var i = 0; i < data.items.length; i++) {
-                                var item = data.items[i];
-                                var vid = item.snippet.resourceId.videoId;
-                                items.push({
-                                    id: vid,
-                                    title: item.snippet.title || '',
-                                    author: item.snippet.videoOwnerChannelTitle || '',
-                                    thumb: 'https://img.youtube.com/vi/' + vid + '/default.jpg'
-                                });
-                            }
-                        }
-                        nextPageToken = data.nextPageToken;
-                        if (nextPageToken && page < 1) {
-                            return fetchPage(page + 1);
-                        }
-                    });
-            }
-
-            fetchPage(0).then(function() {
-                if (items.length === 0) {
-                    showStatus('Playlist empty');
-                    return;
-                }
-                if (playFirst) {
-                    var first = items.shift();
-                    playNow(first.id, first.title, first.author);
-                    if (items.length > 0) {
-                        vRef.child('settings/queue').once('value', function(snap) {
-                            var queue = snap.val() || [];
-                            vRef.child('settings/queue').set(queue.concat(items));
-                        }, function(err) { showStatus('Failed to update queue'); console.error(err); });
-                    }
-                } else {
-                    vRef.child('settings/queue').once('value', function(snap) {
-                        var queue = snap.val() || [];
-                        vRef.child('settings/queue').set(queue.concat(items));
-                        showStatus('Queued ' + items.length + ' songs');
-                    }, function(err) { showStatus('Failed to update queue'); console.error(err); });
-                }
-            }).catch(function() { showStatus('Failed load'); });
-        }
-
-        function sendCommand(action) {
-            vRef.child('settings/playerCommand').set({ action: action, ts: Date.now() });
-        }
-
-        function togglePlayPause() {
-            sendCommand(currentPlayerState === 1 ? 'pause' : 'play');
-        }
-
-        var volumeTimeout = null;
-        function sendVolume(val) {
-            clearTimeout(volumeTimeout);
-            volumeTimeout = setTimeout(function() {
-                vRef.child('settings/playerCommand').set({ action: 'volume', value: parseInt(val), ts: Date.now() });
-            }, 200);
-        }
-
-        function setLock(status) { vRef.child('settings/karaokeLock').set(status); }
-        function setAutoMode(status) { vRef.child('settings/autoMode').set(status); }
-        function setPartyMode(status) { vRef.child('settings/partyMode').set(status); }
-        function triggerAd() { vRef.child('settings/forceAd').set(Date.now()); }
-        function startSlideshow() { sendCommand('slideshow'); }
-        function setTickerPos(pos) { vRef.child('settings/tickerPosition').set(pos); }
-        function setAirConsole(status) { vRef.child('settings/airConsole').set(status); }
-        function setQRMode(status) { vRef.child('settings/showRequestQR').set(status); }
-        function setCaptions(status) {
-            vRef.child('settings/playerCommand').set({ action: 'captions', value: status, ts: Date.now() });
-            vRef.child('settings/captionsEnabled').set(status);
-        }
-
-        function saveVenueName() {
-            var name = document.getElementById('venue-name-input').value.trim();
-            vRef.child('settings/venueName').set(name || "T.A. Station");
-            showStatus('Updated');
-        }
-
-        function initStaffQR() {
-            var qrImg = document.getElementById('staff-qr-img');
-            var staffUrl = window.location.href;
-            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(staffUrl);
-        }
-        initStaffQR();
-
-        function setLastCallEnabled(status) { vRef.child('settings/lastCallEnabled').set(status); }
-
-        function addMenuItem() {
-            var name = document.getElementById('menu-item-name').value.trim();
-            var price = document.getElementById('menu-item-price').value.trim();
-            if (!name) return;
-            vRef.child('settings/menu').push({ name: name, price: price });
-            document.getElementById('menu-item-name').value = '';
-            document.getElementById('menu-item-price').value = '';
-        }
-
-        function removeMenuItem(key) { vRef.child('settings/menu').child(key).remove(); }
-
-        function saveAd() {
-            var title = document.getElementById('ad-title-input').value.trim();
-            var desc = document.getElementById('ad-desc-input').value.trim();
-            var flyer = document.getElementById('ad-flyer-input').value.trim();
-            vRef.child('settings/adConfig').set({ title: title, desc: desc, flyer: flyer });
-        }
-
-        function addTickerMsg() {
-            var msg = document.getElementById('ticker-msg-input').value.trim();
-            if (!msg) return;
-            vRef.child('settings/ticker').push(msg);
-            document.getElementById('ticker-msg-input').value = '';
-        }
-
-        function removeTickerMsg(key) { vRef.child('settings/ticker').child(key).remove(); }
-
-        function remoteRefresh() {
-            if (confirm('Refresh TV browser?')) {
-                vRef.child('settings/remoteRefresh').set(Date.now());
-            }
-        }
-
-        function toggleLang() {
-            var en = document.getElementById('en-instr');
-            var th = document.getElementById('th-instr');
-            if (en.className === 'instr active') {
-                en.className = 'instr'; th.className = 'instr active';
-            } else {
-                en.className = 'instr active'; th.className = 'instr';
-            }
-        }
-
-        function showStatus(msg) {
-            var el = document.getElementById('status-msg');
-            el.innerText = msg;
-            setTimeout(function() { el.innerText = ''; }, 3000);
-        }
-
-        function escHtml(str) {
-            var div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
-
-        function escAttr(str) {
-            if (!str) return '';
-            return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-
+        // ── Listeners ──
         function initFirebaseListeners() {
             vRef.child('settings/nowPlaying').on('value', function(snap) {
-                var np = snap.val();
-                var container = document.getElementById('np-container');
-                if (np && np.videoId) {
-                    container.className = 'np-active';
-                    document.getElementById('np-thumb').src = 'https://img.youtube.com/vi/' + np.videoId + '/mqdefault.jpg';
-                    document.getElementById('np-title').textContent = np.title || 'Unknown';
-                    document.getElementById('np-author').textContent = np.author || '';
+                var data = snap.val();
+                var thumb = document.getElementById('np-thumb');
+                var title = document.getElementById('np-title');
+                var author = document.getElementById('np-author');
+                if (data) {
+                    thumb.src = "https://img.youtube.com/vi/" + data.videoId + "/default.jpg";
+                    title.textContent = data.title || 'Unknown';
+                    author.textContent = data.author || '--';
                 } else {
-                    container.className = 'np-idle';
-                    document.getElementById('np-thumb').src = 'images/TAStation-1.JPG';
-                    document.getElementById('np-title').textContent = 'Nothing playing';
-                    document.getElementById('np-author').textContent = '';
+                    thumb.src = 'images/TAStation-1.JPG';
+                    title.textContent = 'Nothing playing';
+                    author.textContent = '--';
                 }
             });
 
             vRef.child('settings/playerState').on('value', function(snap) {
-                currentPlayerState = snap.val();
-                var btn = document.getElementById('btn-playpause');
-                btn.innerHTML = currentPlayerState === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
+                var state = snap.val();
+                var btn = document.getElementById('btn-play-pause');
+                btn.innerHTML = state === 1 ? '&#9208;&#65039;' : '&#9654;&#65039;';
             });
 
             vRef.child('settings/queue').on('value', function(snap) {
@@ -1419,16 +584,86 @@
                 document.title = name + " - Staff Remote";
             });
         }
-    </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.3 (2026-04-18 HST)</div>
-</body>
-</html>
-ent.querySelectorAll('.venue-name-display');
-                for (var i = 0; i < d.length; i++) d[i].textContent = name.toUpperCase();
-                document.title = name + " - Staff Remote";
+
+        function doSearch() {
+            var query = document.getElementById('search-input').value.trim();
+            var searchType = document.getElementById('search-type').value;
+            if (!query) return;
+
+            var errorEl = document.getElementById('search-error');
+            var resultsEl = document.getElementById('search-results');
+            errorEl.style.display = 'none';
+            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Searching...</div>';
+
+            var vidId = extractVideoId(query);
+            if (vidId) {
+                resultsEl.innerHTML = '';
+                playNow(vidId, query, '');
+                document.getElementById('search-input').value = '';
+                return;
+            }
+
+            var safeQuery = firebaseSafe(query) + "_" + searchType;
+            var cacheRef = db.ref('SEARCH_CACHE/' + safeQuery);
+            
+            cacheRef.once('value').then(function(snapshot) {
+                var cachedData = snapshot.val();
+                if (cachedData && cachedData.items) {
+                    renderSearchResults(cachedData.items);
+                    return;
+                }
+
+                var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' +
+                    encodeURIComponent(query) + '&type=' + searchType + '&maxResults=15&key=' + YT_API_KEY;
+                
+                return fetch(url)
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        if (data.error) {
+                            errorEl.textContent = 'Search Error: ' + (data.error.message || 'Unknown');
+                            errorEl.style.display = 'block';
+                            resultsEl.innerHTML = '';
+                            return;
+                        }
+                        if (!data.items || data.items.length === 0) {
+                            resultsEl.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">No results found</div>';
+                            return;
+                        }
+                        cacheRef.set({ items: data.items, timestamp: Date.now() });
+                        renderSearchResults(data.items);
+                    });
+            }).catch(function() {
+                errorEl.textContent = 'Search failed. Check connection.';
+                errorEl.style.display = 'block';
+                resultsEl.innerHTML = '';
             });
         }
+
+        function renderSearchResults(items) {
+            var resultsEl = document.getElementById('search-results');
+            resultsEl.innerHTML = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var isPlaylist = item.id.kind === 'youtube#playlist';
+                var id = isPlaylist ? item.id.playlistId : item.id.videoId;
+                if (!id) continue;
+                
+                var div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = 
+                    '<img class="result-thumb" src="' + item.snippet.thumbnails.default.url + '">' +
+                    '<div class="result-info">' +
+                        '<div class="result-title">' + (isPlaylist ? '[PLAYLIST] ' : '') + escHtml(item.snippet.title) + '</div>' +
+                        '<div class="result-channel">' + escHtml(item.snippet.channelTitle) + '</div>' +
+                    '</div>' +
+                    '<div style="display:flex; gap:5px;">' +
+                        '<button class="btn btn-sm btn-success" onclick="playNow(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\',\'' + escAttr(item.snippet.channelTitle) + '\')">Play</button>' +
+                        '<button class="btn btn-sm btn-primary" onclick="addToQueue(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\',\'' + escAttr(item.snippet.channelTitle) + '\',\'' + item.snippet.thumbnails.default.url + '\')">Add</button>' +
+                    '</div>';
+                resultsEl.appendChild(div);
+            }
+        }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.0 (2026-03-21 11:35 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.5.3 (2026-04-18 HST)</div>
 </body>
 </html>

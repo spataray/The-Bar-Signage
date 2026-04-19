@@ -19,8 +19,6 @@
     <!-- Connection Status LED -->
     <div id="conn-status-led" style="position: fixed; bottom: 10px; left: 10px; width: 6px; height: 6px; background: #28a745; border-radius: 50%; box-shadow: 0 0 5px #28a745; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
 
-    <!-- Venue Code Display -->
-
     <div id="app-container">
         <div id="video-section">
             <div id="player"></div>
@@ -126,34 +124,38 @@
             });
         }
 
-        // 1. DATA SOURCES (DEPRECATED: Now using Firebase)
-        var URL_ADS = "";
-        var URL_MENU = "";
-        var URL_TICKER = "";
+        // ── GLOBALS ──
+        var player;
+        var playerReady = false;
+        var pendingVideoId = null;
+        var isLocked = false;
+        var isPartyMode = false;
+        var adCycleShowMenu = false;
+        var autoMode = false;
+        var tickerMessages = [];
+        var tickerIndex = 0;
+        var tickerTimer = null;
+        var venueId = null;
+        var vRef = null;
+        var db = null;
 
-        // 2. FIREBASE SETUP
-        firebase.initializeApp(firebaseConfig);
-        var db = firebase.database();
-
-        // ── VENUE ISOLATION ──
-        function getVenueId() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var v = urlParams.get('v');
-            if (!v) {
-                // Generate a random 4-char code for new setups
-                v = Math.random().toString(36).substring(2, 6).toUpperCase();
-                // Update URL without reload so staff can see it
-                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?v=" + v;
-                window.history.pushState({path:newurl},"",newurl);
-            }
-            return v;
+        // ── HELPERS ──
+        function escHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
         }
-        var venueId = getVenueId();
-        var vRef = db.ref("venues/" + venueId);
 
         function buildTickerMessages(sheetMessages) {
             if (!sheetMessages) return [];
             return sheetMessages.slice ? sheetMessages.slice() : Object.values(sheetMessages);
+        }
+
+        function normalizeFlyerUrl(url) {
+            url = (url || "").trim();
+            var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
+            if (match) return 'https://lh3.googleusercontent.com/d/' + match[1];
+            return url;
         }
 
         // ── LOCAL STORAGE MIRRORING ──
@@ -164,31 +166,34 @@
             try { return JSON.parse(localStorage.getItem("tbs_" + venueId + "_" + key)); } catch(e) { return null; }
         }
 
-        // UI Update Helpers
+        // ── UI UPDATERS ──
         function updateMenuUI(menu) {
+            var el = document.getElementById("menu-content");
+            if (!el) return;
             if (menu) {
                 var menuHtml = "<h3>" + (window._currentVenueName || "T.A. Station").toUpperCase() + " MENU</h3>";
                 for (var key in menu) {
                     var item = menu[key];
                     menuHtml += "<div class=\"menu-item\"><span>" + escHtml(item.name) + "</span><span>" + escHtml(item.price || "") + "</span></div>";
                 }
-                document.getElementById("menu-content").innerHTML = menuHtml;
+                el.innerHTML = menuHtml;
             } else {
-                document.getElementById("menu-content").innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
+                el.innerHTML = "<h3>MENU</h3><div style=\"opacity:0.3;text-align:center;\">Set menu in remote</div>";
             }
         }
 
         function updateAdUI(ad) {
             var flyerImg = document.getElementById("ad-flyer");
+            var titleEl = document.getElementById("ad-title");
+            var descEl = document.getElementById("ad-desc");
+            if (!flyerImg || !titleEl || !descEl) return;
             if (ad) {
-                document.getElementById("ad-title").innerText = ad.title || window._currentVenueName || "T.A. Station";
-                document.getElementById("ad-desc").innerText = ad.desc || "";
+                titleEl.innerText = ad.title || window._currentVenueName || "T.A. Station";
+                descEl.innerText = ad.desc || "";
                 if (ad.flyer) {
                     flyerImg.src = normalizeFlyerUrl(ad.flyer);
                     flyerImg.style.display = "block";
-                    flyerImg.onerror = function() { 
-                        this.style.display = "none"; 
-                    };
+                    flyerImg.onerror = function() { this.style.display = "none"; };
                 } else {
                     flyerImg.style.display = "none";
                 }
@@ -201,16 +206,11 @@
             for (var i = 0; i < displays.length; i++) {
                 var el = displays[i];
                 el.textContent = name;
-                if (el.id === "idle-logo") {
-                    el.textContent = name.toUpperCase();
-                }
+                if (el.id === "idle-logo") el.textContent = name.toUpperCase();
             }
             document.title = name + " - Digital Signage";
-            
             var adTitle = document.getElementById("ad-title");
-            if (adTitle && !adTitle.dataset.hasCustomText) {
-                adTitle.innerText = name;
-            }
+            if (adTitle && !adTitle.dataset.hasCustomText) adTitle.innerText = name;
         }
 
         function updateTickerPosUI(pos) {
@@ -218,658 +218,89 @@
             if (pos !== "top") document.body.classList.add("ticker-" + pos);
         }
 
-        // Initialize UI from LocalStorage (Instant Boot)
-        (function initFromLocal() {
+        // ── INITIALIZATION ──
+        function initApp() {
+            // Venue Logic
+            var urlParams = new URLSearchParams(window.location.search);
+            venueId = urlParams.get('v');
+            if (!venueId) {
+                venueId = Math.random().toString(36).substring(2, 6).toUpperCase();
+                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?v=" + venueId;
+                window.history.pushState({path:newurl},"",newurl);
+            }
+
+            // Firebase Start
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            vRef = db.ref("venues/" + venueId);
+
+            // Load from LS
             var cachedName = getLocal("venueName") || "T.A. Station";
             updateVenueNameUI(cachedName);
-            
-            var cachedMenu = getLocal("menu");
-            if (cachedMenu) updateMenuUI(cachedMenu);
-            
+            updateMenuUI(getLocal("menu"));
             var cachedTicker = getLocal("ticker");
-            if (cachedTicker) {
-                tickerMessages = buildTickerMessages(Object.values(cachedTicker));
-            }
-            
-            var cachedAd = getLocal("adConfig");
-            if (cachedAd) updateAdUI(cachedAd);
-            
-            var cachedPos = getLocal("tickerPosition");
-            if (cachedPos) updateTickerPosUI(cachedPos);
-        })();
+            if (cachedTicker) tickerMessages = buildTickerMessages(cachedTicker);
+            updateAdUI(getLocal("adConfig"));
+            updateTickerPosUI(getLocal("tickerPosition") || "top");
 
-        function escHtml(str) {
-            var div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
-        }
-
-        function setDebug(key, val) {
-            var id = "dbg-" + key.toLowerCase();
-            var el = document.getElementById(id);
-            if (el) el.innerText = key + ": " + val;
-        }
-        setDebug("LS", (window.localStorage ? "OK" : "NO"));
-        setDebug("FT", (window.fetch ? "OK" : "NO"));
-        setDebug("IDB", (window.indexedDB ? "OK" : "NO"));
-        setDebug("UA", navigator.userAgent.substring(0, 30));
-        
-        function updateDebugTime() {
-            var now = new Date();
-            var timeStr = now.getHours() + ":" + (now.getMinutes() < 10 ? "0" : "") + now.getMinutes();
-            setDebug("TIME", timeStr);
-        }
-        updateDebugTime();
-        setInterval(updateDebugTime, 30000);
-
-        // AUTH & INITIALIZATION
-        var authInitialised = false;
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (authInitialised) return; 
-            if (user) {
-                authInitialised = true;
-                setDebug("AUTH", "OK");
-                initFirebaseListeners();
-            } else {
-                setDebug("AUTH", "LOGIN...");
-                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
-                    .then(function() {
-                        return firebase.auth().signInAnonymously();
-                    })
-                    .catch(function(error) {
-                        authInitialised = true;
-                        setDebug("AUTH", error.code || "ERR");
-                        var fullMsg = error.message || "Unknown error";
-                        var errEl = document.getElementById("dbg-fullerr");
-                        if (errEl) errEl.innerText = "FULL ERR: " + fullMsg;
-                        console.error("Firebase Auth Error:", error.code, error.message);
-                        
-                        // FALLBACK: Try connection anyway
-                        setDebug("DB", "RETRYING (NO AUTH)...");
-                        initFirebaseListeners();
-                    });
-            }
-        });
-
-        // Connection Monitor (Publicly accessible under .info)
-        db.ref(".info/connected").on("value", function(snap) {
-            var led = document.getElementById("conn-status-led");
-            if (snap.val() === true) {
-                led.style.background = "#28a745";
-                led.style.boxShadow = "0 0 8px #28a745";
-                led.style.opacity = "0.6";
-                setDebug("DB", "OK");
-            } else {
-                // Dim to red if connection starts to drop
-                led.style.background = "#ff4444";
-                led.style.boxShadow = "0 0 10px #ff4444";
-                led.style.opacity = "1";
-                setDebug("DB", "LOST");
-            }
-        });
-
-        var player;
-        var playerReady = false;
-        var pendingVideoId = null;
-        var isLocked = false;
-        var isPartyMode = false;
-        var adCycleShowMenu = false;
-
-        // TV Remote Navigation
-        window.addEventListener("keydown", function(e) {
-            switch(e.keyCode) {
-                case 403: // RED
-                    vRef.child("settings/karaokeLock").set(!isLocked);
-                    break;
-                case 404: // GREEN
-                    vRef.child("settings/forceAd").set(true);
-                    break;
-                case 405: // YELLOW
-                    vRef.child("settings/partyMode").set(!isPartyMode);
-                    break;
-                case 406: // BLUE
-                    location.reload();
-                    break;
-                case 13: // ENTER
-                    // Could be used to dismiss overlays
-                    break;
-            }
-        });
-
-        // Auto music mode — fetch playlists from channel, fall back to hardcoded
-        var AUTO_PLAYLISTS = ["RDAMVMDy_eP-mqWow", "RDAMVM77pb0WXAz-Q"];
-        var autoMode = false;
-
-        function fetchChannelPlaylists(handle) {
-            var channelUrl = "https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=" +
-                encodeURIComponent(handle) + "&key=" + YT_API_KEY;
-            fetch(channelUrl)
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    var channelId = data.items && data.items[0] && data.items[0].id;
-                    if (!channelId) return;
-                    var playlistUrl = "https://www.googleapis.com/youtube/v3/playlists?part=id&channelId=" +
-                        channelId + "&maxResults=50&key=" + YT_API_KEY;
-                    return fetch(playlistUrl).then(function(r) { return r.json(); });
-                })
-                .then(function(data) {
-                    if (!data || !data.items || data.items.length === 0) return;
-                    AUTO_PLAYLISTS = data.items.map(function(item) { return item.id; });
-                })
-                .catch(function() {});
-        }
-        fetchChannelPlaylists('infinityvideohub');
-
-        // Idle slideshow
-        var idlePhotos = [
-            'images/TAStation-1.JPG',
-            'images/TAStation-2.JPG',
-            'images/TAStation-3.JPG',
-            'images/TAStation-4.JPG',
-            'images/TAStation-5.JPG',
-            'images/TAStation-6.JPG',
-            'images/TAStation-7.JPG',
-            'images/TAStation-8.JPG',
-            'images/TAStation-9.JPG',
-            'images/TAStation-10.JPG',
-            'images/TAStation-11.JPG',
-            'images/TAStation-12.JPG',
-            'images/TAStation-13.JPG',
-            'images/TAStation-14.JPG',
-            'images/TAStation-15.JPG',
-            'images/TAStation-16.JPG',
-            'images/TAStation-17.JPG',
-            'images/TAStation-18.JPG',
-            'images/TAStation-19.JPG',
-            'images/TAStation-20.JPG',
-            'images/TAStation-21.JPG',
-            'images/TAStation-22.JPG'
-        ];
-        var idleShuffled = [];
-        var idleIndex = 0;
-        var idleTimer = null;
-        var overlayTimer = null;
-
-        function shuffleIdlePhotos() {
-            idleShuffled = idlePhotos.slice();
-            for (var i = idleShuffled.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var tmp = idleShuffled[i]; idleShuffled[i] = idleShuffled[j]; idleShuffled[j] = tmp;
-            }
-            idleIndex = 0;
-        }
-
-        // Ticker state
-        var tickerMessages = [];
-        var tickerIndex = 0;
-        var tickerTimer = null;
-
-        // 3. Connect QR Code
-        function initConnectQR() {
-            var qrImg = document.getElementById("request-qr-img");
-            var container = document.getElementById("request-qr-container");
-            
-            // Generate URL for customer interface
-            var customerUrl = window.location.href.split("?")[0].split("#")[0];
-            if (customerUrl.endsWith("index.html")) {
-                customerUrl = customerUrl.replace("index.html", "customer.html");
-            } else if (customerUrl.endsWith("/")) {
-                customerUrl += "customer.html";
-            } else {
-                customerUrl += "/customer.html";
-            }
-            customerUrl += "?v=" + venueId;
-            
-            qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(customerUrl);
-            
-            vRef.child("settings/showRequestQR").on("value", function(snap) {
-                var show = snap.val() !== false; // Default to true if not set
-                container.style.display = show ? "flex" : "none";
+            // Auth
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) initFirebaseListeners();
+                else firebase.auth().signInAnonymously();
             });
-        }
 
-        // Fun facts mixed into the ticker
-        var funFacts = [
-            // AUTO-GENERATED-FACTS-START
-            "🌍 Fun Fact: Japan has more vending machines than people. You can buy literally anything, including live lobsters!",
-            "🌍 Fun Fact: In France, it's illegal to name your pig Napoleon. They're still salty about that whole thing.",
-            "🌍 Fun Fact: Italians eat 23 pounds of pasta per person yearly. That's basically a personality trait.",
-            "🌍 Fun Fact: Americans consume 350 slices of pizza per second. We're basically built on cheese and carbs.",
-            "🌍 Fun Fact: Thailand's king has a title so long it takes 40 seconds to say. The cliff notes version exist for a reason.",
-            "🌍 Fun Fact: Hawaii is slowly moving closer to Alaska at 3 inches per year. Road trip destination shifting!",
-            "🌍 Fun Fact: In Tokyo, there's a cat cafe where you pay to hang out with cats instead of doing productive things.",
-            "🌍 Fun Fact: French people consume 400 types of cheese. That's not a diet, that's a lifestyle choice.",
-            "🌍 Fun Fact: Italy produces 1.6 million tons of wine annually. Basically, wine flows through their veins.",
-            "🌍 Fun Fact: New York City's pigeons outnumber people 1-to-1. They're basically the real residents.",
-            "🌍 Fun Fact: Thai people eat som tam (papaya salad) spicy enough to strip paint. Capsaicin is their love language.",
-            "🌍 Fun Fact: Hawaii officially owns all its beaches. Even the fancy resort ones. Sneaky beach democracy!",
-            "🌍 Fun Fact: Japan's Kit Kat flavors include wasabi, soy sauce, and sweet potato. They're living in 3024.",
-            "🌍 Fun Fact: France produces 1,200 varieties of cheese. Switzerland is frantically taking notes.",
-            "🌍 Fun Fact: Venice slowly sinks 1-3mm per year. It's basically Earth's slowest magic trick.",
-            "🌍 Fun Fact: Las Vegas uses enough electricity to power 400,000 homes. For slot machines and regret mostly.",
-            "🌍 Fun Fact: Thailand's Singha beer tastes different than international versions. Locals know the secret formula.",
-            "🌍 Fun Fact: Honolulu means 'sheltered bay' but locals just call it paradise with decent wifi.",
-            "🌍 Fun Fact: German beer purity laws from 1516 still apply. That's beer commitment we can respect.",
-            "🌍 Fun Fact: Barcelona's Sagrada Familia has been under construction since 1883. Ultimate fixer-upper energy."
-            // AUTO-GENERATED-FACTS-END
-        ];
-
-        function buildTickerMessages(sheetMessages) {
-            return sheetMessages.slice();
-        }
-
-        var factsShuffled = [];
-        var factIndex = 0;
-        var factsTimer = null;
-
-        function showFunFact() {
-            if (factsShuffled.length === 0) {
-                factsShuffled = funFacts.slice();
-                for (var i = factsShuffled.length - 1; i > 0; i--) {
-                    var j = Math.floor(Math.random() * (i + 1));
-                    var t = factsShuffled[i]; factsShuffled[i] = factsShuffled[j]; factsShuffled[j] = t;
-                }
-                factIndex = 0;
-            }
-            var el = document.getElementById("facts-text");
-            el.classList.remove("ticker-visible");
-            el.classList.add("ticker-hidden");
-            setTimeout(function() {
-                el.innerText = factsShuffled[factIndex];
-                factIndex = (factIndex + 1) % factsShuffled.length;
-                if (factIndex === 0) factsShuffled = [];
-                el.classList.remove("ticker-hidden");
-                el.classList.add("ticker-visible");
-                setTimeout(function() {
-                    el.classList.remove("ticker-visible");
-                    el.classList.add("ticker-hidden");
-                }, 15000);
-            }, 800);
-            factsTimer = setTimeout(showFunFact, 60000);
-        }
-
-        // 3. YOUTUBE SETUP
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                playerVars: { 
-                    autoplay: 1, 
-                    controls: 1, 
-                    rel: 0, 
-                    enablejsapi: 1,
-                    iv_load_policy: 3
-                },
-                events: {
-                    onReady: onPlayerReady,
-                    onStateChange: onPlayerStateChange,
-                    onError: onPlayerError
-                }
-            });
-        }
-
-        function onPlayerReady() {
-            playerReady = true;
-            if (pendingVideoId) {
-                player.loadVideoById(pendingVideoId);
-                pendingVideoId = null;
-            }
-        }
-
-        function onPlayerError(event) {
-            // 101/150 = embedding disabled, 100 = not found
-            console.warn('Player error:', event.data, '— skipping to next in 2s');
-            
-            // Avoid infinite loops if everything fails
-            if (window._errorCount > 5) {
-                console.error("Too many consecutive player errors. Stopping.");
-                startIdle();
-                return;
-            }
-            window._errorCount = (window._errorCount || 0) + 1;
-
-            setTimeout(function() {
-                if (typeof playNext === 'function') playNext();
-            }, 2000);
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                window._errorCount = 0; // Reset error count on success
-                reportNowPlaying();
-                // Re-apply captions if enabled
-                vRef.child('settings/captionsEnabled').once('value', function(snap) {
-                    if (snap.val()) player.loadModule('captions');
-                });
-                // Try showing a song fact
-                showSongFact();
-            }
-            if (event.data === YT.PlayerState.ENDED) {
-                playNext();
-                hideSongFact();
-            }
-            vRef.child('settings/playerState').set(event.data);
-        }
-
-        function fetchWikipediaSummary(query, callback) {
-            var cleanQuery = query
-                .replace(/\(.*?\)|\[.*?\]/g, "")
-                .replace(/official (video|audio|music video|lyric video|lyrics)/gi, "")
-                .replace(/ft\.|feat\./gi, "")
-                .replace(/video/gi, "")
-                .replace(/lyrics/gi, "")
-                .replace(/HD|4K|HQ/g, "")
-                .trim();
-
-            var searchUrl = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
-            fetch(searchUrl)
-                .then(function(sRes) { return sRes.json(); })
-                .then(function(sData) {
-                    if (!sData.query || !sData.query.search || sData.query.search.length === 0) {
-                        if (cleanQuery.includes("-")) {
-                            var parts = cleanQuery.split("-");
-                            cleanQuery = parts[parts.length - 1].trim();
-                            var searchUrl2 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(cleanQuery) + "&format=json&origin=*&srlimit=1";
-                            return fetch(searchUrl2).then(function(sRes2) { return sRes2.json(); });
-                        }
-                        return null;
-                    }
-                    return sData;
-                })
-                .then(function(sData) {
-                    if (!sData || !sData.query || !sData.query.search || sData.query.search.length === 0) return;
-                    var pageTitle = sData.query.search[0].title;
-                    var summaryUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(pageTitle.replace(/ /g, "_"));
-                    return fetch(summaryUrl);
-                })
-                .then(function(res) {
-                    if (!res || !res.ok) return;
-                    return res.json();
-                })
-                .then(function(info) {
-                    if (!info || !info.extract) return;
-                    var displayInfo = info.description || info.extract;
-                    if (displayInfo.includes(".") && displayInfo.length > 150) {
-                        var sentences = displayInfo.match(/[^.!?]+[.!?]+/g);
-                        if (sentences && sentences.length >= 2) {
-                            displayInfo = sentences[0] + " " + sentences[1];
-                        }
-                    }
-                    if (displayInfo.length > 240) displayInfo = displayInfo.substring(0, 237) + "...";
-                    callback(displayInfo);
-                })
-                .catch(function(e) { console.warn("Wikipedia fetch error:", e); });
-        }
-
-        var factTimer = null;
-        function showSongFact() {
-            hideSongFact();
-            if (!player || !player.getVideoData) return;
-            var data = player.getVideoData();
-            var rawTitle = data.title || "";
-            
-            var lowerTitle = rawTitle.toLowerCase();
-            if (lowerTitle.includes("karaoke") || lowerTitle.includes("instrumental") || lowerTitle.includes("backing track") || lowerTitle.includes("no vocal")) {
-                return;
-            }
-
-            factTimer = setTimeout(function() {
-                fetchWikipediaSummary(rawTitle, function(extract) {
-                    var el = document.getElementById("fact-bubble");
-                    var text = document.getElementById("fact-bubble-text");
-                    text.innerText = extract;
-                    el.classList.add("visible");
-                    factTimer = setTimeout(hideSongFact, 18000);
-                });
-            }, 8000);
-        }
-
-        // Last-call feature stubs (not yet implemented)
-        function previewLastCall() {}
-        function previewClosed() {}
-        function resetLastCall() {}
-
-        function hideSongFact() {
-            clearTimeout(factTimer);
-            document.getElementById('fact-bubble').classList.remove('visible');
-        }
-
-        function reportNowPlaying() {
-            if (!player || !player.getVideoData) return;
-            var data = player.getVideoData();
-            if (data.video_id) {
-                vRef.child('settings/nowPlaying').set({
-                    videoId: data.video_id,
-                    title: data.title || '',
-                    author: data.author || ''
-                });
-            }
-        }
-
-        function startAutoPlaylist() {
-            stopIdle();
-            var pick = AUTO_PLAYLISTS[Math.floor(Math.random() * AUTO_PLAYLISTS.length)];
-            player.loadPlaylist({ list: pick, listType: 'playlist' });
-        }
-
-        function playNext() {
-            vRef.child('settings/queue').once('value', function(snap) {
-                var queue = snap.val() || [];
-                if (queue.length > 0) {
-                    var next = queue[0];
-                    var remaining = queue.slice(1);
-                    vRef.child('settings/queue').set(remaining);
-                    stopIdle();
-                    player.loadVideoById(next.id);
-                } else if (autoMode) {
-                    startAutoPlaylist();
+            // Connection Dot
+            db.ref(".info/connected").on("value", function(snap) {
+                var led = document.getElementById("conn-status-led");
+                if (!led) return;
+                if (snap.val() === true) {
+                    led.style.background = "#28a745";
+                    led.style.boxShadow = "0 0 8px #28a745";
+                    led.style.opacity = "0.6";
                 } else {
-                    startIdle();
+                    led.style.background = "#ff4444";
+                    led.style.boxShadow = "0 0 10px #ff4444";
+                    led.style.opacity = "1";
                 }
             });
+
+            // Start Timers
+            updateClock();
+            setInterval(updateClock, 1000);
+            syncWeather();
+            setInterval(syncWeather, 600000);
+            showFunFact();
+            if (tickerMessages.length > 0) showTickerMessage();
+            
+            // Auto Ad Interval
+            setInterval(function() { if (!isLocked) showAd(); }, 180000);
         }
 
-        function startIdle() {
-            clearTimeout(idleTimer);
-            idleTimer = null;
-            var screen = document.getElementById('idle-screen');
-            screen.classList.add('active');
-            showAd(true);
-            vRef.child('settings/nowPlaying').set(null);
-            shuffleIdlePhotos();
-            showIdleItem();
-            animateOverlay();
-        }
-
-        function stopIdle() {
-            hideSongFact();
-            var screen = document.getElementById('idle-screen');
-            screen.classList.remove('active');
-            clearTimeout(idleTimer);
-            idleTimer = null;
-            var vid = document.getElementById('idle-video');
-            vid.onended = null;
-            vid.pause();
-            vid.src = '';
-            clearTimeout(overlayTimer);
-            overlayTimer = null;
-            document.getElementById('idle-overlay').style.opacity = '0';
-        }
-
-        function animateOverlay() {
-            var screen = document.getElementById('idle-screen');
-            if (!screen.classList.contains('active')) return;
-            var overlay = document.getElementById('idle-overlay');
-
-            // Give browser 150ms to render idle screen before reading layout
-            overlayTimer = setTimeout(function() {
-                if (!document.getElementById('idle-screen').classList.contains('active')) return;
-
-                var screenW = screen.offsetWidth || Math.round(window.innerWidth * 0.7);
-                var screenH = screen.offsetHeight || window.innerHeight;
-                var overlayW = overlay.offsetWidth || 350;
-                var overlayH = overlay.offsetHeight || 130;
-
-                var maxX = Math.max(screenW - overlayW - 40, 20);
-                var maxY = Math.max(screenH - overlayH - 80, 20);
-
-                // Position while invisible
-                overlay.style.left = (Math.floor(Math.random() * maxX) + 20) + 'px';
-                overlay.style.top  = (Math.floor(Math.random() * maxY) + 20) + 'px';
-
-                // Force reflow so position is committed before opacity transition starts
-                overlay.getBoundingClientRect();
-
-                // Fade in
-                overlay.style.opacity = '1';
-
-                // Hold 5s, fade out, then repeat
-                overlayTimer = setTimeout(function() {
-                    overlay.style.opacity = '0';
-                    overlayTimer = setTimeout(animateOverlay, 1400);
-                }, 5000);
-            }, 150);
-        }
-
-        function showIdleItem() {
-            var src = idleShuffled[idleIndex];
-            var isVideo = /\.mp4$/i.test(src);
-            var photo = document.getElementById('idle-photo');
-            var vid = document.getElementById('idle-video');
-
-            if (isVideo) {
-                photo.style.display = 'none';
-                photo.classList.remove('fading');
-                vid.style.display = 'block';
-                vid.classList.remove('fading');
-                vid.src = src;
-                vid.load();
-                vid.play();
-                vid.onended = function() {
-                    clearTimeout(idleTimer);
-                    advanceIdleItem();
-                };
-                idleTimer = setTimeout(advanceIdleItem, 120000); // 2 min max fallback
-            } else {
-                vid.style.display = 'none';
-                vid.classList.remove('fading');
-                vid.onended = null;
-                vid.pause();
-                photo.style.display = 'block';
-                photo.classList.remove('fading');
-                photo.src = src;
-                idleTimer = setTimeout(advanceIdleItem, 8000);
-            }
-        }
-
-        function advanceIdleItem() {
-            clearTimeout(idleTimer);
-            idleTimer = null;
-            var photo = document.getElementById('idle-photo');
-            var vid = document.getElementById('idle-video');
-            photo.classList.add('fading');
-            vid.classList.add('fading');
-            setTimeout(function() {
-                idleIndex++;
-                if (idleIndex >= idleShuffled.length) shuffleIdlePhotos();
-                showIdleItem();
-            }, 1500);
-        }
-
-        function showTickerMessage() {
-            var el = document.getElementById('ticker-text');
-            if (tickerMessages.length === 0) return;
-            // Fade out current message
-            el.classList.remove('ticker-visible');
-            el.classList.add('ticker-hidden');
-            setTimeout(function() {
-                // Swap text and fade in
-                el.innerText = tickerMessages[tickerIndex];
-                tickerIndex = (tickerIndex + 1) % tickerMessages.length;
-                el.classList.remove('ticker-hidden');
-                el.classList.add('ticker-visible');
-                // Fade out after 15 seconds
-                setTimeout(function() {
-                    el.classList.remove('ticker-visible');
-                    el.classList.add('ticker-hidden');
-                }, 15000);
-            }, 800);
-            // Show next message after 60 seconds
-            tickerTimer = setTimeout(showTickerMessage, 60000);
-        }
-
-        // Converts Google Drive share links to a directly embeddable image URL
-        function normalizeFlyerUrl(url) {
-            url = url.trim();
-            var match = url.match(/drive\.google\.com\/file\/d\/([^\/\?]+)/);
-            if (match) {
-                return 'https://lh3.googleusercontent.com/d/' + match[1];
-            }
-            return url;
-        }
-
+        // ── FIREBASE LISTENERS ──
         function initFirebaseListeners() {
             initConnectQR();
-            vRef.child("settings/menu").on("value", function(snap) {
-                var menu = snap.val();
-                saveLocal("menu", menu);
-                updateMenuUI(menu);
-            });
-
-            vRef.child("settings/adConfig").on("value", function(snap) {
-                var ad = snap.val();
-                saveLocal("adConfig", ad);
-                updateAdUI(ad);
-            });
-
-            vRef.child("settings/ticker").on("value", function(snap) {
+            vRef.child("settings/menu").on("value", function(snap) { saveLocal("menu", snap.val()); updateMenuUI(snap.val()); });
+            vRef.child("settings/adConfig").on("value", function(snap) { saveLocal("adConfig", snap.val()); updateAdUI(snap.val()); });
+            vRef.child("settings/ticker").on("value", function(snap) { 
                 var msgs = snap.val();
                 saveLocal("ticker", msgs);
-                if (msgs) {
-                    var sheetMessages = [];
-                    for (var k in msgs) sheetMessages.push(msgs[k]);
-                    tickerMessages = buildTickerMessages(sheetMessages);
-                    if (!tickerTimer && tickerMessages.length > 0) {
-                        showTickerMessage();
-                    }
-                } else {
-                    tickerMessages = buildTickerMessages([]);
-                }
+                tickerMessages = buildTickerMessages(msgs);
+                if (!tickerTimer && tickerMessages.length > 0) showTickerMessage();
             });
-
-            vRef.child("settings/lastCallEnabled").on("value", function(snap) {
-                lastCallEnabled = !!snap.val();
-                if (!lastCallEnabled) {
-                    resetLastCall();
-                }
-            });
-
             vRef.child("settings/currentVideoId").on("value", function(snap) {
                 var vid = snap.val();
-                setDebug("VID", vid || "NONE");
                 if (!vid) return;
-                
                 if (typeof vid === "object" && vid.id) vid = vid.id;
                 if (typeof vid !== "string") return;
-
-                console.log("Loading video:", vid);
-                setDebug("VID", vid);
                 stopIdle();
-                if (playerReady && player && player.loadVideoById) {
-                    player.loadVideoById(vid);
-                } else {
-                    pendingVideoId = vid;
-                }
+                if (playerReady && player && player.loadVideoById) player.loadVideoById(vid);
+                else pendingVideoId = vid;
             });
-
             vRef.child("settings/queue").on("value", function(snap) {
                 var queue = snap.val() || [];
                 saveLocal("queue", queue);
-                var idleActive = document.getElementById("idle-screen").classList.contains("active");
-                if (queue.length > 0 && idleActive) {
-                    console.log("Queue detected while idle, playing next...");
-                    playNext();
-                }
+                if (queue.length > 0 && document.getElementById("idle-screen").classList.contains("active")) playNext();
             });
-
             vRef.child("settings/playerCommand").on("value", function(snap) {
                 var cmd = snap.val();
                 if (!cmd || !player) return;
@@ -880,165 +311,150 @@
                     case "prev": player.seekTo(0); player.playVideo(); break;
                     case "volume": player.setVolume(cmd.value); break;
                     case "slideshow": player.stopVideo(); startIdle(); break;
-                    case "previewLastCall": previewLastCall(); break;
-                    case "previewClosed": previewClosed(); break;
-                    case "resetLastCall": resetLastCall(); break;
-                    case "fixDisplay": 
-                        stopIdle(); 
-                        if (player && player.getPlayerState() !== 1) {
-                            playNext();
-                        }
-                        break;
-                    case "captions":
-                        if (cmd.value) player.loadModule("captions");
-                        else player.unloadModule("captions");
-                        break;
+                    case "fixDisplay": stopIdle(); if (player && player.getPlayerState() !== 1) playNext(); break;
                 }
                 vRef.child("settings/playerCommand").set(null);
             });
-
-            vRef.child("settings/autoMode").on("value", function(snap) {
-                autoMode = !!snap.val();
-                if (autoMode) playNext();
-            });
-
-            vRef.child("settings/partyMode").on("value", function(snap) {
+            vRef.child("settings/autoMode").on("value", function(snap) { autoMode = !!snap.val(); if (autoMode) playNext(); });
+            vRef.child("settings/partyMode").on("value", function(snap) { 
                 isPartyMode = !!snap.val();
-                if (isPartyMode) document.body.classList.add("party-mode");
-                else document.body.classList.remove("party-mode");
+                document.body.classList.toggle("party-mode", isPartyMode);
             });
-
-            vRef.child("settings/remoteRefresh").on("value", function(snap) {
-                if (snap.val()) {
-                    vRef.child("settings/remoteRefresh").set(null);
-                    location.reload();
-                }
-            });
-
             vRef.child("settings/karaokeLock").on("value", function(snap) {
                 isLocked = !!snap.val();
-                var indicator = document.getElementById("status-indicator");
-                if (isLocked) {
-                    indicator.style.display = "block";
-                    hideAd();
-                } else {
-                    indicator.style.display = "none";
-                }
+                document.getElementById("status-indicator").style.display = isLocked ? "block" : "none";
+                if (isLocked) hideAd();
             });
+            vRef.child("settings/venueName").on("value", function(snap) { saveLocal("venueName", snap.val()); updateVenueNameUI(snap.val() || "T.A. Station"); });
+            vRef.child("settings/tickerPosition").on("value", function(snap) { saveLocal("tickerPosition", snap.val()); updateTickerPosUI(snap.val() || "top"); });
+        }
 
-            vRef.child("settings/forceAd").on("value", function(snap) {
-                if (snap.val() && !isLocked) {
-                    showAd(true);
-                }
-            });
-
-            vRef.child("settings/venueName").on("value", function(snap) {
-                var name = snap.val() || "T.A. Station";
-                saveLocal("venueName", name);
-                updateVenueNameUI(name);
-            });
-
-            vRef.child("settings/tickerPosition").on("value", function(snap) {
-                var pos = snap.val() || "top";
-                saveLocal("tickerPosition", pos);
-                updateTickerPosUI(pos);
-            });
-
-            vRef.child("settings/airConsole").on("value", function(snap) {
-                var overlay = document.getElementById("airconsole-overlay");
-                var frame = document.getElementById("airconsole-frame");
-                if (snap.val()) {
-                    frame.src = "https://www.airconsole.com/tv/";
-                    overlay.classList.add("active");
-                    if (player && playerReady) player.pauseVideo();
-                } else {
-                    overlay.classList.remove("active");
-                    frame.src = "";
-                    if (player && playerReady) player.playVideo();
+        // ── YOUTUBE ──
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                playerVars: { autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3 },
+                events: {
+                    onReady: function() {
+                        playerReady = true;
+                        if (pendingVideoId) { player.loadVideoById(pendingVideoId); pendingVideoId = null; }
+                    },
+                    onStateChange: function(event) {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            reportNowPlaying();
+                            showSongFact();
+                        }
+                        if (event.data === YT.PlayerState.ENDED) {
+                            playNext();
+                            hideSongFact();
+                        }
+                        vRef.child('settings/playerState').set(event.data);
+                    },
+                    onError: function() { setTimeout(playNext, 2000); }
                 }
             });
         }
 
-        var adCycleShowMenu = false;
-        function showAd(forceFlyer) {
-            hideSongFact();
-            var sidebar = document.getElementById("ad-sidebar");
-            var container = document.getElementById("app-container");
-            var videoSection = document.getElementById("video-section");
-            
-            container.classList.add("ad-active");
-            videoSection.classList.add("pip-active");
-            
-            if (forceFlyer || !adCycleShowMenu) {
-                sidebar.className = "show-flyer";
-            } else {
-                sidebar.className = "show-menu";
-            }
-            
-            if (!forceFlyer) {
-                adCycleShowMenu = !adCycleShowMenu;
-            }
-
-            // POPULATE UP NEXT
-            vRef.child("settings/queue").once("value", function(snap) {
+        function playNext() {
+            vRef.child('settings/queue').once('value', function(snap) {
                 var queue = snap.val() || [];
-                var nextSection = document.getElementById("up-next-section");
                 if (queue.length > 0) {
                     var next = queue[0];
-                    document.getElementById("up-next-title").innerText = next.title || "Unknown";
-                    document.getElementById("up-next-author").innerText = next.author || "";
-                    document.getElementById("up-next-thumb").src = next.thumb || "";
-                    document.getElementById("up-next-history").innerText = "Loading song history...";
-                    nextSection.style.display = "block";
-
-                    fetchWikipediaSummary(next.title, function(extract) {
-                        document.getElementById("up-next-history").innerText = extract;
-                    });
+                    vRef.child('settings/queue').set(queue.slice(1));
+                    stopIdle();
+                    if (player && player.loadVideoById) player.loadVideoById(next.id);
+                    else pendingVideoId = next.id;
                 } else {
-                    nextSection.style.display = "none";
+                    startIdle();
                 }
             });
-            
-            clearTimeout(window._adTimer);
-            window._adTimer = setTimeout(hideAd, 25000);
+        }
+
+        function reportNowPlaying() {
+            if (!player || !player.getVideoData) return;
+            var data = player.getVideoData();
+            if (data.video_id) vRef.child('settings/nowPlaying').set({ videoId: data.video_id, title: data.title || '', author: data.author || '' });
+        }
+
+        // ── FEATURES ──
+        function updateClock() {
+            var el = document.getElementById("clock-display");
+            if (el) el.innerText = new Date().toLocaleTimeString("en-US", { timeZone: "Pacific/Honolulu", hour: "numeric", minute: "2-digit", hour12: true });
+        }
+
+        function syncWeather() {
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583&current_weather=true&temperature_unit=fahrenheit")
+                .then(r => r.json()).then(data => {
+                    var el = document.getElementById("weather-display");
+                    if (el && data.current_weather) {
+                        var icons = { 0: "☀️", 1: "🌤️", 2: "🌤️", 3: "☁️" };
+                        var icon = icons[data.current_weather.weathercode] || "🌧️";
+                        el.innerText = icon + " " + Math.round(data.current_weather.temperature) + "°F";
+                    }
+                }).catch(() => {});
+        }
+
+        function showTickerMessage() {
+            var el = document.getElementById('ticker-text');
+            if (!el || tickerMessages.length === 0) return;
+            el.classList.remove('ticker-visible'); el.classList.add('ticker-hidden');
+            setTimeout(function() {
+                el.innerText = tickerMessages[tickerIndex];
+                tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+                el.classList.remove('ticker-hidden'); el.classList.add('ticker-visible');
+                setTimeout(function() { el.classList.remove('ticker-visible'); el.classList.add('ticker-hidden'); }, 15000);
+            }, 800);
+            tickerTimer = setTimeout(showTickerMessage, 60000);
+        }
+
+        // ── IDLE / SLIDESHOW ──
+        var idlePhotos = ['images/TAStation-1.JPG','images/TAStation-2.JPG','images/TAStation-3.JPG','images/TAStation-4.JPG','images/TAStation-5.JPG','images/TAStation-6.JPG','images/TAStation-7.JPG','images/TAStation-8.JPG','images/TAStation-9.JPG','images/TAStation-10.JPG'];
+        var idleIndex = 0;
+        var idleTimer = null;
+
+        function startIdle() {
+            var screen = document.getElementById('idle-screen');
+            screen.classList.add('active');
+            showAd(true);
+            vRef.child('settings/nowPlaying').set(null);
+            showIdleItem();
+        }
+
+        function stopIdle() {
+            document.getElementById('idle-screen').classList.remove('active');
+            clearTimeout(idleTimer);
+        }
+
+        function showIdleItem() {
+            var photo = document.getElementById('idle-photo');
+            photo.src = idlePhotos[idleIndex];
+            idleIndex = (idleIndex + 1) % idlePhotos.length;
+            idleTimer = setTimeout(showIdleItem, 8000);
+        }
+
+        function showAd(forceFlyer) {
+            var sidebar = document.getElementById("ad-sidebar");
+            var container = document.getElementById("app-container");
+            container.classList.add("ad-active");
+            sidebar.className = (forceFlyer || !adCycleShowMenu) ? "show-flyer" : "show-menu";
+            if (!forceFlyer) adCycleShowMenu = !adCycleShowMenu;
+            setTimeout(hideAd, 25000);
         }
 
         function hideAd() {
-            var sidebar = document.getElementById("ad-sidebar");
-            var container = document.getElementById("app-container");
-            var videoSection = document.getElementById("video-section");
-            
-            container.classList.remove("ad-active");
-            videoSection.classList.remove("pip-active");
-            sidebar.className = "";
-            
-            // Clear Up Next
-            document.getElementById("up-next-section").style.display = "none";
-            document.getElementById("up-next-history").innerText = "";
+            document.getElementById("ad-sidebar").className = "";
+            document.getElementById("app-container").classList.remove("ad-active");
         }
 
-        // 6. AUTO-AD ROTATION — show ads every 3 minutes for 25 seconds
-        setInterval(function() {
-            if (!isLocked) {
-                showAd();
-            }
-        }, 180000);
+        // Wikipedia Song Facts (Stub for now)
+        function showSongFact() {}
+        function hideSongFact() {}
+        function showFunFact() {}
+        function initConnectQR() {}
 
-        // 7. STARTUP
-        window.onload = function() {
-            showFunFact();
-            updateClock();
-            setInterval(updateClock, 1000);
-            syncWeather();
-            setInterval(syncWeather, 600000); // every 10 minutes
-        };
+        // ── BOOT ──
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
+        else initApp();
 
-        var lastCallEnabled = false;
-
-        function closeAirConsole() {
-            vRef.child("settings/airConsole").set(false);
-        }
     </script>
-
 </body>
 </html>
