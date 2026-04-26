@@ -10098,3 +10098,2203 @@ Traceback (most recent call last):
   File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
     raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
 requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Journey — Don't Stop Believin'
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Wanna Dance With Somebody
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: ABBA — Dancing Queen
+Already cached: Oasis — Wonderwall
+Already cached: Adele — Someone Like You
+Already cached: Adele — Rolling in the Deep
+Already cached: Taylor Swift — Love Story
+Already cached: Taylor Swift — Shake It Off
+Already cached: Bruno Mars — Uptown Funk
+Already cached: Bruno Mars — Just the Way You Are
+Already cached: Lady Gaga — Shallow
+Already cached: Lady Gaga — Poker Face
+Already cached: Ed Sheeran — Perfect
+Already cached: Ed Sheeran — Shape of You
+Already cached: Elvis Presley — Can't Help Falling in Love
+Already cached: Elvis Presley — Suspicious Minds
+Already cached: The Beatles — Hey Jude
+Already cached: The Beatles — Let It Be
+Already cached: Eagles — Hotel California
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: NSYNC — Bye Bye Bye
+Already cached: Michael Jackson — Billie Jean
+Already cached: Michael Jackson — Beat It
+Already cached: Michael Jackson — Thriller
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Toto — Africa
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Soft Cell — Tainted Love
+Already cached: 4 Non Blondes — What's Up
+Already cached: Tina Turner — What's Love Got to Do With It
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Alicia Keys — Fallin'
+Already cached: Maroon 5 — Moves Like Jagger
+Already cached: Miley Cyrus — Wrecking Ball
+Already cached: Harry Styles — As It Was
+Already cached: Billie Eilish — Bad Guy
+Already cached: Imagine Dragons — Radioactive
+Already cached: The Weeknd — Blinding Lights
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Rihanna — Umbrella
+Already cached: Justin Bieber — Baby
+Already cached: One Direction — What Makes You Beautiful
+Already cached: Britney Spears — Toxic
+Already cached: Avril Lavigne — Complicated
+Already cached: Green Day — Boulevard of Broken Dreams
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Metallica — Enter Sandman
+Already cached: AC/DC — Highway to Hell
+Already cached: Elton John — Rocket Man
+Already cached: Billy Joel — Piano Man
+Already cached: Prince — Purple Rain
+Already cached: Madonna — Like a Prayer
+Already cached: Dolly Parton — Jolene
+Already cached: John Denver — Take Me Home Country Roads
+Already cached: CCR — Bad Moon Rising
+Already cached: The Killers — Mr. Brightside
+Already cached: Coldplay — Yellow
+Already cached: Goo Goo Dolls — Iris
+Already cached: Bryan Adams — Summer of '69
+Already cached: Queen — Don't Stop Me Now
+Already cached: Queen — We Will Rock You
+Already cached: Queen — We Are the Champions
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Lil Nas X — Old Town Road
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Black Eyed Peas — I Gotta Feeling
+Already cached: Pitbull — Timber
+Already cached: Aqua — Barbie Girl
+Already cached: Smash Mouth — All Star
+Already cached: Lady Gaga — Bad Romance
+Already cached: Pharrell Williams — Happy
+Already cached: Drake — Hotline Bling
+Already cached: Doja Cat — Say So
+Already cached: Olivia Rodrigo — Drivers License
+Already cached: Dua Lipa — Levitating
+Already cached: Post Malone — Circles
+Already cached: BTS — Dynamite
+Already cached: BTS — Butter
+Already cached: Blackpink — How You Like That
+Already cached: The Weeknd — Save Your Tears
+Already cached: Sam Smith — Stay With Me
+Already cached: Charlie Puth — Attention
+Already cached: Meghan Trainor — All About That Bass
+Already cached: Flo Rida — Low
+Already cached: Shakira — Waka Waka
+Already cached: Israel Kamakawiwo'ole — Somewhere Over the Rainbow
+Already cached: Israel Kamakawiwo'ole — White Sandy Beach
+Already cached: Israel Kamakawiwo'ole — Hawai'i '78
+Already cached: Kealiʻi Reichel — Kawaipunahele
+Already cached: Kealiʻi Reichel — E O Mai
+Already cached: Gabby Pahinui — Hiʻilawe
+Already cached: Dennis Pavao — Kuʻu Home O Kahaluʻu
+Already cached: The Makaha Sons — Ke Alaula
+Already cached: Kapena — Masese
+Already cached: Fiji — Sweet Darlin'
+Already cached: Fiji — Lia
+Already cached: J Boog — Let's Do It Again
+Already cached: J Boog — Sunshine Girl
+Already cached: Common Kings — Wade in Your Water
+Already cached: Kolohe Kai — Cool Down
+Already cached: Kolohe Kai — Ehu Girl
+Already cached: Rebel Souljahz — The One
+Already cached: Anuhea — Simple Love Song
+Already cached: Anuhea — Higher Than the Clouds
+Already cached: Kaʻau Crater Boys — Surf
+Already cached: Bird Thongchai — Too Much So Much Very Much
+Already cached: Bird Thongchai — Sabai Sabai
+Already cached: Sek Loso — Som Sarn
+Already cached: Carabao — Made in Thailand
+Already cached: Carabao — Bua Loi
+Already cached: Palmy — Ooh!
+Already cached: Palmy — Tick Tock
+Already cached: Bodyslam — Khon Mee Fai
+Already cached: Bodyslam — Saeng Sudtai
+Already cached: Getsunova — Klai Kae Nai
+Already cached: Lula — Rai Wela
+Already cached: Da Endorphine — Yin Dee Tee Dai Roo Jak
+Already cached: Potato — Tur Yang
+Already cached: Clash — Ter Ja Yoo Kub Chun Talord Pai
+Already cached: Paradox — Sexy
+Already cached: Modern Dog — Busaba
+Already cached: Tattoo Colour — Cinderella
+Already cached: Big Ass — Len Khong Sung
+Already cached: Joey Boy — Fun Fun Fun
+Already cached: Instinct — Prok
+Already cached: Journey — Don't Stop Believin'
+Already cached: Queen — Bohemian Rhapsody
+Already cached: Neil Diamond — Sweet Caroline
+Already cached: The Killers — Mr. Brightside
+Already cached: Bon Jovi — Livin' on a Prayer
+Already cached: Whitney Houston — I Will Always Love You
+Already cached: Gloria Gaynor — I Will Survive
+Already cached: Garth Brooks — Friends in Low Places
+Already cached: Adele — Someone Like You
+Already cached: Toto — Africa
+Already cached: Backstreet Boys — I Want It That Way
+Already cached: ABBA — Dancing Queen
+Already cached: Eagles — Hotel California
+Already cached: Outkast — Hey Ya!
+Already cached: Lady Gaga — Bad Romance
+Already cached: Britney Spears — Toxic
+Already cached: Celine Dion — My Heart Will Go On
+Already cached: Alicia Keys — If I Ain't Got You
+Already cached: TLC — No Scrubs
+Already cached: Michael Jackson — Billie Jean
+Already cached: Frank Sinatra — My Way
+Already cached: Joan Jett — I Love Rock 'N Roll
+Already cached: Oasis — Wonderwall
+Already cached: Shania Twain — Man! I Feel Like A Woman!
+Already cached: Cyndi Lauper — Girls Just Want to Have Fun
+Already cached: Ed Sheeran — Thinking Out Loud
+Already cached: Bruno Mars — Uptown Funk
+Already cached: John Denver — Take Me Home, Country Roads
+Already cached: The Beatles — Let It Be
+Already cached: Fugees — Killing Me Softly With His Song
+Already cached: Elton John — Tiny Dancer
+Already cached: Fleetwood Mac — Dreams
+Already cached: Taylor Swift — Love Story
+Already cached: Carrie Underwood — Before He Cheats
+Already cached: Radiohead — Creep
+Already cached: Evanescence — Bring Me To Life
+Already cached: The B-52's — Love Shack
+Already cached: Prince — Purple Rain
+Already cached: Aretha Franklin — Respect
+Already cached: AC/DC — You Shook Me All Night Long
+Already cached: Billy Joel — Piano Man
+Already cached: Eminem — Lose Yourself
+Already cached: Katy Perry — Firework
+Already cached: Madonna — Like a Prayer
+Already cached: R.E.M. — Losing My Religion
+Already cached: Def Leppard — Pour Some Sugar On Me
+Already cached: Pink — Just Give Me A Reason
+Already cached: Kelly Clarkson — Since U Been Gone
+Already cached: Oasis — Don't Look Back In Anger
+Already cached: Aerosmith — I Don't Want to Miss a Thing
+Already cached: Guns N' Roses — Sweet Child O' Mine
+Already cached: Ricky Martin — Livin' La Vida Loca
+Already cached: Usher — Yeah!
+Already cached: Beyonce — Crazy In Love
+Already cached: Rihanna — Umbrella
+Already cached: Mariah Carey — Always Be My Baby
+Already cached: The Temptations — My Girl
+Already cached: TLC — Waterfalls
+Already cached: Lynyrd Skynyrd — Sweet Home Alabama
+Already cached: Coldplay — Yellow
+Already cached: The Proclaimers — I'm Gonna Be (500 Miles)
+Already cached: Simon & Garfunkel — The Sound of Silence
+Already cached: Alanis Morissette — You Oughta Know
+Already cached: John Legend — All of Me
+Already cached: The Cranberries — Zombie
+Already cached: Amy Winehouse — Valerie
+Already cached: Metallica — Enter Sandman
+Already cached: Red Hot Chili Peppers — Under the Bridge
+Already cached: Nirvana — Smells Like Teen Spirit
+Already cached: Green Day — Basket Case
+Already cached: No Doubt — Don't Speak
+Already cached: Christina Aguilera — Beautiful
+Already cached: Maroon 5 — This Love
+Already cached: Justin Timberlake — Cry Me a River
+Already cached: Jason Mraz — I'm Yours
+Already cached: The Black Eyed Peas — I Gotta Feeling
+Already cached: Miley Cyrus — Party In The U.S.A.
+Already cached: Snoop Dogg — Gin and Juice
+Already cached: The Notorious B.I.G. — Juicy
+Already cached: 2Pac — California Love
+Already cached: Dr. Dre — Nuthin' But A "G" Thang
+Already cached: Wu-Tang Clan — C.R.E.A.M.
+Already cached: Boyz II Men — End of the Road
+Already cached: En Vogue — Don't Let Go (Love)
+Already cached: Vanilla Ice — Ice Ice Baby
+Already cached: MC Hammer — U Can't Touch This
+Already cached: Sir Mix-A-Lot — Baby Got Back
+Already cached: Beastie Boys — (You Gotta) Fight For Your Right (To Party)
+Already cached: The Police — Every Breath You Take
+Already cached: U2 — With Or Without You
+Already cached: David Bowie — Space Oddity
+Already cached: The Rolling Stones — (I Can't Get No) Satisfaction
+Already cached: The Clash — Should I Stay or Should I Go
+Already cached: Blondie — Heart of Glass
+Already cached: The Cure — Friday I'm In Love
+Already cached: Depeche Mode — Enjoy the Silence
+Already cached: New Order — Bizarre Love Triangle
+Already cached: A-ha — Take On Me
+Already cached: Rick Springfield — Jessie's Girl
+Already cached: Pat Benatar — Hit Me With Your Best Shot
+Already cached: PSY — Gangnam Style
+Already cached: Luis Fonsi — Despacito
+Already cached: Rick Astley — Never Gonna Give You Up
+Already cached: Smash Mouth — All Star
+Already cached: Los del Río — Macarena
+Already cached: The Sugarhill Gang — Rapper's Delight
+Already cached: Mark Ronson ft. Bruno Mars — Uptown Funk
+Already cached: LMFAO — Party Rock Anthem
+Already cached: Pharrell Williams — Happy
+Already cached: Village People — Y.M.C.A.
+Already cached: Vengaboys — We Like to Party! (The Vengabus)
+Already cached: Eiffel 65 — Blue (Da Ba Dee)
+Already cached: O-Zone — Dragostea Din Tei
+Already cached: Aqua — Barbie Girl
+Already cached: Lou Bega — Mambo No. 5
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 89, in <module>
+    process_seed_list()
+  File "/home/steven/Documents/projects/git/The-Bar-Signage/seed_cache.py", line 56, in process_seed_list
+    check_res = requests.get(check_url).json()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/requests/models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
