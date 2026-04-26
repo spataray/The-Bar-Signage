@@ -46,7 +46,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.2 (2026-04-26 09:45 HST)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.3 (2026-04-26 10:24 HST)</div>
     </div>
 
     <div id="error-log"></div>
@@ -110,7 +110,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.2 (2026-04-26 09:45 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.3 (2026-04-26 10:24 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -146,9 +146,18 @@
 
         function logMsg(msg) { console.log("SYSTEM LOG:", msg); }
         function logError(msg) {
-            var el = document.getElementById("error-log");
-            if (el) { el.style.display = "block"; el.innerHTML += "<br>> ERROR: " + msg; }
             console.error(msg);
+            // Suppress invalid parameter errors and transient connection blips from screen
+            if (msg && (msg.indexOf("YT Error Code: 2") !== -1 || msg.toLowerCase().indexOf("connect") !== -1)) return;
+            
+            var el = document.getElementById("error-log");
+            if (el) { 
+                el.style.display = "block"; 
+                el.innerHTML += "<br>> ERROR: " + msg;
+                // Auto-hide after 10 seconds to keep screen clean
+                clearTimeout(window._errTimer);
+                window._errTimer = setTimeout(function() { el.style.display = "none"; el.innerHTML = ""; }, 10000);
+            }
         }
 
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }

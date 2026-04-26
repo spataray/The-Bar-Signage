@@ -1,7 +1,7 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
 Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
 
-### T.A. Station - Digital Signage System v1.7.2
+### T.A. Station - Digital Signage System v1.7.3
 
 A professional digital signage system for T.A. Station (Honolulu, HI). Features real-time YouTube playback, automated ad rotation, and staff remote control.
 
