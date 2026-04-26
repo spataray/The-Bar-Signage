@@ -248,6 +248,22 @@ body.party-mode #ticker-container { animation: neon-flicker 1.5s infinite altern
 body.ticker-bottom #ticker-container { top: auto; bottom: 0; border-bottom: none; border-top: 2px solid var(--bar-gold); }
 body.ticker-bottom #app-container { margin-top: 0 !important; }
 
+#song-type-badge {
+    position: fixed;
+    top: 155px; left: 20px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    z-index: 2100;
+    display: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.type-karaoke { background: var(--bar-green); color: white; }
+.type-lyrics { background: var(--bar-gold); color: black; }
+
 /* Thought Bubble */
 #fact-bubble {
     position: fixed;

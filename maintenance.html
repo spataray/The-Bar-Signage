@@ -71,6 +71,9 @@
         
         .pane { display: none; }
         .pane.active { display: block; }
+        .song-type-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase; margin-left: 5px; vertical-align: middle; }
+        .type-karaoke { background: var(--bar-green); color: white; }
+        .type-lyrics { background: var(--bar-gold); color: black; }
     </style>
 </head>
 <body>
@@ -97,6 +100,7 @@
                 <img id="np-thumb" src="images/TAStation-1.JPG" style="width: 80px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; border: 1px solid #444;">
                 <div style="flex: 1; min-width: 0;">
                     <div id="np-title" style="font-weight: bold; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nothing playing</div>
+                    <span id="np-type" class="song-type-badge" style="display:none;"></span>
                     <div id="np-author" style="font-size: 0.75rem; opacity: 0.5;">--</div>
                 </div>
             </div>
@@ -382,12 +386,22 @@
         function initFirebaseListeners() {
             vRef.child('settings/nowPlaying').on('value', function(snap) {
                 var data = snap.val();
-                var thumb = document.getElementById('np-thumb'), title = document.getElementById('np-title'), author = document.getElementById('np-author');
+                var thumb = document.getElementById('np-thumb'), title = document.getElementById('np-title'), author = document.getElementById('np-author'), typeBadge = document.getElementById('np-type');
                 if (data) {
                     thumb.src = "https://img.youtube.com/vi/" + data.videoId + "/default.jpg";
                     title.textContent = data.title || 'Unknown';
                     author.textContent = data.author || '--';
-                } else { thumb.src = 'images/TAStation-1.JPG'; title.textContent = 'Nothing playing'; author.textContent = '--'; }
+                    if (data.type) {
+                        typeBadge.textContent = data.type;
+                        typeBadge.className = "song-type-badge " + (data.type === 'karaoke' ? 'type-karaoke' : 'type-lyrics');
+                        typeBadge.style.display = "inline-block";
+                    } else { typeBadge.style.display = "none"; }
+                } else { 
+                    thumb.src = 'images/TAStation-1.JPG'; 
+                    title.textContent = 'Nothing playing'; 
+                    author.textContent = '--';
+                    typeBadge.style.display = "none";
+                }
             });
 
             vRef.child('settings/playerState').on('value', function(snap) {
@@ -447,6 +461,6 @@
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.7.4 (2026-04-26 10:35 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.7.5 (2026-04-26 10:45 HST)</div>
 </body>
 </html>

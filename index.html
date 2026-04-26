@@ -46,12 +46,14 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.4 (2026-04-26 10:35 HST)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.5 (2026-04-26 10:45 HST)</div>
     </div>
 
     <div id="error-log"></div>
 
     <div id="status-indicator">KARAOKE LOCKED</div>
+
+    <div id="song-type-badge"></div>
 
     <!-- Connection Status LED (Bottom Left) -->
     <div id="conn-status-led" title="Firebase Status" style="position: fixed; bottom: 10px; left: 10px; width: 6px; height: 6px; background: #ff4444; border-radius: 50%; box-shadow: 0 0 5px #ff4444; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
@@ -110,7 +112,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.4 (2026-04-26 10:35 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.5 (2026-04-26 10:45 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -143,6 +145,28 @@
         var tickerMessages = [], tickerIndex = 0, tickerTimer = null, venueId = null, vRef = null, db = null;
         var factsShuffled = [], factIndex = 0, factsTimer = null;
         var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Hawaii is moving closer to Alaska by 3 inches a year.", "🌍 Thailand has never been colonized."];
+
+        function detectSongType(title) {
+            if (!title) return null;
+            var t = title.toLowerCase();
+            // Karaoke Keywords (EN, TH, JP, KR, CN)
+            var k = ['karaoke', 'instrumental', 'no vocal', 'คาราโอเกะ', 'ตัดเสียงร้อง', 'ดนตรีเปล่า', 'カラオケ', 'オフボーカル', '노래방', '가라오케', '伴奏', '无人声'];
+            // Lyrics Keywords (EN, TH, JP, KR, CN)
+            var l = ['lyrics', 'lyric video', 'text video', 'เนื้อเพลง', 'พร้อมเนื้อ', '歌詞', 'リリック', '가사', '자막', '歌词', '字幕'];
+            
+            for (var i=0; i<k.length; i++) { if (t.indexOf(k[i].toLowerCase()) !== -1) return 'karaoke'; }
+            for (var j=0; j<l.length; j++) { if (t.indexOf(l[j].toLowerCase()) !== -1) return 'lyrics'; }
+            return null;
+        }
+
+        function updateSongTypeUI(type) {
+            var el = document.getElementById("song-type-badge");
+            if (!el) return;
+            if (!type) { el.style.display = "none"; return; }
+            el.style.display = "block";
+            el.innerText = type;
+            el.className = (type === 'karaoke' ? 'type-karaoke' : 'type-lyrics');
+        }
 
         function logMsg(msg) { console.log("SYSTEM LOG:", msg); }
         function logError(msg) {
@@ -293,9 +317,21 @@
                     onStateChange: function(e) { 
                         if (e.data === YT.PlayerState.PLAYING) {
                             var d = player.getVideoData();
-                            if (d && d.video_id) vRef.child('settings/nowPlaying').set({ videoId: d.video_id, title: d.title, author: d.author });
+                            if (d && d.video_id) {
+                                var type = detectSongType(d.title);
+                                updateSongTypeUI(type);
+                                vRef.child('settings/nowPlaying').set({ 
+                                    videoId: d.video_id, 
+                                    title: d.title, 
+                                    author: d.author,
+                                    type: type
+                                });
+                            }
                         }
-                        if (e.data === YT.PlayerState.ENDED) playNext();
+                        if (e.data === YT.PlayerState.ENDED) {
+                            updateSongTypeUI(null);
+                            playNext();
+                        }
                         vRef.child('settings/playerState').set(e.data);
                     },
                     onError: function(e) { logError("YT Error Code: " + e.data); setTimeout(playNext, 2000); }
