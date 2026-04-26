@@ -160,10 +160,10 @@
 
         <div class="card">
             <h3>Bar Menu</h3>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                <input type="text" id="menu-name-input" placeholder="Item Name">
-                <input type="text" id="menu-price-input" placeholder="Price">
-                <button class="btn btn-primary" onclick="addMenuItem()">Add</button>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                <textarea id="menu-bulk-input" rows="3" placeholder="Paste menu items here...
+Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1px solid #444; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; resize: vertical;"></textarea>
+                <button class="btn btn-primary" onclick="addMenuItem()">Add to Menu</button>
             </div>
             <div id="staff-menu-list"></div>
         </div>
@@ -341,10 +341,23 @@
         function addTickerMsg() { var el = document.getElementById('ticker-input'); if (!el.value.trim()) return; vRef.child('settings/ticker').push(el.value.trim()); el.value = ''; }
         function removeTickerMsg(key) { vRef.child('settings/ticker').child(key).remove(); }
         function addMenuItem() {
-            var n = document.getElementById('menu-name-input'), p = document.getElementById('menu-price-input');
-            if (!n.value.trim()) return;
-            vRef.child('settings/menu').push({ name: n.value.trim(), price: p.value.trim() });
-            n.value = ''; p.value = '';
+            var el = document.getElementById('menu-bulk-input');
+            var raw = el.value.trim();
+            if (!raw) return;
+            
+            var lines = raw.split('\n');
+            lines.forEach(function(line) {
+                var parts = line.split(',');
+                if (parts.length >= 2) {
+                    var price = parts[0].trim();
+                    var name = parts.slice(1).join(',').trim();
+                    vRef.child('settings/menu').push({ name: name, price: price });
+                } else if (line.trim()) {
+                    // Fallback for just name
+                    vRef.child('settings/menu').push({ name: line.trim(), price: '' });
+                }
+            });
+            el.value = '';
         }
         function removeMenuItem(key) { vRef.child('settings/menu').child(key).remove(); }
         function updateAdConfig() {
@@ -461,6 +474,6 @@
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.7.6 (2026-04-26 10:55 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.7.7 (2026-04-26 11:10 HST)</div>
 </body>
 </html>
