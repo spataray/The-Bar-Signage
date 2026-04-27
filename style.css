@@ -261,6 +261,52 @@ body.ticker-bottom #app-container { margin-top: 0 !important; }
     letter-spacing: 1px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
+
+/* Now Playing Banner (Top Right) */
+#now-playing-banner {
+    position: fixed;
+    top: 105px;
+    right: -500px; /* Hidden by default */
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid var(--bar-gold);
+    border-right: none;
+    padding: 12px 25px;
+    border-radius: 15px 0 0 15px;
+    z-index: 2100;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: -5px 5px 20px rgba(0,0,0,0.5);
+    transition: right 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 450px;
+}
+
+#now-playing-banner.active { right: 0; }
+
+#np-banner-thumb {
+    width: 80px;
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 1px solid var(--bar-gold);
+}
+
+#np-banner-title {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+#np-banner-author {
+    font-size: 0.85rem;
+    color: var(--bar-gold);
+    opacity: 0.8;
+}
+
 .type-karaoke { background: var(--bar-green); color: white; }
 .type-lyrics { background: var(--bar-gold); color: black; }
 

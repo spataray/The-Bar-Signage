@@ -46,7 +46,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.9 (2026-04-26 19:10 HST)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.8.0 (2026-04-26 21:20 HST)</div>
     </div>
 
     <div id="error-log"></div>
@@ -60,6 +60,16 @@
 
     <!-- YouTube Status LED (Bottom Right) -->
     <div id="yt-status-led" title="YouTube Status" style="position: fixed; bottom: 10px; right: 10px; width: 6px; height: 6px; background: #ff4444; border-radius: 50%; box-shadow: 0 0 5px #ff4444; z-index: 10001; transition: all 0.5s ease; opacity: 0.6;"></div>
+
+    <!-- Now Playing Banner (Top Right) -->
+    <div id="now-playing-banner">
+        <img id="np-banner-thumb" src="" alt="">
+        <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 0.6rem; color: var(--bar-gold); font-weight: 900; margin-bottom: 2px; letter-spacing: 1px; text-transform: uppercase;">Now Playing</div>
+            <div id="np-banner-title"></div>
+            <div id="np-banner-author"></div>
+        </div>
+    </div>
 
     <!-- Venue Code Display -->
     <div id="venue-code-badge" onclick="changeVenueCode()" title="Click to manually change code">
@@ -112,7 +122,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.9 (2026-04-26 19:10 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.8.0 (2026-04-26 21:20 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -360,6 +370,14 @@
                                 updateSongTypeUI(type);
                                 isAutoLocked = !!type;
                                 if (isAutoLocked) hideAd();
+                                
+                                // Show Now Playing Banner
+                                document.getElementById("np-banner-title").innerText = d.title;
+                                document.getElementById("np-banner-author").innerText = d.author;
+                                document.getElementById("np-banner-thumb").src = "https://img.youtube.com/vi/" + d.video_id + "/mqdefault.jpg";
+                                document.getElementById("now-playing-banner").classList.add("active");
+                                setTimeout(hideNP, 15000);
+
                                 vRef.child('settings/nowPlaying').set({ 
                                     videoId: d.video_id, 
                                     title: d.title, 
@@ -370,6 +388,7 @@
                         }
                         if (e.data === YT.PlayerState.ENDED) {
                             updateSongTypeUI(null);
+                            hideNP();
                             isAutoLocked = false;
                             playNext();
                         }
@@ -458,6 +477,7 @@
         }
 
         function hideAd() { var s = document.getElementById("ad-sidebar"), c = document.getElementById("app-container"); if (s) s.className = ""; if (c) c.classList.remove("ad-active"); }
+        function hideNP() { var b = document.getElementById("now-playing-banner"); if (b) b.classList.remove("active"); }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp); else initApp();
     </script>
 </body>

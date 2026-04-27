@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ta-station-v1.7.9';
+const CACHE_NAME = 'ta-station-v1.8.0';
 const ASSETS = [
   'index.html',
   'maintenance.html',
