@@ -46,7 +46,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.8 (2026-04-26 18:55 HST)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.7.9 (2026-04-26 19:10 HST)</div>
     </div>
 
     <div id="error-log"></div>
@@ -112,7 +112,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.8 (2026-04-26 18:55 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.7.9 (2026-04-26 19:10 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -257,6 +257,20 @@
             window.addEventListener('keydown', function() { unlockPlayer(); });
         }
 
+        function fixDriveUrl(url) {
+            if (!url) return "";
+            if (url.indexOf('drive.google.com') !== -1) {
+                var id = "";
+                if (url.indexOf('id=') !== -1) { id = url.split('id=')[1].split('&')[0]; }
+                else {
+                    var parts = url.split('/');
+                    for (var i = 0; i < parts.length; i++) { if (parts[i] === 'd') { id = parts[i + 1]; break; } }
+                }
+                if (id) return "https://drive.google.com/uc?export=view&id=" + id;
+            }
+            return url;
+        }
+
         function initFirebaseListeners() {
             initConnectQR();
             vRef.child("settings/currentVideoId").on("value", function(s) {
@@ -280,6 +294,8 @@
                     case "volume": player.setVolume(c.value); break;
                     case "mute": player.mute(); break;
                     case "unmute": player.unMute(); break;
+                    case "forceAd": showAd(true); break;
+                    case "hideAd": hideAd(); break;
                     case "captions": 
                         if (c.value) { player.loadModule("captions"); player.setOption("captions", "track", {"languageCode": "en"}); }
                         else { player.unloadModule("captions"); }
@@ -296,6 +312,28 @@
                 if (isLocked) hideAd(); 
                 var indicator = document.getElementById("status-indicator");
                 if (indicator) indicator.style.display = isLocked ? "block" : "none";
+            });
+
+            // CONTENT LISTENERS
+            vRef.child("settings/adConfig").on("value", function(s) {
+                var cfg = s.val(); if (!cfg) return;
+                document.getElementById("ad-title").innerText = cfg.title || "T.A. Station";
+                document.getElementById("ad-desc").innerText = cfg.desc || "";
+                document.getElementById("ad-flyer").src = fixDriveUrl(cfg.flyer);
+            });
+
+            vRef.child("settings/menu").on("value", function(s) {
+                var menu = s.val() || {}, html = "";
+                Object.values(menu).forEach(function(item) {
+                    html += '<div class="menu-item"><span class="menu-name">' + escHtml(item.name) + '</span><span class="menu-price">' + escHtml(item.price) + '</span></div>';
+                });
+                document.getElementById("menu-content").innerHTML = html;
+            });
+
+            vRef.child("settings/ticker").on("value", function(s) {
+                var msgs = s.val() || {}, txt = "";
+                Object.values(msgs).forEach(function(m) { txt += " &nbsp;&nbsp;&nbsp; • " + m; });
+                document.getElementById("ticker-text").innerHTML = txt + " &nbsp;&nbsp;&nbsp; • ";
             });
         }
 
