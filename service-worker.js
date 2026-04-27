@@ -1,14 +1,15 @@
-const CACHE_NAME = 'ta-station-v1.7.7';
+const CACHE_NAME = 'ta-station-v1.7.8';
 const ASSETS = [
   'index.html',
   'maintenance.html',
   'customer.html',
-  'config.js',
   'style.css',
+  'config.js',
   'manifest.json',
-  'manifest-remote.json'
+  'images/TAStation-1.JPG'
 ];
 
+// Install Event
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -18,6 +19,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
+// Activate Event
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -31,6 +33,11 @@ self.addEventListener('activate', (event) => {
 
 // STALE-WHILE-REVALIDATE Strategy
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests for caching
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(event.request).then((cachedResponse) => {
