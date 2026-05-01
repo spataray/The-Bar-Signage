@@ -2,18 +2,18 @@
   "name": "T.A. Station Remote",
   "short_name": "TA Remote",
   "description": "Staff Remote Control for T.A. Station",
-  "start_url": "maintenance.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#ffcc00",
   "icons": [
     {
-      "src": "images/TAStation-1.JPG",
+      "src": "../images/TAStation-1.JPG",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "images/TAStation-1.JPG",
+      "src": "../images/TAStation-1.JPG",
       "sizes": "512x512",
       "type": "image/jpeg"
     }

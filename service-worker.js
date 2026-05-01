@@ -1,11 +1,13 @@
-const CACHE_NAME = 'ta-station-v1.8.0';
+const CACHE_NAME = 'ta-station-v1.8.1';
 const ASSETS = [
   'index.html',
-  'maintenance.html',
-  'customer.html',
+  'm/index.html',
+  'c/index.html',
   'style.css',
   'config.js',
   'manifest.json',
+  'm/manifest.json',
+  'c/manifest.json',
   'images/TAStation-1.JPG'
 ];
 

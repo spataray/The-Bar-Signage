@@ -1,5 +1,5 @@
 Your site is live at https://spataray.github.io/The-Bar-Signage/
-Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/maintenance.html
+Your maintenance site lives at https://spataray.github.io/The-Bar-Signage/m/
 
 ### T.A. Station - Digital Signage System v1.8.0
 
@@ -7,7 +7,7 @@ A professional digital signage system for T.A. Station (Honolulu, HI). Features 
 
 ### 🔑 Staff Credentials
 
-To access the staff remote (`maintenance.html`), you will need:
+To access the staff remote (`m/index.html`), you will need:
 - **Connect Code:** A 4-character code shown on the top-left of the TV screen.
 - **Staff PIN:** **1218** (or the administrative override **9999**).
 
@@ -44,7 +44,7 @@ To access the staff remote (`maintenance.html`), you will need:
 
 This project is a **Progressive Web App (PWA)**. You can install it on your device for an app-like experience without a browser bar:
 
-- **Staff Phone/iPad:** Open `maintenance.html` in Safari (iOS) or Chrome (Android) and select **"Add to Home Screen"**.
+- **Staff Phone/iPad:** Open `m/` in Safari (iOS) or Chrome (Android) and select **"Add to Home Screen"**.
 - **Samsung Smart TV:** 
   - Open the URL in the TV browser once.
   - If the TV supports it, select "Add to Home Screen" from the browser menu.
@@ -67,8 +67,8 @@ When the `index.html` page is open on your TV, you can use the physical remote b
 ### Project Files
 
 * **`index.html`**: The main TV display. v1.5.2 includes LocalStorage mirroring and LED status.
-* **`maintenance.html`**: Staff remote. v1.5.2 includes offline memory for queue and venue settings.
-* **`customer.html`**: Customer request portal. v1.5.2 includes updated versioning.
+* **`m/index.html`**: Staff remote. v1.5.2 includes offline memory for queue and venue settings.
+* **`c/index.html`**: Customer request portal. v1.5.2 includes updated versioning.
 * **`style.css`**: Visual branding and "Party Mode" styles.
 * **`manifest.json`**: PWA configuration.
 * **`config.xml`**: Samsung Tizen Web App configuration.
@@ -77,7 +77,7 @@ When the `index.html` page is open on your TV, you can use the physical remote b
 
 ### Music & Video Control
 
-Open `maintenance.html` on your iPad or phone:
+Open `m/index.html` on your iPad or phone:
 
 * **Search**: Search YouTube directly from the remote. Tap play or add to queue.
 * **Queue**: Drag and drop the thumbnail of any song to reorder it in the queue.

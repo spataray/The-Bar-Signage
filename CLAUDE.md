@@ -15,8 +15,8 @@ This is a static HTML/CSS/JS project with no build system, no bundler, and no pa
 **Multi-page system connected via Firebase Realtime Database:**
 
 - **`index.html`** — TV display. Runs fullscreen on the bar TV browser. Embeds a YouTube IFrame player, shows an ad sidebar (flyer + menu), idle photo slideshow, and a scrolling ticker. Listens to Firebase for commands from the remote.
-- **`maintenance.html`** — Staff remote control. Opened on phone/iPad. Sends commands to Firebase: play/pause/skip, YouTube search, queue management, karaoke lock, party mode, force ads, remote refresh. Contains all its own CSS inline (no shared stylesheet).
-- **`customer.html`** — Customer-facing PWA for song requests. Customers can search YouTube, view the current queue, and add songs. Uses Firebase (same DB) and SortableJS from CDN.
+- **`m/index.html`** — Staff remote control. Opened on phone/iPad. Sends commands to Firebase: play/pause/skip, YouTube search, queue management, karaoke lock, party mode, force ads, remote refresh. Contains all its own CSS inline (no shared stylesheet).
+- **`c/index.html`** — Customer-facing PWA for song requests. Customers can search YouTube, view the current queue, and add songs. Uses Firebase (same DB) and SortableJS from CDN.
 - **`project-hub/index.html`** — Internal PWA dashboard linking to all pages.
 - **`style.css`** — Styles for `index.html` only (TV display layout, sidebar, idle screen, ticker, party mode).
 - **`config.js`** — Shared Firebase config, `YT_API_KEY`, and `FEATURED_PLAYLISTS`. Loaded by all pages via `<script src="config.js">`.
@@ -24,7 +24,7 @@ This is a static HTML/CSS/JS project with no build system, no bundler, and no pa
 **Venue isolation:** All pages use a `?v=XXXX` URL param as a 4-character venue code. This scopes all Firebase reads/writes to `venues/{venueId}/`. The TV display generates a random code on first load and shows it on-screen; staff enter this code when opening the remote or customer page.
 
 **Data flow:**
-- Remote (`maintenance.html`) writes to Firebase → TV (`index.html`) listens and reacts
+- Remote (`m/index.html`) writes to Firebase → TV (`index.html`) listens and reacts
 - TV writes back `nowPlaying` and `playerState` so the remote can show current status
 - Content (ads, menu, ticker) is stored directly in Firebase under the venue's `settings/` node
 
@@ -38,13 +38,13 @@ This is a static HTML/CSS/JS project with no build system, no bundler, and no pa
 - `showRequestQR`, `lastCallEnabled`, `captionsEnabled`, `venueName` — feature flags
 
 **Additional Firebase paths (top-level, shared across all venues):**
-- `SEARCH_CACHE/{safeQuery}` — cached YouTube search results (`{items, timestamp}`) shared across venues to conserve API quota. Both `maintenance.html` and `customer.html` read/write this cache before hitting the YouTube API.
+- `SEARCH_CACHE/{safeQuery}` — cached YouTube search results (`{items, timestamp}`) shared across venues to conserve API quota. Both `m/index.html` and `c/index.html` read/write this cache before hitting the YouTube API.
 
 **External dependencies (CDN only):**
 - Firebase JS SDK 8.10.0 — legacy namespaced SDK (`firebase.database()`), not modular v9+
 - YouTube IFrame API (`index.html` only)
 - YouTube Data API v3 for search (reuses the Firebase `apiKey` as `YT_API_KEY`)
-- SortableJS 1.15.0 (`customer.html` and `maintenance.html`) — drag-to-reorder queue
+- SortableJS 1.15.0 (`c/index.html` and `m/index.html`) — drag-to-reorder queue
 - QR code API via `api.qrserver.com` (TV display, for the song request QR code)
 - Open-Meteo API (TV display, free weather — no API key needed)
 
@@ -75,6 +75,6 @@ This is a static HTML/CSS/JS project with no build system, no bundler, and no pa
 
 ## Development
 
-No build or install step. Edit HTML/CSS/JS directly. To test locally, open `index.html` or `maintenance.html` in a browser (Firebase and YouTube APIs require an internet connection). Append `?v=XXXX` to any page URL to connect to a specific venue's data.
+No build or install step. Edit HTML/CSS/JS directly. To test locally, open `index.html` or `m/index.html` in a browser (Firebase and YouTube APIs require an internet connection). Append `?v=XXXX` to any page URL to connect to a specific venue's data.
 
 Deployment is via `git push` to `main` — GitHub Pages serves the site automatically.

@@ -3,7 +3,7 @@
 ## Project Overview
 T.A. Station Digital Signage is a real-time, web-based display system for a Thai hostess bar in Honolulu, HI. The system consists of two primary interfaces:
 - **TV Display (`index.html`)**: A fullscreen dashboard that plays YouTube videos/music, rotates advertisements, displays a drinks menu, and shows a scrolling ticker with weather, time, and fun facts.
-- **Staff Remote (`maintenance.html`)**: A mobile-optimized control panel used by staff to manage the queue, search YouTube, toggle "Karaoke Mode", trigger ads, and switch themes.
+- **Staff Remote (`m/index.html`)**: A mobile-optimized control panel used by staff to manage the queue, search YouTube, toggle "Karaoke Mode", trigger ads, and switch themes.
 
 ## Architecture & Data Flow
 - **Real-time Sync**: Uses **Firebase Realtime Database** to synchronize state between the remote and the TV instantly.
@@ -15,7 +15,8 @@ T.A. Station Digital Signage is a real-time, web-based display system for a Thai
 
 ## Key Files
 - `index.html`: The main TV signage interface. Contains the YouTube player, sidebar, and ticker.
-- `maintenance.html`: The staff remote control interface.
+- `m/index.html`: The staff remote control interface.
+- `c/index.html`: The customer request portal.
 - `style.css`: Styles for the TV display, including "Party Mode" themes and layout.
 - `update_facts.py`: Python automation script to generate Thai/Hawaii fun facts.
 - `.github/workflows/update-facts.yml`: GitHub Action to run the fact-updating script on a schedule.
@@ -26,10 +27,10 @@ T.A. Station Digital Signage is a real-time, web-based display system for a Thai
 - **No Build System**: This is a pure static project. There are no bundlers (Webpack/Vite) or package managers (NPM/Yarn). JS and CSS are mostly inline or linked directly.
 - **Direct Injection**: The `update_facts.py` script uses regex to replace content between `// AUTO-GENERATED-FACTS-START` and `// AUTO-GENERATED-FACTS-END` markers in `index.html`.
 - **CSS Transitions**: The ad sidebar visibility is controlled via a CSS grid transition on the `--sidebar-width` variable.
-- **Version Tracking**: Always update the `v1.x.x (Date Time)` version tag at the bottom of `index.html`, `maintenance.html`, and `customer.html` whenever making a functional change or fix. This helps verify that the latest update is live.
+- **Version Tracking**: Always update the `v1.x.x (Date Time)` version tag at the bottom of `index.html`, `m/index.html`, and `c/index.html` whenever making a functional change or fix. This helps verify that the latest update is live.
 
 ## Setup & Running
-- **Local Development**: Open `index.html` or `maintenance.html` directly in any modern web browser. An internet connection is required for Firebase and YouTube APIs.
+- **Local Development**: Open `index.html` or `m/index.html` directly in any modern web browser. An internet connection is required for Firebase and YouTube APIs.
 - **Updating Facts**:
   ```bash
   pip install anthropic

@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T.A. Station - Staff Remote</title>
-    <link rel="manifest" href="manifest-remote.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="images/TAStation-1.JPG">
+    <link rel="apple-touch-icon" href="../images/TAStation-1.JPG">
     <meta name="referrer" content="no-referrer-when-downgrade">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
@@ -97,7 +97,7 @@
         <div class="card">
             <h3>Now Playing</h3>
             <div id="np-container" style="display: flex; gap: 15px; align-items: center;">
-                <img id="np-thumb" src="images/TAStation-1.JPG" style="width: 80px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; border: 1px solid #444;">
+                <img id="np-thumb" src="../images/TAStation-1.JPG" style="width: 80px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; border: 1px solid #444;">
                 <div style="flex: 1; min-width: 0;">
                     <div id="np-title" style="font-weight: bold; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nothing playing</div>
                     <span id="np-type" class="song-type-badge" style="display:none;"></span>
@@ -264,7 +264,7 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="config.js"></script>
+    <script src="../config.js"></script>
 
     <script>
         var YT_API_KEY = firebaseConfig.apiKey; 
@@ -474,6 +474,6 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.8.1 (2026-04-30 18:52 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.9.0 (2026-04-30 19:10 HST)</div>
 </body>
 </html>

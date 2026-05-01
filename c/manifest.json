@@ -2,18 +2,18 @@
   "name": "T.A. Station - Request",
   "short_name": "TA Request",
   "description": "Customer Video Request for T.A. Station",
-  "start_url": "customer.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#ffcc00",
   "icons": [
     {
-      "src": "images/TAStation-1.JPG",
+      "src": "../images/TAStation-1.JPG",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "images/TAStation-1.JPG",
+      "src": "../images/TAStation-1.JPG",
       "sizes": "512x512",
       "type": "image/jpeg"
     }
