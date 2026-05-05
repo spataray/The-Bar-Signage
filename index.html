@@ -46,7 +46,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.9.2 (2026-05-04 19:53 HST)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.9.3 (2026-05-04 20:02 HST)</div>
     </div>
 
     <div id="error-log"></div>
@@ -122,7 +122,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.9.2 (2026-05-04 19:53 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.9.3 (2026-05-04 20:02 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -323,6 +323,13 @@
                 var indicator = document.getElementById("status-indicator");
                 if (indicator) indicator.style.display = isLocked ? "block" : "none";
             });
+            vRef.child("settings/captionsEnabled").on("value", function(s) {
+                var enabled = !!s.val();
+                if (player && playerReady) {
+                    if (enabled) { player.loadModule("captions"); player.setOption("captions", "track", {"languageCode": "en"}); }
+                    else { player.unloadModule("captions"); }
+                }
+            });
 
             // CONTENT LISTENERS
             vRef.child("settings/adConfig").on("value", function(s) {
@@ -353,7 +360,7 @@
                 height: '100%', width: '100%',
                 playerVars: {
                     autoplay: 1, controls: 1, rel: 0, enablejsapi: 1, iv_load_policy: 3, modestbranding: 1,
-                    cc_load_policy: 1, cc_lang_pref: 'en', origin: window.location.origin
+                    cc_load_policy: 0, cc_lang_pref: 'en', origin: window.location.origin
                 },                events: {
                     onReady: function() { 
                         playerReady = true; 
