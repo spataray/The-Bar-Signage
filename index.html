@@ -46,7 +46,7 @@
     <div id="gesture-layer" tabindex="0" onclick="unlockPlayer()" onkeydown="unlockPlayer()">
         <h1 class="venue-name-display">T.A. STATION</h1>
         <p>PRESS "OK" OR CLICK TO ENABLE REMOTE</p>
-        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.9.0 (2026-04-30 19:10 HST)</div>
+        <div style="margin-top: 20px; font-size: 10px; opacity: 0.4;">v1.9.1 (2026-05-04 19:39 HST)</div>
     </div>
 
     <div id="error-log"></div>
@@ -122,7 +122,7 @@
     </div>
 
     <div id="ticker-container">
-        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.9.0 (2026-04-30 19:10 HST)</div>
+        <div id="version-tag" style="position: absolute; bottom: 2px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.2); z-index: 100;">v1.9.1 (2026-05-04 19:39 HST)</div>
         <div id="ticker-row1">
             <div id="weather-display"></div>
             <div class="ticker-wrap">
@@ -276,7 +276,7 @@
                     var parts = url.split('/');
                     for (var i = 0; i < parts.length; i++) { if (parts[i] === 'd') { id = parts[i + 1]; break; } }
                 }
-                if (id) return "https://drive.google.com/uc?export=view&id=" + id;
+                if (id) return "https://lh3.googleusercontent.com/d/" + id;
             }
             return url;
         }
