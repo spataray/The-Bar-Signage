@@ -154,7 +154,11 @@
         var player, playerReady = false, pendingVideoId = null, isLocked = false, isUnlocked = false, isAutoLocked = false;
         var tickerMessages = [], tickerIndex = 0, tickerTimer = null, venueId = null, vRef = null, db = null;
         var factsShuffled = [], factIndex = 0, factsTimer = null;
-        var funFacts = ["🌍 Japan has more vending machines than people.", "🌍 Hawaii is moving closer to Alaska by 3 inches a year.", "🌍 Thailand has never been colonized."];
+        var funFacts = [
+            // AUTO-GENERATED-FACTS-START
+            "🌍 Japan has more vending machines than people.", "🌍 Hawaii is moving closer to Alaska by 3 inches a year.", "🌍 Thailand has never been colonized."
+            // AUTO-GENERATED-FACTS-END
+        ];
 
         function detectSongType(title) {
             if (!title) return null;
@@ -424,17 +428,17 @@
 
         function syncWeather() {
             fetch("https://api.open-meteo.com/v1/forecast?latitude=21.3069&longitude=-157.8583&current_weather=true&temperature_unit=fahrenheit")
-                .then(r => r.json()).then(data => {
+                .then(function(r) { return r.json(); }).then(function(data) {
                     var el = document.getElementById("weather-display");
                     if (el && data.current_weather) {
                         var icon = { 0: "☀️", 1: "🌤️", 2: "🌤️", 3: "☁️" }[data.current_weather.weathercode] || "🌧️";
                         el.innerText = icon + " " + Math.round(data.current_weather.temperature) + "°F";
                     }
-                }).catch(() => {});
+                })["catch"](function() { });
         }
 
         function showFunFact() {
-            if (factsShuffled.length === 0) { factsShuffled = funFacts.slice(); factsShuffled.sort(() => Math.random() - 0.5); factIndex = 0; }
+            if (factsShuffled.length === 0) { factsShuffled = funFacts.slice(); factsShuffled.sort(function() { return Math.random() - 0.5; }); factIndex = 0; }
             var el = document.getElementById("facts-text"); if (!el) return;
             el.classList.remove("ticker-visible"); el.classList.add("ticker-hidden");
             setTimeout(function() {
