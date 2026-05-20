@@ -308,9 +308,15 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
         });
 
         function showPane(id, btn) {
-            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            var panes = document.querySelectorAll('.pane');
+            for (var i = 0; i < panes.length; i++) {
+                panes[i].classList.remove('active');
+            }
             document.getElementById('pane-' + id).classList.add('active');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            var tabs = document.querySelectorAll('.tab-btn');
+            for (var j = 0; j < tabs.length; j++) {
+                tabs[j].classList.remove('active');
+            }
             if (btn) btn.classList.add('active');
         }
 
@@ -392,7 +398,7 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
         function escAttr(str) { if (!str) return ""; return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;"); }
         function extractVideoId(url) {
-            var match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|shorts\/)([a-zA-Z0-9_-]{11})/);
+            var match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|shorts\/)([a-zA-Z0-9_-]{11})/);
             return (match && match[1]) ? match[1] : null;
         }
 
@@ -429,12 +435,13 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
                 countEl.textContent = q.length > 0 ? '(' + q.length + ')' : '';
                 if (q.length === 0) { listEl.innerHTML = '<div class="queue-empty">Queue is empty</div>'; return; }
                 listEl.innerHTML = '';
-                q.forEach((item, i) => {
+                for (var i = 0; i < q.length; i++) {
+                    var item = q[i];
                     var div = document.createElement('div'); div.className = 'queue-item';
                     var thumb = item.thumb || ('https://img.youtube.com/vi/' + (item.id || '') + '/default.jpg');
                     div.innerHTML = '<span class="queue-num">' + (i + 1) + '</span><img class="queue-thumb" src="' + thumb + '"><div class="queue-info"><div class="queue-title">' + escHtml(item.title) + '</div></div><button class="queue-remove" data-index="' + i + '">&times;</button>';
                     listEl.appendChild(div);
-                });
+                }
                 listEl.onclick = function(e) { var btn = e.target.closest('.queue-remove'); if (btn) removeFromQueue(parseInt(btn.dataset.index)); };
             });
 
@@ -444,11 +451,11 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
                 document.title = name + " - Staff Remote";
             });
             
-            vRef.child('settings/karaokeLock').on('value', s => { document.getElementById('toggle-karaoke').checked = !!s.val(); });
-            vRef.child('settings/autoMode').on('value', s => { document.getElementById('toggle-auto').checked = !!s.val(); });
-            vRef.child('settings/partyMode').on('value', s => { document.getElementById('toggle-party').checked = !!s.val(); });
-            vRef.child('settings/showRequestQR').on('value', s => { document.getElementById('toggle-qr').checked = s.val() !== false; });
-            vRef.child('settings/captionsEnabled').on('value', s => { document.getElementById('toggle-cc').checked = !!s.val(); });
+            vRef.child('settings/karaokeLock').on('value', function(s) { document.getElementById('toggle-karaoke').checked = !!s.val(); });
+            vRef.child('settings/autoMode').on('value', function(s) { document.getElementById('toggle-auto').checked = !!s.val(); });
+            vRef.child('settings/partyMode').on('value', function(s) { document.getElementById('toggle-party').checked = !!s.val(); });
+            vRef.child('settings/showRequestQR').on('value', function(s) { document.getElementById('toggle-qr').checked = s.val() !== false; });
+            vRef.child('settings/captionsEnabled').on('value', function(s) { document.getElementById('toggle-cc').checked = !!s.val(); });
         }
 
         function doSearch() {
@@ -461,19 +468,20 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
             if (vid) { resEl.innerHTML = ''; playNow(vid, q, ''); return; }
             
             var url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(q) + '&type=' + t + '&maxResults=15&key=' + YT_API_KEY;
-            fetch(url).then(r => r.json()).then(data => {
+            fetch(url).then(function(r) { return r.json(); }).then(function(data) {
                 resEl.innerHTML = '';
                 if (!data.items) return;
-                data.items.forEach(item => {
+                for (var i = 0; i < data.items.length; i++) {
+                    var item = data.items[i];
                     var id = item.id.videoId || item.id.playlistId;
-                    if (!id) return;
+                    if (!id) continue;
                     var div = document.createElement('div'); div.className = 'result-item';
                     div.innerHTML = '<img class="result-thumb" src="' + item.snippet.thumbnails.default.url + '"><div class="result-info"><div class="result-title">' + escHtml(item.snippet.title) + '</div></div><div style="display:flex; gap:5px;"><button class="btn btn-sm btn-success" onclick="playNow(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\')">Play</button><button class="btn btn-sm btn-primary" onclick="addToQueue(\'' + id + '\',\'' + escAttr(item.snippet.title) + '\')">Add</button></div>';
                     resEl.appendChild(div);
-                });
+                }
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.9.4 (2026-05-10 17:54 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.9.6 (2026-05-20 01:13 HST)</div>
 </body>
 </html>

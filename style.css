@@ -2,7 +2,7 @@
 :root {
     --bar-gold: #ffcc00;
     --bar-red: #ff4444;
-    --dark-bg: rgba(20, 20, 20, 0.95);
+    --dark-bg: rgb(20, 20, 20, 0.95);
     --transition-speed: 0.5s;
 }
 
@@ -10,19 +10,16 @@ body, html {
     margin: 0; 
     padding: 0; 
     height: 100%; 
-    background: #000; 
+    background: #000000; 
     color: white; 
-    font-family: 'Arial Black', 'Arial', sans-serif; 
+    font-family: 'Arial Black', Arial, sans-serif; 
     overflow: hidden; 
 }
 
 /* The Layout Container */
 #app-container {
     position: absolute;
-    top: 90px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 90px 0 0 0;
     width: 100%;
     overflow: hidden;
 }
@@ -30,8 +27,8 @@ body, html {
 /* Video Section stays Fullscreen */
 #video-section { 
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #000; 
+    inset: 0 0 0 0;
+    background: #000000; 
 }
 
 iframe { width: 100%; height: 100%; border: none; }
@@ -43,13 +40,13 @@ iframe { width: 100%; height: 100%; border: none; }
     left: 5%;
     right: 5%;
     height: 180px;
-    background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(20,20,20,0.9) 100%);
+    background: linear-gradient(90deg, rgb(0,0,0,0.95) 0%, rgb(20,20,20,0.9) 100%);
     border: 2px solid var(--bar-gold);
     border-bottom: none;
     border-radius: 20px 20px 0 0;
     z-index: 2000;
     transition: bottom var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 -10px 40px rgb(0,0,0,0.8);
     overflow: hidden;
 }
 
@@ -84,7 +81,7 @@ iframe { width: 100%; height: 100%; border: none; }
     height: 120px;
     width: auto;
     border-radius: 10px;
-    border: 1px solid rgba(255,204,0,0.3);
+    border: 1px solid rgb(255,204,0,0.3);
 }
 
 .menu-section {
@@ -99,7 +96,7 @@ iframe { width: 100%; height: 100%; border: none; }
     justify-content: space-between;
     font-size: 1rem;
     margin-bottom: 5px;
-    border-bottom: 1px solid rgba(255,204,0,0.1);
+    border-bottom: 1px solid rgb(255,204,0,0.1);
     break-inside: avoid;
 }
 
@@ -117,10 +114,10 @@ iframe { width: 100%; height: 100%; border: none; }
     display: flex !important;
     align-items: center;
     gap: 20px;
-    background: rgba(255,204,0,0.1);
+    background: rgb(255,204,0,0.1);
     padding: 15px 25px;
     border-radius: 15px;
-    border: 1px solid rgba(255,204,0,0.2);
+    border: 1px solid rgb(255,204,0,0.2);
     min-width: 400px;
 }
 
@@ -135,10 +132,10 @@ iframe { width: 100%; height: 100%; border: none; }
 /* Idle Screen */
 #idle-screen {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0 0 0 0;
     z-index: 5;
     display: none;
-    background: #000;
+    background: #000000;
 }
 
 #idle-screen.active { display: block; }
@@ -161,14 +158,14 @@ iframe { width: 100%; height: 100%; border: none; }
     font-weight: 900;
     color: var(--bar-gold);
     letter-spacing: 10px;
-    text-shadow: 0 0 40px rgba(255, 204, 0, 0.5);
+    text-shadow: 0 0 40px rgb(255, 204, 0, 0.5);
 }
 
 /* Social Ticker */
 #ticker-container {
     position: fixed;
     top: 0; width: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgb(0, 0, 0, 0.85);
     border-bottom: 2px solid var(--bar-gold);
     height: 90px;
     display: flex;
@@ -188,7 +185,7 @@ iframe { width: 100%; height: 100%; border: none; }
     display: flex;
     align-items: center;
     height: 36px;
-    background: rgba(255,204,0,0.05);
+    background: rgb(255,204,0,0.05);
 }
 
 #facts-text, #ticker-text {
@@ -229,7 +226,7 @@ iframe { width: 100%; height: 100%; border: none; }
     font-weight: bold;
     z-index: 999;
     display: none;
-    box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+    box-shadow: 0 0 15px rgb(255, 68, 68, 0.4);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -259,7 +256,7 @@ body.ticker-bottom #app-container { margin-top: 0 !important; }
     display: none;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgb(0,0,0,0.3);
 }
 
 /* Now Playing Banner (Top Right) */
@@ -267,7 +264,7 @@ body.ticker-bottom #app-container { margin-top: 0 !important; }
     position: fixed;
     top: 105px;
     right: -500px; /* Hidden by default */
-    background: rgba(0, 0, 0, 0.85);
+    background: rgb(0, 0, 0, 0.85);
     border: 2px solid var(--bar-gold);
     border-right: none;
     padding: 12px 25px;
@@ -276,7 +273,7 @@ body.ticker-bottom #app-container { margin-top: 0 !important; }
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: -5px 5px 20px rgba(0,0,0,0.5);
+    box-shadow: -5px 5px 20px rgb(0,0,0,0.5);
     transition: right 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     max-width: 450px;
 }
@@ -315,14 +312,14 @@ body.ticker-bottom #app-container { margin-top: 0 !important; }
     position: fixed;
     top: 20%; left: 10%;
     z-index: 95;
-    background: white; color: #111;
+    background: white; color: #111111;
     padding: 25px 35px;
     border-radius: 40px;
     max-width: 400px;
     font-size: 1.4rem;
     font-weight: 700;
     text-align: center;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 50px rgb(0,0,0,0.5);
     opacity: 0;
     transform: scale(0.5);
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);

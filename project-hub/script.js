@@ -1,13 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const hubGrid = document.getElementById('hub-grid');
-    const addBtn = document.getElementById('add-btn');
-    const modal = document.getElementById('modal');
-    const cancelBtn = document.getElementById('cancel-btn');
-    const saveBtn = document.getElementById('save-btn');
-    const siteNameInput = document.getElementById('site-name');
-    const siteUrlInput = document.getElementById('site-url');
+document.addEventListener('DOMContentLoaded', function() {
+    var hubGrid = document.getElementById('hub-grid');
+    var addBtn = document.getElementById('add-btn');
+    var modal = document.getElementById('modal');
+    var cancelBtn = document.getElementById('cancel-btn');
+    var saveBtn = document.getElementById('save-btn');
+    var siteNameInput = document.getElementById('site-name');
+    var siteUrlInput = document.getElementById('site-url');
 
-    let projects = JSON.parse(localStorage.getItem('hub-projects')) || [
+    var projects = JSON.parse(localStorage.getItem('hub-projects')) || [
         { name: 'Google', url: 'https://www.google.com' },
         { name: 'YouTube', url: 'https://www.youtube.com' }
     ];
@@ -18,30 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderTiles() {
         hubGrid.innerHTML = '';
-        projects.forEach((project, index) => {
-            const tile = document.createElement('a');
+        projects.forEach(function(project, index) {
+            var tile = document.createElement('a');
             tile.href = project.url;
             tile.className = 'tile';
             tile.target = '_blank';
 
-            const initials = project.name
+            var initials = project.name
                 .split(' ')
-                .map(n => n[0])
+                .map(function(n) { return n[0]; })
                 .join('')
                 .toUpperCase()
                 .substring(0, 2);
 
-            tile.innerHTML = `
-                <button class="delete-btn" data-index="${index}" title="Delete">✕</button>
-                <div class="tile-icon">${initials}</div>
-                <h2>${project.name}</h2>
-            `;
+            tile.innerHTML = 
+                '<button class="delete-btn" data-index="' + index + '" title="Delete">✕</button>' +
+                '<div class="tile-icon">' + initials + '</div>' +
+                '<h2>' + project.name + '</h2>';
             
             // Staggered animation delay
-            tile.style.animationDelay = `${index * 0.05}s`;
+            tile.style.animationDelay = (index * 0.05) + 's';
 
             // Prevent link navigation when clicking delete
-            tile.querySelector('.delete-btn').addEventListener('click', (e) => {
+            tile.querySelector('.delete-btn').addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 deleteProject(index);
@@ -59,26 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    addBtn.addEventListener('click', () => {
+    addBtn.addEventListener('click', function() {
         modal.style.display = 'flex';
         siteNameInput.focus();
     });
 
-    cancelBtn.addEventListener('click', () => {
+    cancelBtn.addEventListener('click', function() {
         modal.style.display = 'none';
         siteNameInput.value = '';
         siteUrlInput.value = '';
     });
 
-    saveBtn.addEventListener('click', () => {
-        const name = siteNameInput.value.trim();
-        let url = siteUrlInput.value.trim();
+    saveBtn.addEventListener('click', function() {
+        var name = siteNameInput.value.trim();
+        var url = siteUrlInput.value.trim();
 
         if (name && url) {
-            if (!url.startsWith('http')) {
+            if (url.indexOf('http') !== 0) {
                 url = 'https://' + url;
             }
-            projects.push({ name, url });
+            projects.push({ name: name, url: url });
             saveProjects();
             renderTiles();
             modal.style.display = 'none';
@@ -90,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close modal on outside click
-    window.addEventListener('click', (e) => {
+    window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
         }
@@ -98,10 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+        window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registered'))
-                .catch(err => console.log('Service Worker failed', err));
+                .then(function(reg) { console.log('Service Worker registered'); })
+                ['catch'](function(err) { console.log('Service Worker failed', err); });
         });
     }
 

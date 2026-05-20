@@ -226,7 +226,7 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.9.4 (2026-05-10 17:54 HST)</div>
+            <div style="font-size: 8px; opacity: 0.3; font-family: monospace; letter-spacing: 0;">v1.9.6 (2026-05-20 01:13 HST)</div>
         </div>
     </div>
 
@@ -666,7 +666,7 @@
             setTimeout(function() { el.style.display = 'none'; }, 2000);
         }
 
-        function firebaseSafe(str) { return str.toLowerCase().trim().replace(/[.#$[\]\/]/g, "_"); }
+        function firebaseSafe(str) { return str.toLowerCase().trim().replace(new RegExp('[.#$[\\\\]/]', 'g'), "_"); }
         function escHtml(str) { var div = document.createElement('div'); div.textContent = str || ''; return div.innerHTML; }
         function escAttr(str) { if (!str) return ""; return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;"); }
         

@@ -23,7 +23,9 @@ T.A. Station Digital Signage is a real-time, web-based display system for a Thai
 - `images/`: Directory containing bar photos used for the idle slideshow and sidebar background.
 
 ## Development Conventions
-- **Legacy Compatibility**: Uses the **Firebase JS SDK v8** (namespaced) and standard `var` declarations in JavaScript. Maintain this style for consistency.
+- **Legacy Compatibility (ES5)**: **CRITICAL:** This project targets hardware (Smart TVs) that may not support ES6+. NEVER use `const`, `let`, arrow functions, template literals, or `async/await`. Always use `var`, `function`, and standard string concatenation.
+- **Linting**: Always run `npm run lint` before committing to verify ES5 compatibility.
+- **Firebase**: Uses the **Firebase JS SDK v8** (namespaced). Maintain this style for consistency.
 - **No Build System**: This is a pure static project. There are no bundlers (Webpack/Vite) or package managers (NPM/Yarn). JS and CSS are mostly inline or linked directly.
 - **Direct Injection**: The `update_facts.py` script uses regex to replace content between `// AUTO-GENERATED-FACTS-START` and `// AUTO-GENERATED-FACTS-END` markers in `index.html`.
 - **CSS Transitions**: The ad sidebar visibility is controlled via a CSS grid transition on the `--sidebar-width` variable.

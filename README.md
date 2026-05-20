@@ -102,6 +102,10 @@ Open `m/index.html` on your iPad or phone:
 
 ---
 
+### Development
+
+- `npm run lint`: Runs ESLint and Stylelint to ensure code quality and ES5 compatibility. This is crucial for maintaining hardware compatibility with the older smart TVs and tablets used in the venue.
+
 ### Staff Instructions (Thai)
 
 * **ค้นหาเพลง**: ค้นหาจากหน้า remote แล้วกดเล่นหรือเพิ่มในคิว
