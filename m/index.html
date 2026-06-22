@@ -383,7 +383,13 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
         function addToQueue(id, title, author, thumb) {
             vRef.child('settings/queue').once('value', function(snapshot) {
                 var queue = snapshot.val() || [];
-                queue.push({ id: id, title: title, author: author, thumb: thumb });
+                var fallbackThumb = "https://img.youtube.com/vi/" + id + "/default.jpg";
+                queue.push({ 
+                    id: id, 
+                    title: title || '', 
+                    author: author || '', 
+                    thumb: thumb || fallbackThumb 
+                });
                 vRef.child('settings/queue').set(queue);
             });
         }
@@ -483,6 +489,6 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.9.9 (2026-06-21 14:04 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v2.0.0 (2026-06-21 16:20 HST)</div>
 </body>
 </html>

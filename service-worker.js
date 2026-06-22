@@ -1,4 +1,4 @@
-var CACHE_NAME = 'ta-station-v1.9.9';
+var CACHE_NAME = 'ta-station-v2.0.0';
 var ASSETS = [
   'index.html',
   'm/index.html',
