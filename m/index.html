@@ -252,12 +252,13 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
 
         <div class="card">
             <h3>Diagnostics</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                 <button class="btn btn-danger" onclick="sendCommand('slideshow')">Force Idle</button>
                 <button class="btn btn-danger" onclick="sendCommand('fixDisplay')">Fix Display</button>
                 <button class="btn btn-danger" onclick="vRef.child('settings/remoteRefresh').set(Date.now())">Refresh TV</button>
                 <button class="btn btn-primary" onclick="location.reload()">Refresh App</button>
             </div>
+            <button class="btn btn-success" onclick="sendCommand('loginYouTube')" style="width: 100%;">YouTube Sign-In on TV</button>
         </div>
     </div>
 
@@ -482,6 +483,6 @@ Format: $3,Rice (one per line)" style="background: #000; color: white; border: 1
             });
         }
     </script>
-    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.9.6 (2026-05-20 01:13 HST)</div>
+    <div style="text-align: center; font-size: 10px; opacity: 0.2; padding: 10px; font-family: monospace;">v1.9.9 (2026-06-21 14:04 HST)</div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // Centralized Configuration for T.A. Station Signage
 var firebaseConfig = {
-    apiKey: "AIzaSyAJ6XE866VF-8VKn7iMtVQjMZTS_LPB9l4",
+    apiKey: "AIzaSyCmmuxJQcJbgeoSqN_ljKbXqcP0KltEx3w",
     authDomain: "ta-station-remote.firebaseapp.com",
     databaseURL: "https://ta-station-remote-default-rtdb.firebaseio.com",
     projectId: "ta-station-remote",
